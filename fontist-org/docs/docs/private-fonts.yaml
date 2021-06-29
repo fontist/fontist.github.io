@@ -1,0 +1,161 @@
+title: Private fonts
+redirectFrom: []
+media: []
+contents:
+  doc:
+    type: doc
+    content:
+      - type: section
+        attrs:
+          id: private-fonts
+        content:
+          - type: section_header
+            content:
+              - type: text
+                text: Private repos
+          - type: paragraph
+            content:
+              - type: text
+                text: "There is an ability to use private fonts via private \
+                       fontist repo. Fontist repo is a git repo which contains \
+                       YAML formula files. Formulas can be created manually \
+                       (see "
+              - type: link
+                attrs:
+                  schemaID: web
+                  reference: 'https://github.com/fontist/formulas/tree/master/Formulas'
+                  hRef: 'https://github.com/fontist/formulas/tree/master/Formulas'
+                  title: ''
+                content:
+                  - type: text
+                    text: examples
+              - type: text
+                text: ), or auto-generated from an archive.
+          - type: paragraph
+            content:
+              - type: text
+                text: >-
+                  A repo can be either HTTPS or SSH Git repo. In case of SSH, a
+                  corresponding SSH key should be setup with ssh-agent in order
+                  to access this private repo.
+          - type: paragraph
+            content:
+              - type: text
+                text: "The "
+              - type: text
+                marks:
+                  - type: code
+                text: repo setup
+              - type: text
+                text: " command fetches a repo's formulas, and saves repo's \
+                       name and url for later use."
+          - type: paragraph
+            content:
+              - type: text
+                text: "Internally all repos are stored at "
+              - type: text
+                marks:
+                  - type: code
+                text: ~/.fontist/formulas/Formulas/private
+              - type: text
+                text: .
+          - type: code_block
+            content:
+              - type: text
+                text: fontist repo setup NAME URL
+          - type: paragraph
+            content:
+              - type: text
+                text: >-
+                  E.g.
+          - type: code_block
+            content:
+              - type: text
+                text: |
+                  fontist repo setup acme https://example.com/acme/formulas.git
+                  # or
+                  fontist repo setup acme git@example.com:acme/formulas.git
+          - type: paragraph
+            content:
+              - type: text
+                text: "Then you can just install fonts from this repo:"
+          - type: code_block
+            content:
+              - type: text
+                text: >-
+                  fontist install "private font"
+          - type: paragraph
+            content:
+              - type: text
+                text: "There is no need in any additional command to be run, \
+                       but if you add new formulas to your repo, you can fetch \
+                       them with the "
+              - type: text
+                marks:
+                  - type: code
+                text: repo update
+              - type: text
+                text: " command:"
+          - type: code_block
+            content:
+              - type: text
+                text: >-
+                  fontist repo update acme
+          - type: paragraph
+            content:
+              - type: text
+                text: >-
+                  If there is a need to avoid using private formulas, the repo
+                  can be removed with:
+          - type: code_block
+            content:
+              - type: text
+                text: >-
+                  fontist repo remove acme
+      - type: section
+        attrs:
+          id: private-formulas
+        content:
+          - type: section_header
+            content:
+              - type: text
+                text: Private formulas
+          - type: paragraph
+            content:
+              - type: text
+                text: >-
+                  Authorization of private archives in private formulas can be
+                  implemented with headers. Here is an example which works with
+                  Github releases:
+          - type: code_block
+            content:
+              - type: text
+                text: |
+                  resources:
+                    fonts.zip:
+                      urls:
+                      - url: https://example.com/repos/acme/formulas/releases/assets/38777461
+                        headers:
+                          Accept: application/octet-stream
+                          Authorization: token ghp_1234567890abcdefghi
+          - type: paragraph
+            content:
+              - type: text
+                text: "A token can be obtained on "
+              - type: link
+                attrs:
+                  schemaID: web
+                  reference: 'https://github.com/settings/tokens'
+                  hRef: 'https://github.com/settings/tokens'
+                  title: ''
+                content:
+                  - type: text
+                    text: this page
+              - type: text
+                text: ". It should have at least the "
+              - type: text
+                marks:
+                  - type: code
+                text: repo
+              - type: text
+                text: " scope."
