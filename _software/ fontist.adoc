@@ -1,0 +1,17 @@
+---
+title: Fontist
+description: Gem for ...
+
+repo_url: https://github.com/fontist/fontist
+
+external_links:
+  - url: https://github.com/fontist/fontist
+
+docs:
+  git_repo_url: https://github.com/fontist/fontist
+  git_repo_subtree: docs
+
+tags: ["writtenin:Ruby"]
+---
+
+The Fontist gem...

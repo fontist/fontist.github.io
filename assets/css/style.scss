@@ -1,0 +1,47 @@
+---
+---
+
+$primary-color: #333289;
+$accent-color: #2f25c5;
+
+@import 'jekyll-theme-open-project';
+
+body.layout--home > .underlay > .hero {
+  .illustration {
+    bottom: -100px !important;
+
+    svg {
+      height: 200px;
+    }
+  }
+
+  > .text {
+    > .title {
+      font-weight: normal;
+    }
+  }
+}
+
+body.layout--home {
+  > main .custom-intro .summary {
+    ul.supported-bibliographies {
+      li {
+        .label {
+          margin-right: 1en;
+        }
+        .source, .gem {
+          white-space: nowrap;
+        }
+        .source {
+          &:after {
+            content: ", ";
+          }
+
+          &:last-child:after {
+            content: unset;
+          }
+        }
+      }
+    }
+  }
+}

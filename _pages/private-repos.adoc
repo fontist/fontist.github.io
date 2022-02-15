@@ -1,0 +1,79 @@
+---
+layout: docs-base
+html-class: page
+title: Private repos
+redirect_from:
+  - /private-repos/
+---
+
+== Private repos
+
+There is an ability to use private fonts via private fontist repo. Fontist repo
+is a git repo which contains YAML formula files. Formulas can be created
+manually (see
+https://github.com/fontist/formulas/tree/master/Formulas[examples]), or
+auto-generated from an archive.
+
+A repo can be either HTTPS or SSH Git repo. In case of SSH, a corresponding SSH
+key should be setup with ssh-agent in order to access this private repo.
+
+The repo setup command fetches a repo's formulas, and saves repo's name and url
+for later use.
+
+Internally all repos are stored at ~/.fontist/formulas/Formulas/private.
+
+[source,sh]
+----
+$ fontist repo setup NAME URL
+----
+
+[example]
+====
+[source,sh]
+----
+fontist repo setup acme https://example.com/acme/formulas.git
+# or
+fontist repo setup acme git@example.com:acme/formulas.git
+----
+====
+
+Then you can just install fonts from this repo:
+
+[source,sh]
+----
+fontist install "private font"
+----
+
+There is no need in any additional command to be run, but if you add new
+formulas to your repo, you can fetch them with the repo update command:
+
+[source,sh]
+----
+fontist repo update acme
+----
+
+If there is a need to avoid using private formulas, the repo can be removed with:
+
+[source,sh]
+----
+fontist repo remove acme
+----
+
+== Private formulas
+
+Authorization of private archives in private formulas can be implemented with
+headers. Here is an example which works with Github releases:
+
+[source,yaml]
+----
+resources:
+  fonts.zip:
+    urls:
+    - url: https://example.com/repos/acme/formulas/releases/assets/38777461
+      headers:
+        Accept: application/octet-stream
+        Authorization: token ghp_1234567890abcdefghi
+----
+
+A token can be obtained on https://github.com/settings/tokens[this page]. It
+should have at least the repo scope.

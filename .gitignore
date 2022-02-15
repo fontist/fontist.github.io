@@ -1,6 +1,13 @@
+_software/*/.git
+_software/*/docs
+_software/_*_repo
+_specs/*/
+!_specs/*.*
+parent-hub
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+.DS_Store
 
-node_modules
-tmp
-artifacts
-dist
-      
+.rubocop-https--*

@@ -1,0 +1,8 @@
+assets
+javascript:.*
+http://www.viagenie.ca
+https://twitter.com/RiboseUS
+.*@viagenie.ca
+.*@.*example.com
+(ht|f)tps?://.*\.?example\.(com|org).*
+ldap://.*

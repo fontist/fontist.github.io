@@ -1,0 +1,13 @@
+{% assign contact_link = "mailto:" | append: site.contact_email %}
+
+<div class="search-widget">
+  <input type="search" id="siteSearchInput" placeholder="Type to search…">
+</div>
+
+{% include nav-page-link.html htmlclass="software" url="/software/" title="Software" active_for_nested=true %}
+
+<!-- {% include nav-page-link.html htmlclass="fonts" url="/fonts/" title="Fonts" active_for_nested=true %} -->
+
+{% include project-nav.html %}
+
+<a href="javascript: void 0;" class="search" aria-label="site search button"><i class="fas fa-search"></i></a>
