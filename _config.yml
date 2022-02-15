@@ -11,7 +11,7 @@ github_repo_branch: main
 
 algolia_search:
   api_key: '31ca4bad475130bdaee582a0b9f40806'
-  index_name: 'metanorma'
+  index_name: 'fontist'
 
 tagline: >-
   Cross-platform font installer for
