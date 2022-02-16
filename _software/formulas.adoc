@@ -1,0 +1,19 @@
+---
+title: Formulas
+description: Fontist Font Formulas
+
+repo_url: https://github.com/fontist/formulas
+repo_branch: v3
+
+external_links:
+  - url: https://github.com/fontist/formulas
+
+docs:
+  git_repo_url: https://github.com/fontist/formulas
+  git_repo_branch: v3
+  git_repo_subtree: docs
+
+tags: ["writtenin:Ruby"]
+---
+
+This is a main Fontist formulas repository.

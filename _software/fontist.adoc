@@ -1,6 +1,6 @@
 ---
 title: Fontist
-description: Gem for ...
+description: A simple library to find and download fonts for Windows, Linux and Mac.
 
 repo_url: https://github.com/fontist/fontist
 
@@ -14,4 +14,4 @@ docs:
 tags: ["writtenin:Ruby"]
 ---
 
-The Fontist gem...
+Install openly-licensed fonts on Windows, Linux and Mac!
