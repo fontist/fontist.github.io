@@ -2,9 +2,15 @@
 ---
 
 $primary-color: #333289;
-$accent-color: #2f25c5;
+$accent-color: #6254ff;
 
 @import 'jekyll-theme-open-project';
+
+.main-section {
+  > .title {
+    font-weight: 500;
+  }
+}
 
 body.layout--home > .underlay > .hero {
   .illustration {
@@ -42,6 +48,14 @@ body.layout--home {
           }
         }
       }
+    }
+  }
+}
+
+body.layout--home {
+  > main > .featured-posts {
+    .title {
+      align-self: flex-start;
     }
   }
 }
