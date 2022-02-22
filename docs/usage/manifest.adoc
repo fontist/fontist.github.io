@@ -1,0 +1,65 @@
+---
+layout: docs
+---
+
+= How to install a bundle of fonts at once?
+
+Several fonts can be specified in a file, called "manifest", and installed
+together.
+
+First, prepare a file "manifest.yml":
+
+[source,yaml]
+----
+---
+Times New Roman:
+Arial:
+Courier New:
+----
+
+Then run:
+
+[source,sh]
+----
+fontist manifest-install manifest.yml
+----
+
+This command would install or find all 3 fonts, and return its paths.
+
+== How to get paths of installed fonts?
+
+Once you installed fonts via the manifest file, you can get their locations:
+
+[source,sh]
+----
+fontist manifest-locations manifest.yml
+----
+
+The output is in the YAML format:
+
+[source,sh]
+----
+---
+Times New Roman:
+  Bold Italic:
+    full_name: Times New Roman Bold Italic
+    paths:
+    - "/System/Library/Fonts/Supplemental/Times New Roman Bold Italic.ttf"
+    - "/Users/user/.fontist/fonts/timesbi.ttf"
+  Italic:
+    full_name: Times New Roman Italic
+    paths:
+    - "/System/Library/Fonts/Supplemental/Times New Roman Italic.ttf"
+    - "/Users/user/.fontist/fonts/timesi.ttf"
+----
+
+If one or some of requested fonts are missing, the "3" error code would be
+returned, and a message printed:
+
+[source,sh]
+----
+$ fontist manifest-locations manifest.yml
+'Roboto Mono' 'Regular' font is missing, please run `fontist install 'Roboto Mono'` to download the font.
+$ echo $?
+3
+----

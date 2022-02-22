@@ -1,0 +1,33 @@
+---
+layout: docs
+---
+
+= How to use Fontconfig with Fontist?
+
+Fontconfig is a software designed to provide fonts to other programs. It is
+typically used on Linux, but also available on macOS and Windows. Fontconfig is
+used by LibreOffice, GIMP, and many other programs.
+
+It order to find fontist fonts, Fontconfig should be updated to include fontist
+paths. It can be done with the `--update-fontconfig` option of `install`:
+
+[source,sh]
+----
+fontist install --update-fontconfig 'courier prime'
+----
+
+Or by calling a special command:
+
+[source,sh]
+----
+fontist fontconfig update
+----
+
+It would create a config in `~/.config/fontconfig/conf.d/10-fontist.conf`.
+
+To remove it, please use:
+
+[source,sh]
+----
+fontist fontconfig remove
+----
