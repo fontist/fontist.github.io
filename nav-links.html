@@ -4,10 +4,14 @@
   <input type="search" id="siteSearchInput" placeholder="Type to search…">
 </div>
 
+{% include nav-page-link.html htmlclass="docs" url="/docs/" title="Docs" active_for_nested=true %}
+
 {% include nav-page-link.html htmlclass="software" url="/software/" title="Software" active_for_nested=true %}
 
 <!-- {% include nav-page-link.html htmlclass="fonts" url="/fonts/" title="Fonts" active_for_nested=true %} -->
 
 {% include project-nav.html %}
+
+{% include nav-page-link.html htmlclass="blog" url="/blog/" title="Blog" active_for_nested=true %}
 
 <a href="javascript: void 0;" class="search" aria-label="site search button"><i class="fas fa-search"></i></a>
