@@ -5,4 +5,4 @@ layout: docs
 = Usage
 
 Fontist can be used via its command-line interface (CLI), or as a
-Ruby library. This section describes how to use it with CLI.
+link:ruby/[Ruby library]. This section describes how to use it with CLI.
