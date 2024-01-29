@@ -1,5 +1,3 @@
-## Introduction
-
 Fontist now allows installing macOS-specific add-on fonts via the `fontist`
 command-line interface.
 

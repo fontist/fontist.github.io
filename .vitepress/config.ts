@@ -18,7 +18,7 @@ export default defineConfig({
       { text: "Blog", link: "/blog/" }
     ],
 
-    sidebar: {},
+    // sidebar: {},
 
     socialLinks: [
       { icon: "github", link: "https://github.com/fontist/fontist.github.io" },
