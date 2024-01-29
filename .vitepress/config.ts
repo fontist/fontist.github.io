@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitepress'
+import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -13,9 +13,9 @@ export default defineConfig({
 
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: 'Fontist', link: 'https://fontist.org/fontist/' },
-      { text: 'Formulas', link: 'https://fontist.org/formulas/' },
-      { text: "Blog", link: "/blog/" }
+      { text: "Fontist", link: "https://fontist.org/fontist/" },
+      { text: "Formulas", link: "https://fontist.org/formulas/" },
+      { text: "Blog", link: "/blog/" },
     ],
 
     // sidebar: {},
@@ -30,5 +30,5 @@ Fontist is <a href="https://open.ribose.com/"><img alt="riboseopen" style="displ
 Copyright &copy; 2023 Ribose Group Inc. All rights reserved.<br />
 <a href="https://www.ribose.com/tos">Terms of Service</a> | <a href="https://www.ribose.com/privacy">Privacy Policy</a>`,
     },
-  }
-})
+  },
+});
