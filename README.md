@@ -1,5 +1,5 @@
 <p align=center>
-    <b>You're probably looking for <a href="https://fontist.org/">fontist.org</a></b>
+  <b>You're probably looking for <a href="https://fontist.org/">fontist.org</a></b>
 </p>
 
 ## Development
