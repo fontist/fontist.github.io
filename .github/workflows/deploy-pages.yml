@@ -27,16 +27,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: npm
       - run: npm ci
-        working-directory: docs
       - id: configure-pages
         uses: actions/configure-pages@v4
       - run: npm run build
-        working-directory: docs
         env:
           BASE_PATH: ${{ steps.configure-pages.outputs.base_path }}/
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/.vitepress/dist
+          path: .vitepress/dist
       - id: deploy-pages
         uses: actions/deploy-pages@v4
