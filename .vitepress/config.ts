@@ -15,8 +15,8 @@ export default defineConfig({
 
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: "Fontist", link: "https://fontist.org/fontist/" },
-      { text: "Formulas", link: "https://fontist.org/formulas/" },
+      { text: "Fontist", link: "https://fontist.org/fontist/", target: "_self" },
+      { text: "Formulas", link: "https://fontist.org/formulas/", target: "_self" },
       { text: "Blog", link: "/blog/" },
     ],
 
