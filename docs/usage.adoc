@@ -1,8 +1,0 @@
----
-layout: docs
----
-
-= Usage
-
-Fontist can be used via its command-line interface (CLI), or as a
-link:ruby/[Ruby library]. This section describes how to use it with CLI.
