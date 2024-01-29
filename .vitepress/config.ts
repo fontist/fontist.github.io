@@ -8,6 +8,8 @@ export default defineConfig({
   title: "Fontist",
   description: "Install openly-licensed fonts on Windows, Linux and Mac!",
 
+  base: process.env.BASE_PATH,
+
   themeConfig: {
     logo: "/logo.png",
 
