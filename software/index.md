@@ -1,4 +1,4 @@
-Resolving legacy link…
+Redirecting...
 
 <script setup lang="ts">
 if (typeof window !== "undefined") {
