@@ -1,1 +1,7 @@
-<script>location.replace("https://github.com/fontist/formulas")</script>
+Resolving legacy link…
+
+<script setup lang="ts">
+if (typeof window !== "undefined") {
+  location.replace("https://github.com/fontist/formulas")
+}
+</script>

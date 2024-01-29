@@ -1,1 +1,7 @@
-<script>location.replace("https://fontist.org/fontist/")</script>
+Resolving legacy link…
+
+<script setup lang="ts">
+if (typeof window !== "undefined") {
+  location.replace("https://fontist.org/fontist/")
+}
+</script>
