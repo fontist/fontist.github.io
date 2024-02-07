@@ -17,3 +17,5 @@ This site uses [VitePress](https://vitepress.dev/) as a static site generator. T
 📝 To create a new blog post you need to 1) create a new `.md` file in the `blog/` folder and 2) add it to the `blog/index.md` index page.
 
 ℹ `docs/` and `software/` are just redirects. They have a bunch of `.../index.md` files with redirects to the appropriate sub-sites.
+
+🎗️ When/if [vuejs/vitepress#3561](https://github.com/vuejs/vitepress/pull/3561) is merged this project can switch back to npm. We're currently using pnpm for their [`pnpm patch` feature](https://pnpm.io/cli/patch).
