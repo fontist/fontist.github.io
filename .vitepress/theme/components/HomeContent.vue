@@ -1,3 +1,5 @@
+<!-- https://github.com/vuejs/vitepress/issues/800#issuecomment-1594473590 -->
+
 <template>
   <div class="vp-doc container">
     <slot />

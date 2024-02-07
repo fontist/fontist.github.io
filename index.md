@@ -36,6 +36,7 @@ other pages. 🤷‍♂️ -->
 </style>
 
 <script setup>
+// https://github.com/vuejs/vitepress/issues/800#issuecomment-1594473590
 import HomeContent from "./.vitepress/theme/components/HomeContent.vue"
 </script>
 
