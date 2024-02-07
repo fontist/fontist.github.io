@@ -1,6 +1,7 @@
 ---
 # https://vitepress.dev/reference/default-theme-home-page
 layout: home
+pageClass: my-index-page
 
 features:
   - title: 📄 Fontist
@@ -19,29 +20,25 @@ other pages of this site can use Google indexing OR direct links from
 other pages. 🤷‍♂️ -->
 
 <style>
-  .VPContent.is-home {
+  .my-index-page .VPContent {
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  .VPContent.is-home .VPLink .title {
+  .my-index-page .VPContent .VPLink .title {
     font-size: 1.5em;
     line-height: 1.46;
   }
-  .VPContent.is-home .VPLink .details {
+  .my-index-page .VPContent .VPLink .details {
     font-size: 1em;
     line-height: 1.46;
     color: inherit;
   }
 </style>
 
-<script setup>
-import HomeContent from "./.vitepress/theme/components/HomeContent.vue"
-</script>
-
-<HomeContent align=center>
+<div align=center>
 <br />
 
 [📚 Also check out our blog](/blog/)
 
-</HomeContent>
+</div>
