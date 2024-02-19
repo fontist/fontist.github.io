@@ -24,17 +24,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3
-        with:
-          version: latest
       - uses: actions/setup-node@v4
         with:
           node-version: latest
           cache: pnpm
-      - run: pnpm install
+      - run: npm install
       - id: configure-pages
         uses: actions/configure-pages@v4
-      - run: pnpm build
+      - run: npm run build
         env:
           BASE_PATH: ${{ steps.configure-pages.outputs.base_path }}/
       - uses: actions/upload-pages-artifact@v3
