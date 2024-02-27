@@ -5,6 +5,10 @@ export default defineConfig({
   // FIXME
   ignoreDeadLinks: true,
 
+  // https://vitepress.dev/guide/routing#generating-clean-url
+  // ✅ Works with GitHub Pages.
+  cleanUrls: true,
+
   title: "Fontist",
   description: "Install openly-licensed fonts on Windows, Linux and Mac!",
 
