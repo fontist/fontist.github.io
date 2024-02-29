@@ -7,10 +7,12 @@ features:
   - title: 📄 Fontist
     details: 👩‍💻 Install openly-licensed fonts on Windows, Linux and Mac!
     link: https://fontist.org/fontist/
+    target: _self
     linkText: Go to Fontist
   - title: 📦 Formulas
     details: 🔎 Searchable index of all installable Fontist Formulas
     link: https://fontist.org/formulas/
+    target: _self
     linkText: Go to Formulas
 ---
 
