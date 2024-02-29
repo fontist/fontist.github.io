@@ -1,26 +1,6 @@
----
-layout: post
-title: "Installing macOS-specific add-on fonts"
-date: 2022-02-11
-categories: documentation
-authors:
-  -
-    name: Ronald Tse
-    email: ronald.tse@ribose.com
-    social_links:
-      - https://github.com/ronaldtse
-  -
-    name: Alexey Morozov
-    email: alexey.morozov.is@gmail.com
-    social_links:
-      - https://github.com/alexeymorozov
+# Installing macOS-specific add-on fonts
 
-excerpt: >-
-  Learn how to install macOS-specific add-on fonts via the `fontist`
-  command-line interface.
----
-
-== Introduction
+<sup>By **Ronald Tse** and **Alexey Morozov** on 11 Feb 2022</sup>
 
 Fontist now allows installing macOS-specific add-on fonts via the `fontist`
 command-line interface.
@@ -33,35 +13,32 @@ macOS.
 
 The following demonstration shows how useful this is in a CI environment.
 
-== Prerequisites
+## Prerequisites
 
 Install the Canela font on macOS using
-https://github.com/fontist/fontist[Fontist]:
+[Fontist](https://github.com/fontist/fontist):
 
-[source,sh]
-----
+```sh
 $ fontist install Canela
-----
+```
 
-== Example
+## Example
 
 _The Blood Is At The Doorstep_ movie poster uses the Canela font. We can
 potentially generate it using ImageMagick in a CI environment.
 
 This is the original poster:
 
-.Original poster. Source: mdfilmfest.com License: All Rights Reserved.
-[link=https://fontsinuse.com/uses/18269/the-blood-is-at-the-doorstep-movie-poster]
-image::/assets/blog/2022-02-11_original.jpg[Original poster]
+![Original poster](https://i.imgur.com/ZsNgRCZ.png)
+_Source: mdfilmfest.com License: All Rights Reserved._
+[Link to poster](https://fontsinuse.com/uses/18269/the-blood-is-at-the-doorstep-movie-poster)
 
-As described at the
-https://imagemagick.org/script/convert.php[ImageMagic `convert` page], we can
+As described at the [ImageMagic `convert` page](https://imagemagick.org/script/convert.php), we can
 use the `magick convert` command to generate this exact same title.
 
 The command to generate the title:
 
-[source,sh]
-----
+```sh
 $ magick convert \
    -size 800x1066 canvas:black \
    -font Canela-Regular-Regular \
@@ -74,20 +51,17 @@ $ magick convert \
    -kerning 60 -annotate +35+850 'DOOR' \
    -kerning 95 -annotate +35+1020 'STEP' \
    poster.png
-----
+```
 
 The generated version is pretty much identical (except for the background).
 
-.Generated poster
-image::/assets/blog/2022-02-11_generated.png[Generated poster]
+![Generated poster](https://i.imgur.com/waGfDP8.png)
 
-
-== Final thoughts
+## Final thoughts
 
 As always, if you need help with the new functionality, please post at
-https://github.com/fontist/discussions/discussions[Fontist Discussions]!
+[Fontist Discussions](https://github.com/fontist/discussions/discussions)!
 
+## References
 
-== References
-
-* https://github.com/fontist/fontist[fontist]
+- [fontist](https://github.com/fontist/fontist)
