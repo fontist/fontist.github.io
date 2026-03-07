@@ -125,8 +125,8 @@ To see what fonts that can be installed:
 $ fontist list
 ```
 
-Number of font formulas: *2,082* (as of 2024-03-02)
-Number of font styles: *13,738* (as of 2024-03-02)
+Number of font formulas: *2,175* (as of 2026-03-07)
+Number of font styles: *14,500+* (as of 2026-03-07)
 
 
 ## Font format support

@@ -16,7 +16,7 @@ features:
     linkText: Go to Formulas
 ---
 
-<!-- Honestly this page is REALY CLOSE to just being a redirect to
+<!-- Honestly this page is REALLY CLOSE to just being a redirect to
 https://fontist.org/fontist/ and anyone who wants to access the blog or
 other pages of this site can use Google indexing OR direct links from
 other pages. 🤷‍♂️ -->

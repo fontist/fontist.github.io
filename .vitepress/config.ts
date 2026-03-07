@@ -2,17 +2,42 @@ import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  lang: "en-US",
+
   // https://vitepress.dev/guide/routing#generating-clean-url
   cleanUrls: true,
 
   title: "Fontist",
   description: "Install openly-licensed fonts on Windows, Linux and Mac!",
 
+  lastUpdated: true,
+
   // https://github.com/vuejs/vitepress/issues/3508
   base: process.env.BASE_PATH,
 
+  head: [
+    ["link", { rel: "icon", type: "image/png", href: "/favicon-96x96.png", sizes: "96x96" }],
+    ["link", { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
+    ["link", { rel: "shortcut icon", href: "/favicon.ico" }],
+    ["link", { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" }],
+    ["link", { rel: "manifest", href: "/site.webmanifest" }],
+    ["style", {}, `.VPNav .VPImage { height: 39px; }`],
+    ["meta", { property: "og:type", content: "website" }],
+    ["meta", { property: "og:title", content: "Fontist" }],
+    [
+      "meta",
+      {
+        property: "og:description",
+        content: "Install openly-licensed fonts on Windows, Linux and Mac!",
+      },
+    ],
+    ["meta", { property: "og:image", content: "/logo-full.svg" }],
+    ["meta", { name: "twitter:card", content: "summary_large_image" }],
+  ],
+
   themeConfig: {
-    logo: "/logo.png",
+    logo: "/logo-full.svg",
+    siteTitle: false,
 
     // https://vitepress.dev/reference/default-theme-config
     nav: [
