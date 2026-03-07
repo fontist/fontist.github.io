@@ -1,17 +1,24 @@
-<p align=center>
-  <b>You're probably looking for <a href="https://fontist.org/">fontist.org</a></b>
-</p>
+# Fontist Website
+
+[![Deploy Pages](https://github.com/fontist/fontist.github.io/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/fontist/fontist.github.io/actions/workflows/deploy-pages.yml)
+
+This is the source for [fontist.org](https://fontist.org), built with [VitePress](https://vitepress.dev/).
 
 ## Development
 
-![Vite](https://img.shields.io/static/v1?style=for-the-badge&message=Vite&color=646CFF&logo=Vite&logoColor=FFFFFF&label=)
-![Vue.js](https://img.shields.io/static/v1?style=for-the-badge&message=Vue.js&color=222222&logo=Vue.js&logoColor=4FC08D&label=)
-![Markdown](https://img.shields.io/static/v1?style=for-the-badge&message=Markdown&color=000000&logo=Markdown&logoColor=FFFFFF&label=)
+```bash
+npm install     # Install dependencies
+npm run dev     # Start development server
+npm run build   # Build for production
+npm run preview # Preview production build
+```
 
-[![Open in Codeflow](https://developer.stackblitz.com/img/open_in_codeflow.svg)](https://pr.new/https://github.com/fontist/fontist.github.io)
+## Adding Blog Posts
 
-This site uses [VitePress](https://vitepress.dev/) as a static site generator. The website is hosted through GitHub Pages. There are sub-sites hosted from other GitHub [@fontist](https://github.com/fontist) repositories such as [fontist/fontist](https://github.com/fontist/fontist) which hosts [fontist.org/fontist](https://fontist.org/fontist/).
+1. Create a new `.md` file in `blog/` with frontmatter
+2. Add an entry to `blog/index.md`
 
-💡 Try to keeps this root website about the organization as a whole and redirect or point to other project-specific sub-sites where appropriate.
+## Sub-sites
 
-📝 To create a new blog post you need to 1) create a new `.md` file in the `blog/` folder and 2) add it to the `blog/index.md` index page.
+- [fontist.org/fontist/](https://fontist.org/fontist/) - Main documentation (from [fontist/fontist](https://github.com/fontist/fontist))
+- [fontist.org/formulas/](https://fontist.org/formulas/) - Searchable formulas index (from [fontist/formulas](https://github.com/fontist/formulas))
