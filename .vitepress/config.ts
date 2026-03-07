@@ -37,7 +37,7 @@ export default defineConfig({
 
     footer: {
       message: `Fontist is <a href="https://open.ribose.com/">riboseopen</a>`,
-      copyright: `Copyright &copy; 2023 Ribose Group Inc. All rights reserved.`,
+      copyright: `Copyright &copy; 2026 Ribose Group Inc. All rights reserved.`,
     },
   },
 });
