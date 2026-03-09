@@ -1,0 +1,47 @@
+# Lychee Link Checker Configuration
+# For Documentation
+# https://github.com/lycheeverse/lychee
+
+# Cache results to avoid re-checking same URLs
+cache = true
+max_cache_age = "1d"
+
+# Check both source files and built site
+include_verbatim = true
+
+# Recursively check all files
+recursive = true
+
+# File types to check
+include = [
+  ".vitepress/dist/**/*.html"
+]
+
+# Exclude patterns for URLs
+exclude = [
+  ".git",
+  ".github",
+  "node_modules",
+  "vendor",
+  ".bundle",
+  ".sass-cache",
+  ".jekyll-cache"
+]
+
+# Accept status codes
+accept = [
+  "100..=103",  # Informational
+  "200..=299",  # Success
+  "429"         # Too Many Requests (retry handled by max_retries)
+]
+
+# Link checking behavior
+max_redirects = 10
+max_retries = 3
+timeout = 20
+
+# User agent to identify ourselves
+user_agent = "lychee/docs-link-checker"
+
+# Verbose output for debugging
+verbose = "info"
