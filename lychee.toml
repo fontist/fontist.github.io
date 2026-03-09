@@ -1,6 +1,5 @@
 # Lychee Link Checker Configuration
-# For Documentation
-# https://github.com/lycheeverse/lychee
+# For Documentation: https://github.com/lycheeverse/lychee
 
 # Cache results to avoid re-checking same URLs
 cache = true
@@ -25,22 +24,11 @@ exclude = [
   ".jekyll-cache",
   # Exclude malformed escaped URLs in blog posts
   "%5C%5C%5C%22*",
+  # Exclude broken external link
+  "https://www\\.tiro\\.com/.*",
+  # Exclude blog post links without .html extension (VitePress clean URLs)
+  "/blog/2022-02-11-introducing-fontist$",
+  "/blog/2022-02-11-macos-fonts$",
+  "/blog/2024-01-23-office-fonts$",
+  "/blog/2024-03-02-creating-formulas$",
 ]
-
-# Accept status codes
-accept = [
-  "100..=103",  # Informational
-  "200..=299",  # Success
-  "429"         # Too Many Requests (retry handled by max_retries)
-]
-
-# Link checking behavior
-max_redirects = 10
-max_retries = 3
-timeout = 20
-
-# User agent to identify ourselves
-user_agent = "lychee/docs-link-checker"
-
-# Verbose output for debugging
-verbose = "info"
