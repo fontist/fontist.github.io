@@ -52,6 +52,7 @@ jobs:
           args: >-
             --verbose
             --no-progress
+            --config lychee.toml
             --root-dir ${{ github.workspace }}/.vitepress/dist
             .vitepress/dist/**/*.html
           fail: true
