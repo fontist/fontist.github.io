@@ -9,7 +9,7 @@ const products = [
     description:
       "A cross-platform font installer and manager. Install openly-licensed fonts on Windows, Linux, and macOS with a single command.",
     icon: "download",
-    link: "https://fontist.org/fontist/",
+    link: "https://www.fontist.org/fontist/",
     cta: "View Documentation",
   },
   {
@@ -19,7 +19,7 @@ const products = [
     description:
       "Manipulate, convert, and build fonts programmatically. Perfect for font workflows in automated pipelines.",
     icon: "settings",
-    link: "https://fontist.org/fontisan/",
+    link: "https://www.fontist.org/fontisan/",
     cta: "View Documentation",
   },
   {
@@ -29,7 +29,7 @@ const products = [
     description:
       "A searchable index of 2,000+ font formulas for automated installation of openly-licensed fonts from across the internet.",
     icon: "package",
-    link: "https://fontist.org/formulas/",
+    link: "https://www.fontist.org/formulas/",
     cta: "Browse Formulas",
   },
 ];
@@ -61,7 +61,7 @@ const icons = {
           Designed for automated systems, CI/CD pipelines, and digital publishing.
         </p>
         <div class="hero-actions">
-          <a href="https://fontist.org/fontist/" class="btn btn-primary">
+          <a href="https://www.fontist.org/fontist/" class="btn btn-primary">
             Get Started
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M5 12h14M12 5l7 7-7 7"/>

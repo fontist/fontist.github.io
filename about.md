@@ -95,9 +95,9 @@ Fontist has expanded into a family of tools for comprehensive font management:
 
 | Project | Purpose |
 |---------|---------|
-| [**Fontist**](https://fontist.org/fontist/) | Install and manage fonts across platforms |
+| [**Fontist**](https://www.fontist.org/fontist/) | Install and manage fonts across platforms |
 | [**Fontisan**](https://github.com/fontist/fontisan) | Manipulate, convert, and build fonts programmatically |
-| [**Formulas**](https://fontist.org/formulas/) | Registry of 2,000+ font installation recipes |
+| [**Formulas**](https://www.fontist.org/formulas/) | Registry of 2,000+ font installation recipes |
 
 ### Fontist
 The core software and library for installing and managing fonts. It handles font discovery, downloading, licensing acceptance, and installation across all major platforms.
@@ -199,11 +199,11 @@ Fontist is proudly open source. We believe font management infrastructure should
 Ready to use Fontist in your automated workflows?
 
 <div class="get-started-links">
-  <a href="https://fontist.org/fontist/" class="gs-link gs-link-primary">
+  <a href="https://www.fontist.org/fontist/" class="gs-link gs-link-primary">
     <span class="gs-title">Documentation</span>
     <span class="gs-desc">Learn how to install and use Fontist</span>
   </a>
-  <a href="https://fontist.org/formulas/" class="gs-link">
+  <a href="https://www.fontist.org/formulas/" class="gs-link">
     <span class="gs-title">Browse Formulas</span>
     <span class="gs-desc">Explore 2,000+ available fonts</span>
   </a>
