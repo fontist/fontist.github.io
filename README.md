@@ -2,7 +2,7 @@
 
 [![Deploy Pages](https://github.com/fontist/fontist.github.io/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/fontist/fontist.github.io/actions/workflows/deploy-pages.yml)
 
-This is the source for [fontist.org](https://fontist.org), built with [VitePress](https://vitepress.dev/).
+This is the source for [fontist.org](https://www.fontist.org), built with [VitePress](https://vitepress.dev/).
 
 ## Development
 
@@ -20,5 +20,5 @@ npm run preview # Preview production build
 
 ## Sub-sites
 
-- [fontist.org/fontist/](https://fontist.org/fontist/) - Main documentation (from [fontist/fontist](https://github.com/fontist/fontist))
-- [fontist.org/formulas/](https://fontist.org/formulas/) - Searchable formulas index (from [fontist/formulas](https://github.com/fontist/formulas))
+- [fontist.org/fontist/](https://www.fontist.org/fontist/) - Main documentation (from [fontist/fontist](https://github.com/fontist/fontist))
+- [fontist.org/formulas/](https://www.fontist.org/formulas/) - Searchable formulas index (from [fontist/formulas](https://github.com/fontist/formulas))

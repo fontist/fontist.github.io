@@ -42,17 +42,17 @@ export default defineConfig({
     nav: [
       {
         text: "Fontist Docs",
-        link: "https://fontist.org/fontist/",
+        link: "https://www.fontist.org/fontist/",
         target: "_self",
       },
       {
         text: "Fontisan Docs",
-        link: "https://fontist.org/fontisan/",
+        link: "https://www.fontist.org/fontisan/",
         target: "_self",
       },
       {
         text: "Formulas",
-        link: "https://fontist.org/formulas/",
+        link: "https://www.fontist.org/formulas/",
         target: "_self",
       },
       { text: "Blog", link: "/blog/" },

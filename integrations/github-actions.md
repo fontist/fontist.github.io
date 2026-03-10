@@ -214,5 +214,5 @@ Some fonts are platform-specific. Check availability:
 ## More Information
 
 - **Action Repository**: [github.com/fontist/setup-fontist](https://github.com/fontist/setup-fontist)
-- **Fontist Documentation**: [fontist.org/fontist](https://fontist.org/fontist/)
-- **Fontist Formulas**: [fontist.org/formulas](https://fontist.org/formulas/)
+- **Fontist Documentation**: [fontist.org/fontist](https://www.fontist.org/fontist/)
+- **Fontist Formulas**: [fontist.org/formulas](https://www.fontist.org/formulas/)
