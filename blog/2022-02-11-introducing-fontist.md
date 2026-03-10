@@ -110,7 +110,7 @@ Fontist font formulas currently support fonts from:
 
 * [Google Fonts](https://fonts.google.com)
 * [SIL International](https://software.sil.org/fonts/)
-* open-source language-specific fonts such as: [IPAex (Japanese)](https://moji.or.jp/ipafont/ipaex00401/) and [Euphemia (Canadian Syllabics)](https://www.tiro.com/syllabics/resources/index.html)
+* open-source language-specific fonts such as: [IPAex (Japanese)](https://moji.or.jp/ipafont/ipaex00401/) and [Euphemia (Canadian Syllabics)](https://www.tiro.com/fonts/euphemia)
 * math and science fonts such as: [STIX](https://www.stixfonts.org)
 * TeX fonts such as: [TeX Gyre](https://www.gust.org.pl/projects/e-foundry/tex-gyre/)
 * curated and contributed fonts

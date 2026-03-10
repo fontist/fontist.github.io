@@ -24,8 +24,6 @@ exclude = [
   ".jekyll-cache",
   # Exclude malformed escaped URLs in blog posts
   "%5C%5C%5C%22*",
-  # Exclude broken external link
-  "https://www\\.tiro\\.com/.*",
   # Exclude blog post links without .html extension (VitePress clean URLs)
   "/blog/2022-02-11-introducing-fontist$",
   "/blog/2022-02-11-macos-fonts$",
