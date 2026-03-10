@@ -1,6 +1,15 @@
+---
+title: "Introducing Fontist: the extensible font manager"
+description: Fontist is a simple, functional and extensible font installer that works cross-platform.
+authors:
+  - Ronald Tse
+  - Alexey Morozov
+date: 2022-02-11
+---
+
 # Introducing Fontist: the extensible font manager
 
-<sup>By **Ronald Tse** and **Alexey Morozov** on 11 Feb 2022</sup>
+<BlogByline />
 
 ## Purpose
 

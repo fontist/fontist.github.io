@@ -41,8 +41,13 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       {
-        text: "Docs",
+        text: "Fontist Docs",
         link: "https://fontist.org/fontist/",
+        target: "_self",
+      },
+      {
+        text: "Fontisan Docs",
+        link: "https://fontist.org/fontisan/",
         target: "_self",
       },
       {
@@ -51,6 +56,13 @@ export default defineConfig({
         target: "_self",
       },
       { text: "Blog", link: "/blog/" },
+      {
+        text: "Integrations",
+        items: [
+          { text: "GitHub Actions", link: "/integrations/github-actions/" }
+        ]
+      },
+      { text: "About", link: "/about/" },
     ],
 
     // sidebar: {},

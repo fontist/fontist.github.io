@@ -1,6 +1,15 @@
+---
+title: Installing Microsoft Office fonts
+description: Fontist now supports installing fonts from Microsoft Office packages.
+authors:
+  - Ronald Tse
+  - Alexey Morozov
+date: 2024-01-23
+---
+
 # Installing Microsoft Office fonts
 
-<sup>By **Ronald Tse** and **Alexey Morozov** on 23 Jan 2024</sup>
+<BlogByline />
 
 Fontist now supports installing fonts from Microsoft Office packages.
 

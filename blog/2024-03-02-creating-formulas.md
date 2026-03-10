@@ -1,6 +1,15 @@
+---
+title: Creating custom Fontist font formulas
+description: Easily create Fontist font formulas from font packages hosted online.
+authors:
+  - Ronald Tse
+  - Alexey Morozov
+date: 2024-03-02
+---
+
 # Creating custom Fontist font formulas
 
-<sup>By **Ronald Tse** and **Alexey Morozov** on 2 March 2024</sup>
+<BlogByline />
 
 Easily create Fontist font formulas from font packages hosted online.
 

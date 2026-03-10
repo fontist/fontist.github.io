@@ -1,7 +1,15 @@
+---
+title: Installing macOS-specific add-on fonts
+description: Learn how to install macOS-specific add-on fonts via the fontist command-line interface.
+authors:
+  - Ronald Tse
+  - Alexey Morozov
+date: 2022-02-11
+---
+
 # Installing macOS-specific add-on fonts
 
-<sup>By **Ronald Tse** and **Alexey Morozov** on 11 Feb 2022</sup>
-<sup>Last updated 02 Mar 2024</sup>
+<BlogByline />
 
 Fontist now allows installing macOS-specific add-on fonts via the `fontist`
 command-line interface.
