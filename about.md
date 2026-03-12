@@ -53,22 +53,40 @@ While Fontist handles the logistics of getting fonts onto systems, Fontisan prov
 
 ### The Logo
 
+The Fontist logo embodies the intersection of typography, code, and utility.
+
 <div class="logo-breakdown">
   <div class="logo-display">
     <img src="/logo.svg" alt="Fontist Logo" class="logo-image" />
   </div>
   <div class="logo-explanation">
 
-The Fontist logo embodies the intersection of typography, code, and utility:
+#### **The Keycap Shape**
 
-**The Keycap Shape**
-The logo is shaped like a keyboard keycap because typing is the primary way humans interact with fonts. Every document, every line of code, every message—typed.
+The logo contains a keyboard keycap because typing is the primary way humans
+interact with fonts. Every **keystroke**, every message typed, every document, every
+line of code, imbues human intent into digital form. The keycap symbolizes this
+fundamental connection between human expression and digital typography.
 
-**The Ruby "f"**
-The central **"f"** is rendered in [STIX Two Math](https://www.stixfonts.org/), a mathematical typeface. It represents the abstract beauty of computer fonts—the elegance that emerges when typography meets computation. The ruby color reflects our passion and the precious value we place on open-source fonts.
+#### **The Ruby "f"**
 
-**The Brackets "[..]"**
-Surrounding the "f" are brackets rendered in [Source Code](https://fonts.google.com/specimen/Source+Code+Pro), a monospace font. These represent **code**—the enabler. They're in gray because while they don't demand attention, they quietly make everything possible. Code is the infrastructure upon which the beauty of fonts is delivered.
+The central **"f"** is rendered in [STIX Two Math](https://www.stixfonts.org/),
+a mathematical typeface. It represents the **abstract** beauty of computer fonts
+-- the abstract shapes of typography defined as mathematical curves. The
+elegance that emerges when typography meets computation. The ruby color reflects
+our passion and the precious value we place on open-source fonts, as well as the
+fact that Fontist was first created on Ruby, the object-oriented interpretive
+language.
+
+#### **The Brackets "[..]"**
+
+Surrounding the "f" are brackets rendered in [Source Code](https://fonts.google.com/specimen/Source+Code+Pro),
+a monospace font.
+These represent **code** -- the enabler. They're in gray because while they
+don't demand attention, they quietly make everything possible. The brackets are
+in monospace font because Fontist is made for code and is code itself to support
+the usage of fonts. Code is the infrastructure upon which the beauty of fonts is
+delivered.
 
   </div>
 </div>
