@@ -41,12 +41,12 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       {
-        text: "Fontist Docs",
+        text: "Fontist",
         link: "https://www.fontist.org/fontist/",
         target: "_self",
       },
       {
-        text: "Fontisan Docs",
+        text: "Fontisan",
         link: "https://www.fontist.org/fontisan/",
         target: "_self",
       },
