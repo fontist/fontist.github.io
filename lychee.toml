@@ -29,4 +29,6 @@ exclude = [
   "/blog/2022-02-11-macos-fonts$",
   "/blog/2024-01-23-office-fonts$",
   "/blog/2024-03-02-creating-formulas$",
+  # Exclude placeholder URLs in code examples
+  "fonts\\.gstatic\\.com/s/robotoflex/v30/HASH",
 ]
