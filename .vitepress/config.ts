@@ -12,6 +12,11 @@ export default defineConfig({
 
   lastUpdated: true,
 
+  // https://vitepress.dev/reference/site-config#sitemap
+  sitemap: {
+    hostname: "https://www.fontist.org",
+  },
+
   // https://github.com/vuejs/vitepress/issues/3508
   base: process.env.BASE_PATH,
 
@@ -30,7 +35,7 @@ export default defineConfig({
         content: "Install openly-licensed fonts on Windows, Linux and Mac!",
       },
     ],
-    ["meta", { property: "og:image", content: "/logo-full.svg" }],
+    ["meta", { property: "og:image", content: "https://www.fontist.org/logo-full.svg" }],
     ["meta", { name: "twitter:card", content: "summary_large_image" }],
   ],
 
