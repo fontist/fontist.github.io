@@ -1,0 +1,64 @@
+name: codeql
+
+# CodeQL security analysis for this repository.
+#
+# Scope: GitHub Actions workflows only (the `actions` language).
+#
+# This is a static VitePress site: the only JS/TS is a handful of small
+# config/data files plus Vue SFCs, none of which carry security-sensitive
+# logic. CodeQL's JavaScript extractor cannot usefully analyze Vue SFCs and
+# repeatedly failed under GitHub's default-setup autobuild ("CodeQL could not
+# process any code written in JavaScript/TypeScript"). The genuinely
+# security-relevant surface here is the workflow files themselves
+# (third-party actions, secrets, injection), which the `actions` language
+# covers reliably. Dependency vulnerabilities are handled by Dependabot.
+#
+# Replaces the previous GitHub-managed default setup, which was disabled
+# because it included the always-failing javascript-typescript analysis.
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - README.md
+      - CONTRIBUTING.md
+      - LICENSE
+      - .gitignore
+  pull_request:
+  schedule:
+    - cron: "23 8 * * 4"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: actions
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
