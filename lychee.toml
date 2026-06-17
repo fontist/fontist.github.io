@@ -31,4 +31,8 @@ exclude = [
   "/blog/2024-03-02-creating-formulas$",
   # Exclude placeholder URLs in code examples
   "fonts\\.gstatic\\.com/s/robotoflex/v30/HASH",
+  # og:image must be an absolute URL (social crawlers ignore relative ones),
+  # so the new og-image.png is referenced as https://www.fontist.org/og-image.png
+  # before it has deployed. Exclude it from live-URL verification.
+  "https?://(www\\.)?fontist\\.org/og-image\\.png",
 ]
