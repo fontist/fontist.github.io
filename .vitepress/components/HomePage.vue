@@ -198,6 +198,14 @@ const icons = {
 
 .hero-content {
   max-width: 540px;
+  min-width: 0;
+}
+
+.hero-visual {
+  /* Allow the grid track to shrink below its min-content so the unwrapping
+     <pre> code line below can't force the hero (and page) wider than the
+     viewport. See https://github.com/fontist/fontist.github.io/issues/28 */
+  min-width: 0;
 }
 
 .hero-badge {
@@ -314,6 +322,9 @@ const icons = {
   font-size: 0.875rem;
   line-height: 1.7;
   color: rgba(255, 255, 255, 0.9);
+  /* <pre> never wraps; let long commands scroll inside the box instead of
+     forcing the hero column (and the page) wider. See issue #28. */
+  overflow-x: auto;
 }
 
 .code-content code {
