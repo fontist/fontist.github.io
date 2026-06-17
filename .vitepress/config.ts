@@ -1,4 +1,18 @@
-import { defineConfig } from "vitepress";
+import { defineConfig, type HeadConfig } from "vitepress";
+
+const SITE_ORIGIN = "https://www.fontist.org";
+const DEFAULT_DESCRIPTION =
+  "Install openly-licensed fonts on Windows, Linux and Mac!";
+const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/og-image.png`;
+
+// Map a page's source path to its canonical public URL, following VitePress
+// clean URLs (no .html; index.md becomes the directory root).
+function pathToUrl(relativePath: string): string {
+  const base = relativePath.replace(/\.md$/, "").replace(/\\/g, "/");
+  if (base === "index") return `${SITE_ORIGIN}/`;
+  if (base.endsWith("/index")) return `${SITE_ORIGIN}/${base.slice(0, -6)}/`;
+  return `${SITE_ORIGIN}/${base}`;
+}
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -14,7 +28,7 @@ export default defineConfig({
 
   // https://vitepress.dev/reference/site-config#sitemap
   sitemap: {
-    hostname: "https://www.fontist.org",
+    hostname: SITE_ORIGIN,
   },
 
   // https://github.com/vuejs/vitepress/issues/3508
@@ -27,17 +41,59 @@ export default defineConfig({
     ["link", { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" }],
     ["link", { rel: "manifest", href: "/site.webmanifest" }],
     ["meta", { property: "og:type", content: "website" }],
-    ["meta", { property: "og:title", content: "Fontist" }],
-    [
-      "meta",
-      {
-        property: "og:description",
-        content: "Install openly-licensed fonts on Windows, Linux and Mac!",
-      },
-    ],
-    ["meta", { property: "og:image", content: "https://www.fontist.org/logo-full.svg" }],
-    ["meta", { name: "twitter:card", content: "summary_large_image" }],
   ],
+
+  // Per-page og:* and twitter:* tags are derived from each page's frontmatter
+  // title/description, with an absolute canonical URL and the site OG image.
+  // Blog posts additionally get BlogPosting JSON-LD structured data.
+  // https://vitepress.dev/reference/site-config#transformhead
+  transformHead(ctx) {
+    const { pageData } = ctx;
+    const url = pathToUrl(pageData.relativePath);
+    const title = pageData.title || "Fontist";
+    const description = pageData.description || DEFAULT_DESCRIPTION;
+    const image = pageData.frontmatter.image || DEFAULT_OG_IMAGE;
+
+    const tags: HeadConfig[] = [
+      ["meta", { property: "og:title", content: title }],
+      ["meta", { property: "og:description", content: description }],
+      ["meta", { property: "og:url", content: url }],
+      ["meta", { property: "og:image", content: image }],
+      ["meta", { name: "twitter:card", content: "summary_large_image" }],
+      ["meta", { name: "twitter:title", content: title }],
+      ["meta", { name: "twitter:description", content: description }],
+      ["meta", { name: "twitter:image", content: image }],
+    ];
+
+    if (
+      pageData.relativePath.startsWith("blog/") &&
+      pageData.relativePath !== "blog/index.md"
+    ) {
+      const dateInSlug = pageData.relativePath.match(/^blog\/(\d{4}-\d{2}-\d{2})-/);
+      const datePublished = pageData.frontmatter.date || dateInSlug?.[1];
+      const authorNames = pageData.frontmatter.authors;
+      const author = Array.isArray(authorNames)
+        ? authorNames.map((name: string) => ({ "@type": "Person", name }))
+        : [{ "@type": "Organization", name: "Fontist" }];
+
+      tags.push([
+        "script",
+        { type: "application/ld+json" },
+        JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          headline: title,
+          description,
+          ...(datePublished ? { datePublished } : {}),
+          author,
+          image,
+          mainEntityOfPage: { "@type": "WebPage", "@id": url },
+        }),
+      ]);
+    }
+
+    return tags;
+  },
 
   themeConfig: {
     logo: "/logo-full.svg",
