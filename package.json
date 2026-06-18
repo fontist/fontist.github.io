@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "vitepress dev",
-    "build": "vitepress build",
+    "build": "vitepress build && node scripts/dirify-urls.mjs",
     "preview": "vitepress preview",
     "format": "prettier -w .",
     "check:subsite-links": "node scripts/check-subsite-links.mjs"
