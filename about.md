@@ -232,32 +232,20 @@ Ready to use Fontist in your automated workflows?
 </div>
 
 <style>
+/* About page — specimen-aligned */
 .about-hero {
-  margin: 2rem 0;
-  padding: 2rem;
-  background: var(--vp-c-bg-soft);
-  border-radius: 12px;
-  border-left: 4px solid var(--vp-c-brand-1);
+  margin: 1rem 0 3rem;
+  padding: 0 0 2rem;
+  border-bottom: 1px solid var(--spec-rule);
 }
-
 .about-tagline {
-  font-size: 1.25rem;
-  font-weight: 500;
-  color: var(--vp-c-text-1);
-  margin: 0;
+  font-family: "Fraunces", Georgia, serif;
   font-style: italic;
-}
-
-.vp-doc h2 {
-  margin-top: 2.5rem;
-}
-
-.vp-doc h3 {
-  margin-top: 1.5rem;
-}
-
-.vp-doc code {
-  background: var(--vp-c-bg-soft);
+  font-weight: 380;
+  font-size: 1.4rem;
+  line-height: 1.4;
+  color: var(--spec-ink);
+  margin: 0;
 }
 
 /* Logo Breakdown */
@@ -267,152 +255,91 @@ Ready to use Fontist in your automated workflows?
   gap: 2.5rem;
   align-items: center;
   margin: 2rem 0;
-  padding: 2rem;
-  background: var(--vp-c-bg-soft);
-  border-radius: 12px;
+  padding: 2rem 0;
+  border-top: 1px solid var(--spec-rule);
+  border-bottom: 1px solid var(--spec-rule);
 }
-
-.logo-display {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.logo-image {
-  width: 140px;
-  height: auto;
-}
-
-.logo-explanation {
-  font-size: 0.9375rem;
-  line-height: 1.7;
-  color: var(--vp-c-text-2);
-}
-
-.logo-explanation p {
-  margin: 1rem 0;
-}
-
-.logo-explanation strong {
-  color: var(--vp-c-text-1);
-}
+.logo-display { display: flex; justify-content: center; align-items: center; }
+.logo-image { width: 140px; height: auto; }
+.logo-explanation { font-size: 15px; line-height: 1.65; color: var(--spec-ink-soft); }
+.logo-explanation p { margin: 1rem 0; }
+.logo-explanation strong { color: var(--spec-ink); }
 
 /* Mission Statement */
 .mission-statement {
-  padding: 1.5rem 2rem;
-  background: linear-gradient(135deg, var(--vp-c-brand-soft) 0%, transparent 100%);
-  border-left: 4px solid var(--vp-c-brand-1);
-  border-radius: 0 12px 12px 0;
-  font-size: 1.125rem;
-  font-weight: 500;
-  color: var(--vp-c-text-1);
-  margin: 1.5rem 0;
+  padding: 1.5rem 0 1.5rem 1.5rem;
+  border-left: 3px solid var(--spec-rose);
+  font-family: "Fraunces", Georgia, serif;
+  font-style: italic;
+  font-weight: 380;
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: var(--spec-ink);
+  margin: 2rem 0;
 }
 
 /* Use Cases Grid */
 .use-cases-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin: 1.5rem 0;
+  gap: 1px;
+  margin: 2rem 0;
+  background: var(--spec-rule);
+  border: 1px solid var(--spec-rule);
 }
-
 .use-case {
-  padding: 1.25rem;
-  background: var(--vp-c-bg-soft);
-  border-radius: 10px;
-  border: 1px solid transparent;
-  transition: all 0.2s ease;
+  padding: 1.5rem;
+  background: var(--spec-paper);
+  transition: background 0.2s ease;
 }
-
-.use-case:hover {
-  border-color: var(--vp-c-brand-1);
-  transform: translateY(-2px);
-}
-
-.use-case-icon {
-  font-size: 1.5rem;
-  margin-bottom: 0.75rem;
-}
-
+.use-case:hover { background: var(--spec-paper-deep); }
+.use-case-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
 .use-case h4 {
-  margin: 0 0 0.5rem 0;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--vp-c-text-1);
+  margin: 0 0 0.5rem;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 400;
+  font-size: 1.05rem;
+  color: var(--spec-ink);
 }
-
-.use-case p {
-  margin: 0;
-  font-size: 0.8125rem;
-  color: var(--vp-c-text-2);
-  line-height: 1.5;
-}
+.use-case p { margin: 0; font-size: 13px; color: var(--spec-ink-soft); line-height: 1.5; }
 
 /* Get Started Links */
 .get-started-links {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin: 1.5rem 0;
+  gap: 1px;
+  margin: 2rem 0;
+  background: var(--spec-rule);
+  border: 1px solid var(--spec-rule);
 }
-
 .gs-link {
   display: flex;
   flex-direction: column;
-  padding: 1.25rem 1.5rem;
-  background: var(--vp-c-bg-soft);
-  border-radius: 10px;
-  border: 1px solid transparent;
+  padding: 1.5rem;
+  background: var(--spec-paper);
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease;
 }
-
-.gs-link:hover {
-  border-color: var(--vp-c-brand-1);
-  transform: translateY(-2px);
-}
-
-.gs-link-primary {
-  background: var(--vp-c-brand-1);
-}
-
+.gs-link:hover { background: var(--spec-paper-deep); }
+.gs-link-primary { background: var(--spec-rose); }
+.gs-link-primary:hover { background: var(--spec-rose); }
 .gs-link-primary .gs-title,
-.gs-link-primary .gs-desc {
-  color: white;
-}
-
+.gs-link-primary .gs-desc { color: #fff; }
 .gs-title {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--vp-c-text-1);
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 400;
+  font-size: 1.05rem;
+  color: var(--spec-ink);
   margin-bottom: 0.25rem;
 }
+.gs-desc { font-size: 13px; color: var(--spec-ink-soft); }
 
-.gs-desc {
-  font-size: 0.8125rem;
-  color: var(--vp-c-text-2);
-}
-
-/* Responsive */
 @media (max-width: 768px) {
-  .logo-breakdown {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-
-  .use-cases-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .get-started-links {
-    grid-template-columns: 1fr;
-  }
+  .logo-breakdown { grid-template-columns: 1fr; text-align: center; }
+  .use-cases-grid { grid-template-columns: repeat(2, 1fr); }
+  .get-started-links { grid-template-columns: 1fr; }
 }
-
 @media (max-width: 480px) {
-  .use-cases-grid {
-    grid-template-columns: 1fr;
-  }
+  .use-cases-grid { grid-template-columns: 1fr; }
 }
 </style>
