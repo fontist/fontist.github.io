@@ -1,662 +1,575 @@
 <script setup lang="ts">
-import { ref } from "vue";
+// Type Specimen homepage.
+// The page is treated as a printed type specimen: typography is the design
+// engine, the cream/ink palette is "paper", and the rose is the single
+// "printer's ink" accent. Palette + dark-mode live in theme/style.css
+// under `.specimen-home` (the pageClass set in index.md frontmatter).
 
 const products = [
   {
-    id: "fontist",
-    title: "Fontist",
-    tagline: "Install & Manage Fonts",
-    description:
-      "A cross-platform font installer and manager. Install openly-licensed fonts on Windows, Linux, and macOS with a single command.",
-    icon: "download",
+    num: "01",
+    name: "Fontist",
+    tag: "Install & Manage",
+    role: "A cross-platform font installer.",
+    spec: "Win · Linux · macOS · CLI & Ruby API · native OS integration.",
     link: "https://www.fontist.org/fontist/",
-    cta: "View Documentation",
+    cta: "Open the documentation",
   },
   {
-    id: "fontisan",
-    title: "Fontisan",
-    tagline: "Build & Convert Fonts",
-    description:
-      "Manipulate, convert, and build fonts programmatically. Perfect for font workflows in automated pipelines.",
-    icon: "settings",
+    num: "02",
+    name: "Fontisan",
+    tag: "Build & Convert",
+    role: "Shape, convert, and build fonts.",
+    spec: "Pure Ruby · TTF/OTF/WOFF2 · variable · Type 1 · collections.",
     link: "https://www.fontist.org/fontisan/",
-    cta: "View Documentation",
+    cta: "Open the documentation",
   },
   {
-    id: "formulas",
-    title: "Fontist Formulas",
-    tagline: "Open Font Registry",
-    description:
-      "A searchable index of 2,000+ font formulas for automated installation of openly-licensed fonts from across the internet.",
-    icon: "package",
+    num: "03",
+    name: "Formulas",
+    tag: "The Registry",
+    role: "A searchable index of formulae.",
+    spec: "2,175 formulae · 14,500 styles · openly-licensed · auto-updated.",
     link: "https://www.fontist.org/formulas/",
-    cta: "Browse Formulas",
+    cta: "Browse the registry",
   },
 ];
-
-const hoveredCard = ref<string | null>(null);
-
-const icons = {
-  download: `<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>`,
-  settings: `<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>`,
-  package: `<line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>`,
-  edit: `<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>`,
-};
 </script>
 
 <template>
-  <div class="home-page">
-    <!-- Hero Section -->
+  <div class="specimen">
+    <!-- Masthead -->
+    <div class="masthead">
+      <span class="l">Fontist <span class="dot">●</span></span>
+      <span class="c">A Specimen for Cross-Platform Font Management</span>
+      <span class="r">Vol. 01 / MMXXVI</span>
+    </div>
+
+    <!-- Hero -->
     <section class="hero">
-      <div class="hero-content">
-        <div class="hero-badge">
-          <span>Cross-Platform Font Management</span>
+      <div class="ghost-numeral" aria-hidden="true">01</div>
+      <div class="wrap">
+        <div class="meta-row">
+          <span><b>Specimen 01</b> — The Hero</span>
+          <span>Set in <b>Fraunces</b>, variable opsz 9–144</span>
         </div>
-        <h1 class="hero-title">
-          Fonts for the
-          <span class="highlight">Modern Workflow</span>
+
+        <h1>
+          <span class="line">
+            <span class="word" style="animation-delay:.05s">Fonts</span>
+            <span class="word" style="animation-delay:.12s">for</span>
+            <span class="word" style="animation-delay:.19s">the</span>
+          </span>
+          <span class="line">
+            <em><span class="word" style="animation-delay:.26s">modern</span></em>
+            <span class="word" style="animation-delay:.33s">workflow.</span>
+          </span>
         </h1>
-        <p class="hero-description">
-          Install, manage, and build fonts programmatically across Windows, Linux, and macOS.
-          Designed for automated systems, CI/CD pipelines, and digital publishing.
-        </p>
-        <div class="hero-actions">
-          <!-- target="_self" is mandatory on links to the separately-deployed
-               subsites (/fontist/, /fontisan/, /formulas/): without a target
-               attribute, VitePress's SPA router intercepts same-origin clicks
-               and renders its own 404. Enforced by scripts/check-subsite-links.mjs. -->
-          <a href="https://www.fontist.org/fontist/" target="_self" class="btn btn-primary">
-            Get Started
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </a>
-          <a href="/about/" class="btn btn-secondary">Learn More</a>
-        </div>
-      </div>
-      <div class="hero-visual">
-        <div class="code-preview">
-          <div class="code-header">
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="code-title">Terminal</span>
+
+        <div class="below">
+          <div>
+            <p class="spec">
+              Install <span class="pip">·</span> Manage <span class="pip">·</span> Build
+              <span class="pip">—</span> Windows <span class="pip">·</span> Linux
+              <span class="pip">·</span> macOS<br />
+              Openly-licensed. Programmatic. Built for automated publishing &amp; CI/CD.
+            </p>
+            <div class="actions">
+              <a class="btn-ink" href="https://www.fontist.org/fontist/" target="_self" rel="noreferrer">
+                Begin →
+              </a>
+              <a class="btn-ghost" href="https://www.fontist.org/fontist/" target="_self" rel="noreferrer">
+                Read the documentation
+              </a>
+            </div>
           </div>
-          <pre class="code-content"><code><span class="prompt">$</span> gem install fontist fontisan
-<span class="prompt">$</span> fontist install "Roboto"
-<span class="success">✓</span> Fonts installed at ~/.fontist/fonts/
-<span class="prompt">$</span> fontisan convert --to woff2 ~/.fontist/fonts/Roboto-Regular.ttf
-<span class="success">✓</span> Created: Roboto-Regular.woff2</code></pre>
+
+          <div class="plate" aria-label="Terminal specimen">
+            <div><span class="prompt">$</span> gem install fontist fontisan</div>
+            <div><span class="prompt">$</span> fontist install "Roboto"</div>
+            <div>&nbsp;&nbsp;<span class="ok">✓</span> <span class="out">installed → ~/.fontist/fonts/</span></div>
+            <div>
+              <span class="prompt">$</span> fontisan convert --to woff2 \<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;~/.fontist/fonts/Roboto-Regular.ttf
+            </div>
+            <div>&nbsp;&nbsp;<span class="ok">✓</span> <span class="out">created Roboto-Regular.woff2</span></div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Products Section -->
-    <section class="products">
-      <div class="section-header">
-        <h2>Our Products</h2>
-        <p>Everything you need for font management in automated environments</p>
-      </div>
-
-      <div class="products-grid">
-        <article
-          v-for="product in products"
-          :key="product.id"
-          class="product-card"
-          :class="{ 'is-hovered': hoveredCard === product.id }"
-          @mouseenter="hoveredCard = product.id"
-          @mouseleave="hoveredCard = null"
-        >
-          <a :href="product.link" target="_self" class="card-link">
-            <div class="card-icon">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" v-html="icons[product.icon as keyof typeof icons]" />
-            </div>
-            <div class="card-body">
-              <span class="card-tagline">{{ product.tagline }}</span>
-              <h3 class="card-title">{{ product.title }}</h3>
-              <p class="card-description">{{ product.description }}</p>
-            </div>
-            <div class="card-footer">
-              <span class="card-cta">
-                {{ product.cta }}
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
-              </span>
-            </div>
-          </a>
-        </article>
-      </div>
-    </section>
-
-    <!-- Stats Section -->
-    <section class="stats">
-      <div class="stat-item">
-        <span class="stat-value">2,175+</span>
-        <span class="stat-label">Font Formulas</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-value">14,500+</span>
-        <span class="stat-label">Font Styles</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-value">Est. 2020</span>
-        <span class="stat-label">Serving Open Source</span>
-      </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="features">
-      <div class="feature">
-        <div class="feature-icon">🖥️</div>
-        <h3>Native OS Integration</h3>
-        <p>Deep integration with <strong>macOS</strong>, <strong>Linux</strong>, and <strong>Windows</strong>. Access system fonts, supplementary fonts, and install directly into your operating system.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">⚡</div>
-        <h3>Flexible Font Management</h3>
-        <p>Choose integrated or separate font management. Let Fontist handle installation, or maintain your own font directories with full control.</p>
-      </div>
-    </section>
-
-    <!-- Why Fontist Section -->
-    <section class="why-fontist">
-      <div class="why-content">
-        <div class="why-logo">
-          <img src="/logo.svg" alt="Fontist Logo" />
-        </div>
-        <div class="why-text">
-          <h2>Why Fontist?</h2>
-          <p>
-            Born from the need for cross-platform font management in automated publishing workflows,
-            Fontist has become the de-facto solution for installing open-source fonts in CI/CD pipelines
-            and digital publishing systems.
+    <!-- Products -->
+    <section class="section products">
+      <div class="wrap">
+        <header class="head">
+          <div>
+            <p class="eyebrow">§ The Instrumentarium</p>
+            <h2>Three instruments<br />for the <em>font&nbsp;engineer.</em></h2>
+          </div>
+          <p class="lede">
+            A small family of tools that install, shape, and index openly-licensed type —
+            the same way, on every platform, in every pipeline.
           </p>
-          <a href="/about/" class="why-link">
-            Learn about our story, mission, and the meaning behind our logo
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </a>
+        </header>
+
+        <div v-for="p in products" :key="p.num" class="plate-row">
+          <div class="num">№ {{ p.num }}</div>
+          <h3 class="name">
+            {{ p.name }}<span class="tag">{{ p.tag }}</span>
+          </h3>
+          <div class="side">
+            <p class="role">{{ p.role }}</p>
+            <p class="spec-line">{{ p.spec }}</p>
+            <a :href="p.link" target="_self" rel="noreferrer">{{ p.cta }} →</a>
+          </div>
         </div>
       </div>
     </section>
+
+    <!-- Colophon stats -->
+    <section class="section colophon divider">
+      <div class="wrap">
+        <p>
+          Indexed in <span class="n">2,175</span> formulae, spanning
+          <span class="n">14,500</span> styles, since <span class="n">MMXX.</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- Why / story -->
+    <section class="section story divider">
+      <div class="wrap story-grid">
+        <div>
+          <p class="label">Why Fontist</p>
+        </div>
+        <div class="body">
+          <p>
+            Born from the need for cross-platform font management in automated publishing,
+            Fontist has become the quiet default for installing openly-licensed type in
+            CI/CD pipelines, document engines, and digital presses — without vendoring
+            fonts, without manual steps, without surprises across Windows, Linux, and macOS.
+          </p>
+          <p>
+            The instruments are small and discrete by design: one to install, one to shape,
+            one to index. Together they treat type the way good presses always have — as
+            material to be sourced, prepared, and set with intention.
+          </p>
+          <p class="signoff">
+            → <a href="/about/">Read the story behind the project</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer colophon -->
+    <footer class="foot">
+      <span>Set in <em>Fraunces</em>, <em>IBM&nbsp;Plex</em>, &amp; <em>JetBrains&nbsp;Mono</em>.</span>
+      <span class="r">Fontist · a Ribose project · © MMXXVI</span>
+    </footer>
   </div>
 </template>
 
 <style scoped>
-.home-page {
-  max-width: 1200px;
+/* ── Layout primitives ────────────────────────────────────────── */
+.specimen {
+  font-family: "IBM Plex Sans", -apple-system, system-ui, sans-serif;
+  color: var(--spec-ink);
+  background-color: var(--spec-paper);
+  overflow-x: hidden;
+}
+.wrap {
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 clamp(20px, 4vw, 56px);
+}
+.section {
+  padding: clamp(64px, 11vw, 140px) 0;
+}
+.divider {
+  border-top: 1px solid var(--spec-rule);
 }
 
-/* Hero Section */
-.hero {
+/* paper grain overlay */
+.specimen::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  mix-blend-mode: multiply;
+}
+
+/* ── Masthead ─────────────────────────────────────────────────── */
+.masthead {
+  border-bottom: 1px solid var(--spec-rule);
+  padding: 14px clamp(20px, 4vw, 56px);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--spec-ink-soft);
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 24px;
   align-items: center;
-  padding: 4rem 0 5rem;
+}
+.masthead .l { justify-self: start; }
+.masthead .c { justify-self: center; color: var(--spec-ink); }
+.masthead .r { justify-self: end; }
+.masthead .dot { color: var(--spec-rose); font-weight: 500; }
+
+/* ── Shared bits ──────────────────────────────────────────────── */
+.eyebrow {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--spec-rose);
+  margin: 0 0 18px;
+}
+.lede {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 350;
+  font-size: clamp(20px, 2.1vw, 27px);
+  line-height: 1.4;
+  color: var(--spec-ink-soft);
+  max-width: 38ch;
+  margin: 0;
 }
 
-.hero-content {
-  max-width: 540px;
-  min-width: 0;
+/* ── Hero ─────────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  padding-top: clamp(40px, 7vw, 96px);
+  padding-bottom: clamp(56px, 9vw, 120px);
+  border-bottom: 1px solid var(--spec-rule);
+  overflow: hidden;
 }
-
-.hero-visual {
-  /* Allow the grid track to shrink below its min-content so the unwrapping
-     <pre> code line below can't force the hero (and page) wider than the
-     viewport. See https://github.com/fontist/fontist.github.io/issues/28 */
-  min-width: 0;
-}
-
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.5rem 1rem;
-  background: var(--vp-c-brand-soft);
-  border-radius: 999px;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: var(--vp-c-brand-1);
-  margin-bottom: 1.5rem;
-}
-
-.hero-title {
-  font-size: 3.25rem;
-  font-weight: 700;
-  line-height: 1.1;
-  margin: 0 0 1.5rem 0;
-  color: var(--vp-c-text-1);
-}
-
-.hero-title .highlight {
-  background: linear-gradient(120deg, var(--vp-c-brand-1) 30%, var(--fontist-rose-light, #d4718a));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.hero-description {
-  font-size: 1.125rem;
-  line-height: 1.7;
-  color: var(--vp-c-text-2);
-  margin: 0 0 2rem 0;
-}
-
-.hero-actions {
+.hero .meta-row {
   display: flex;
-  gap: 1rem;
+  justify-content: space-between;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--spec-mute);
+  margin-bottom: clamp(28px, 5vw, 64px);
+}
+.hero .meta-row b { color: var(--spec-ink); font-weight: 500; }
+
+.hero h1 {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 340;
+  font-variation-settings: "opsz" 144;
+  font-size: clamp(56px, 13.5vw, 196px);
+  line-height: 0.92;
+  letter-spacing: -0.025em;
+  margin: 0;
+  color: var(--spec-ink);
+}
+.hero h1 .line { display: block; overflow: hidden; }
+.hero h1 .word {
+  display: inline-block;
+  transform: translateY(110%);
+  animation: specimen-set 1s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+.hero h1 em {
+  font-style: italic;
+  font-weight: 360;
+  color: var(--spec-rose);
+  font-variation-settings: "opsz" 144, "wght" 380;
+}
+@keyframes specimen-set {
+  to { transform: translateY(0); }
+}
+
+.hero .below {
+  display: grid;
+  grid-template-columns: 1.4fr 0.9fr;
+  gap: clamp(32px, 6vw, 88px);
+  align-items: end;
+  margin-top: clamp(40px, 6vw, 80px);
+}
+.hero .spec {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--spec-ink-soft);
+  letter-spacing: 0.01em;
+  margin: 0;
+}
+.hero .spec .pip { color: var(--spec-rose); padding: 0 0.35em; }
+.hero .actions {
+  display: flex;
+  gap: 26px;
+  align-items: baseline;
+  margin-top: 28px;
   flex-wrap: wrap;
 }
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.875rem 1.5rem;
-  border-radius: 8px;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.btn-primary {
-  background: var(--vp-c-brand-1);
-  color: white;
-}
-
-.btn-primary:hover {
-  background: var(--vp-button-brand-hover-bg, #a3435a);
-  transform: translateY(-1px);
-}
-
-.btn-secondary {
-  background: var(--vp-c-bg-soft);
-  color: var(--vp-c-text-1);
-  border: 1px solid var(--vp-c-divider);
-}
-
-.btn-secondary:hover {
-  border-color: var(--vp-c-brand-1);
-  color: var(--vp-c-brand-1);
-}
-
-/* Code Preview */
-.code-preview {
-  background: var(--fontist-dark);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-}
-
-.code-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.875rem 1rem;
-  background: rgba(0, 0, 0, 0.2);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.dot:nth-child(1) { background: #ff5f57; }
-.dot:nth-child(2) { background: #ffbd2e; }
-.dot:nth-child(3) { background: #28ca42; }
-
-.code-title {
-  margin-left: auto;
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.code-content {
-  padding: 1.25rem 1.5rem;
-  margin: 0;
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  font-size: 0.875rem;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.9);
-  /* <pre> never wraps; let long commands scroll inside the box instead of
-     forcing the hero column (and the page) wider. See issue #28. */
-  overflow-x: auto;
-}
-
-.code-content code {
-  background: none;
-  padding: 0;
-}
-
-.prompt { color: var(--vp-c-brand-1); }
-.success { color: #28ca42; }
-.path { color: rgba(255, 255, 255, 0.6); }
-
-/* Products Section */
-.products {
-  padding: 4rem 0;
-}
-
-.section-header {
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
-.section-header h2 {
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0 0 0.75rem 0;
-  color: var(--vp-c-text-1);
-}
-
-.section-header p {
-  font-size: 1.0625rem;
-  color: var(--vp-c-text-2);
-  margin: 0;
-}
-
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-}
-
-.product-card {
-  position: relative;
-  background: var(--vp-c-bg-soft);
-  border-radius: 16px;
-  border: 1px solid transparent;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.product-card:hover,
-.product-card.is-hovered {
-  background: var(--vp-c-bg);
-  border-color: var(--vp-c-brand-1);
-  transform: translateY(-4px);
-  box-shadow:
-    0 8px 16px -4px rgba(0, 0, 0, 0.08),
-    0 16px 32px -8px rgba(191, 78, 106, 0.1);
-}
-
-.card-link {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: 2rem;
-  text-decoration: none;
-  color: inherit;
-}
-
-.card-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  background: var(--vp-c-brand-soft);
-  border-radius: 12px;
-  color: var(--vp-c-brand-1);
-  margin-bottom: 1.25rem;
-  transition: all 0.3s ease;
-}
-
-.product-card:hover .card-icon {
-  background: var(--vp-c-brand-1);
-  color: white;
-}
-
-.card-body {
-  flex: 1;
-}
-
-.card-tagline {
-  display: block;
-  font-size: 0.75rem;
-  font-weight: 600;
+.btn-ink {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--vp-c-brand-1);
-  margin-bottom: 0.5rem;
-}
-
-.card-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0 0 0.75rem 0;
-  color: var(--vp-c-text-1);
-}
-
-.card-description {
-  font-size: 0.9375rem;
-  line-height: 1.6;
-  color: var(--vp-c-text-2);
-  margin: 0;
-}
-
-.card-footer {
-  margin-top: 1.5rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--vp-c-divider);
-}
-
-.card-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--vp-c-brand-1);
-}
-
-.card-cta svg {
-  transition: transform 0.3s ease;
-}
-
-.product-card:hover .card-cta svg {
-  transform: translateX(4px);
-}
-
-/* Stats Section */
-.stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  padding: 3rem 0;
-  border-top: 1px solid var(--vp-c-divider);
-  margin-top: 2rem;
-}
-
-.stat-item {
-  text-align: center;
-}
-
-.stat-value {
-  display: block;
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--vp-c-brand-1);
-  margin-bottom: 0.25rem;
-}
-
-.stat-label {
-  font-size: 0.875rem;
-  color: var(--vp-c-text-2);
-}
-
-/* Why Fontist Section */
-.why-fontist {
-  padding: 4rem 0;
-  border-top: 1px solid var(--vp-c-divider);
-  margin-top: 1rem;
-}
-
-.why-content {
-  display: grid;
-  grid-template-columns: 180px 1fr;
-  gap: 3rem;
-  align-items: center;
-}
-
-.why-logo {
-  display: flex;
-  justify-content: center;
-}
-
-.why-logo img {
-  width: 140px;
-  height: auto;
-  opacity: 0.9;
-}
-
-.why-text h2 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  margin: 0 0 1rem 0;
-  color: var(--vp-c-text-1);
-}
-
-.why-text p {
-  font-size: 1.0625rem;
-  line-height: 1.7;
-  color: var(--vp-c-text-2);
-  margin: 0 0 1.5rem 0;
-}
-
-.why-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  color: var(--vp-c-brand-1);
+  color: var(--spec-paper);
+  background: var(--spec-ink);
+  padding: 14px 22px;
   text-decoration: none;
-  transition: gap 0.2s ease;
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  transition: background 0.25s ease;
 }
-
-.why-link:hover {
-  gap: 0.75rem;
+.btn-ink:hover { background: var(--spec-rose); }
+.btn-ghost {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--spec-ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--spec-rule-strong);
+  padding: 6px 0;
+  transition: color 0.2s, border-color 0.2s;
 }
+.btn-ghost:hover { color: var(--spec-rose); border-color: var(--spec-rose); }
 
-.why-link svg {
-  transition: transform 0.2s ease;
+/* terminal specimen plate */
+.plate {
+  background: var(--spec-term-bg);
+  color: var(--spec-term-ink);
+  padding: 22px 24px 26px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  line-height: 1.85;
+  position: relative;
+  box-shadow: 18px 18px 0 -1px var(--spec-paper-deep),
+    18px 18px 0 var(--spec-rule);
 }
-
-.why-link:hover svg {
-  transform: translateX(4px);
+.plate::before {
+  content: "SPECIMEN PLATE — LIVE";
+  position: absolute;
+  top: -11px;
+  left: 18px;
+  background: var(--spec-paper);
+  color: var(--spec-rose);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  padding: 2px 8px;
+  border: 1px solid var(--spec-rule);
 }
+.plate .prompt { color: var(--spec-rose-soft); }
+.plate .ok { color: #8fb98a; }
+.plate .out { color: var(--spec-term-ink); opacity: 0.78; }
 
-/* Features Section */
-.features {
+/* ghost numeral */
+.hero .ghost-numeral {
+  position: absolute;
+  right: -2vw;
+  bottom: -8vw;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 300;
+  font-style: italic;
+  font-size: 42vw;
+  line-height: 1;
+  color: var(--spec-ink);
+  opacity: 0.035;
+  pointer-events: none;
+  user-select: none;
+}
+.hero .wrap { position: relative; z-index: 1; }
+
+/* ── Products ─────────────────────────────────────────────────── */
+.products .head {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-  margin-bottom: 3rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: end;
+  margin-bottom: clamp(48px, 8vw, 104px);
 }
-
-.feature {
-  padding: 1.5rem 2rem;
-  background: var(--vp-c-bg-soft);
-  border-radius: 12px;
-  border: 1px solid transparent;
-  transition: all 0.2s ease;
-}
-
-.feature:hover {
-  border-color: var(--vp-c-brand-1);
-}
-
-.feature-icon {
-  font-size: 2rem;
-  margin-bottom: 0.75rem;
-}
-
-.feature h3 {
-  font-size: 1.125rem;
-  font-weight: 600;
-  margin: 0 0 0.5rem 0;
-  color: var(--vp-c-text-1);
-}
-
-.feature p {
-  font-size: 0.9375rem;
-  line-height: 1.6;
-  color: var(--vp-c-text-2);
+.products h2 {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 340;
+  font-size: clamp(36px, 5.4vw, 76px);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
   margin: 0;
 }
+.products h2 em { font-style: italic; color: var(--spec-rose); }
 
-.feature p strong {
-  color: var(--vp-c-text-1);
+.plate-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: clamp(28px, 5vw, 72px);
+  align-items: baseline;
+  padding: clamp(36px, 5vw, 64px) 0;
+  border-top: 1px solid var(--spec-rule);
+}
+.plate-row:last-of-type { border-bottom: 1px solid var(--spec-rule); }
+.plate-row .num {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  color: var(--spec-rose);
+}
+.plate-row .name {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 340;
+  font-size: clamp(48px, 8.5vw, 128px);
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  margin: 0;
+  font-variation-settings: "opsz" 144;
+  transition: font-variation-settings 0.5s ease, color 0.3s;
+}
+.plate-row .name .tag {
+  display: block;
+  font-family: "Fraunces", Georgia, serif;
+  font-style: italic;
+  font-weight: 360;
+  font-size: 0.42em;
+  color: var(--spec-rose);
+  margin-top: 0.18em;
+  letter-spacing: 0;
+}
+.plate-row:hover .name {
+  font-variation-settings: "opsz" 144, "wght" 460;
+  color: var(--spec-rose);
+}
+.plate-row .side {
+  text-align: right;
+  max-width: 26ch;
+}
+.plate-row .side .role {
+  font-family: "Fraunces", Georgia, serif;
+  font-style: italic;
+  font-weight: 380;
+  font-size: clamp(17px, 1.6vw, 22px);
+  color: var(--spec-ink);
+  margin: 0 0 10px;
+}
+.plate-row .side .spec-line {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--spec-mute);
+  margin: 0;
+}
+.plate-row .side a {
+  display: inline-block;
+  margin-top: 14px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--spec-ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--spec-rule-strong);
+  padding-bottom: 2px;
+}
+.plate-row .side a:hover { color: var(--spec-rose); border-color: var(--spec-rose); }
+
+/* ── Colophon stats ───────────────────────────────────────────── */
+.colophon { text-align: center; }
+.colophon p {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 330;
+  font-size: clamp(26px, 4vw, 56px);
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  margin: 0 auto;
+  max-width: 22ch;
+  color: var(--spec-ink);
+}
+.colophon p .n {
+  font-style: italic;
+  color: var(--spec-rose);
+  font-variation-settings: "opsz" 144, "wght" 420;
 }
 
-/* Responsive */
-@media (max-width: 968px) {
-  .hero {
-    grid-template-columns: 1fr;
-    gap: 3rem;
-    padding: 3rem 0;
-  }
+/* ── Why / story ──────────────────────────────────────────────── */
+.story-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: clamp(40px, 6vw, 96px);
+}
+.story .label {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--spec-rose);
+  margin: 0;
+}
+.story .body p {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 360;
+  font-size: clamp(19px, 1.9vw, 25px);
+  line-height: 1.55;
+  color: var(--spec-ink-soft);
+  margin: 0 0 1.2em;
+}
+.story .body p:first-child::first-letter {
+  font-family: "Fraunces", Georgia, serif;
+  font-style: italic;
+  font-weight: 460;
+  font-size: 4.6em;
+  float: left;
+  line-height: 0.82;
+  padding: 0.06em 0.12em 0 0;
+  color: var(--spec-rose);
+  font-variation-settings: "opsz" 144, "wght" 520;
+}
+.story .body .signoff {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--spec-mute);
+  margin-top: 2em;
+}
+.story .body .signoff a {
+  color: var(--spec-ink);
+  border-bottom: 1px solid var(--spec-rule-strong);
+  text-decoration: none;
+  padding-bottom: 2px;
+}
+.story .body .signoff a:hover { color: var(--spec-rose); border-color: var(--spec-rose); }
 
-  .hero-visual {
-    order: -1;
-  }
-
-  .hero-title {
-    font-size: 2.5rem;
-  }
-
-  .products-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .stats {
-    grid-template-columns: 1fr;
-  }
+/* ── Footer colophon ──────────────────────────────────────────── */
+.foot {
+  border-top: 1px solid var(--spec-rule);
+  padding: 40px clamp(20px, 4vw, 56px) 56px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--spec-mute);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.foot .r { text-align: right; }
+.foot em {
+  font-family: "Fraunces", Georgia, serif;
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--spec-ink-soft);
 }
 
-@media (min-width: 969px) and (max-width: 1100px) {
-  .products-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 480px) {
-  .hero-title {
-    font-size: 2rem;
-  }
-
-  .hero-actions {
-    flex-direction: column;
-  }
-
-  .btn {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .stat-value {
-    font-size: 2rem;
-  }
-
-  .why-content {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-
-  .why-logo img {
-    width: 100px;
-  }
-
-  .features {
-    grid-template-columns: 1fr;
-  }
+/* ── Responsive ───────────────────────────────────────────────── */
+@media (max-width: 860px) {
+  .hero .below { grid-template-columns: 1fr; }
+  .products .head { grid-template-columns: 1fr; }
+  .plate-row { grid-template-columns: 1fr; gap: 14px; }
+  .plate-row .side { text-align: left; }
+  .story-grid { grid-template-columns: 1fr; }
+  .foot { grid-template-columns: 1fr; }
+  .foot .r { text-align: left; }
+  .masthead { grid-template-columns: 1fr; text-align: center; }
+  .masthead .l, .masthead .r { justify-self: center; }
 }
 </style>
