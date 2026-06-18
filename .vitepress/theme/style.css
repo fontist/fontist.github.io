@@ -335,3 +335,61 @@ html.dark .vp-doc [class*="language-"] {
 .specimen-home {
   background-color: var(--spec-paper);
 }
+
+/* ── 404 page — specimen ───────────────────────────────────────── */
+.NotFound {
+  text-align: center;
+  padding: clamp(3rem, 8vw, 6rem) 1.5rem clamp(4rem, 10vw, 8rem);
+  font-family: var(--spec-font-body);
+}
+.NotFound .code {
+  font-family: var(--spec-font-display);
+  font-style: italic;
+  font-weight: 300;
+  font-variation-settings: "opsz" 144;
+  font-size: clamp(120px, 24vw, 280px);
+  line-height: 1;
+  color: var(--spec-rose);
+  opacity: 0.9;
+  margin: 0 0 0.5rem;
+}
+.NotFound .title {
+  font-family: var(--spec-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--spec-ink-soft);
+  margin: 0;
+}
+.NotFound .divider {
+  width: 60px;
+  border-top: 1px solid var(--spec-rule-strong);
+  margin: 2rem auto;
+}
+.NotFound .quote {
+  font-family: var(--spec-font-display);
+  font-style: italic;
+  font-weight: 380;
+  font-size: clamp(18px, 2.2vw, 26px);
+  line-height: 1.5;
+  color: var(--spec-ink);
+  border: none;
+  max-width: 32ch;
+  margin: 0 auto 2rem;
+  padding: 0;
+}
+.NotFound .action .link {
+  font-family: var(--spec-font-mono);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--spec-paper);
+  background: var(--spec-ink);
+  padding: 12px 22px;
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.25s ease;
+}
+.NotFound .action .link:hover {
+  background: var(--spec-rose);
+}
