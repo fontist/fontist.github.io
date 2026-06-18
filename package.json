@@ -3,11 +3,13 @@
     "dev": "vitepress dev",
     "build": "vitepress build",
     "preview": "vitepress preview",
-    "format": "prettier -w ."
+    "format": "prettier -w .",
+    "check:subsite-links": "node scripts/check-subsite-links.mjs"
   },
   "type": "module",
   "devDependencies": {
     "@types/node": "^25.4.0",
+    "node-html-parser": "^7.0.1",
     "prettier": "^3.8.1",
     "typescript": "^5.9.3",
     "vitepress": "^1.6.4"
