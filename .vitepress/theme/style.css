@@ -281,9 +281,10 @@ html.dark body::before {
   border-top: 1px solid var(--spec-rule);
   margin: 2.5em 0;
 }
-/* Code blocks: ink panel */
+/* Code blocks — light: warm paper-deep (matches Shiki light tokens);
+   dark: terminal ink (matches Shiki dark tokens) */
 .vp-doc [class*="language-"] {
-  background-color: var(--spec-term-bg) !important;
+  background-color: var(--spec-paper-deep) !important;
   border: 1px solid var(--spec-rule);
   font-family: var(--spec-font-mono);
   font-size: 13.5px;
