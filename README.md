@@ -50,7 +50,7 @@ flowchart TD
 
 ```bash
 npm install
-npm run dev       # local dev server at http://localhost:5173
+npm run dev       # start the local dev server (prints the local URL)
 npm run build     # builds to .vitepress/dist (includes post-build "dirify" step)
 npm run preview   # preview the production build
 ```
