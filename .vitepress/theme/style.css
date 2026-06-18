@@ -150,3 +150,37 @@ html.dark .vp-doc [class*="language-"] {
 .VPNav .VPImage {
   height: 39px;
 }
+
+/* ─── Type Specimen homepage ─────────────────────────────────────── */
+/* Scoped palette for the homepage (pageClass: specimen-home).
+   Light = warm cream paper; Dark = warm ink paper. The rose is the
+   single "printer's ink" accent in both. */
+.specimen-home {
+  --spec-paper: #f1ece1;
+  --spec-paper-deep: #e7e0d1;
+  --spec-ink: #1c1a18;
+  --spec-ink-soft: #4a4744;
+  --spec-mute: #75716c;
+  --spec-rose: #b8475f;
+  --spec-rose-soft: #d4718a;
+  --spec-rule: rgba(28, 26, 24, 0.18);
+  --spec-rule-strong: rgba(28, 26, 24, 0.55);
+  --spec-term-bg: #1c1a18;
+  --spec-term-ink: #ecdfd0;
+  background-color: var(--spec-paper);
+}
+
+html.dark .specimen-home {
+  --spec-paper: #161513;
+  --spec-paper-deep: #211f1c;
+  --spec-ink: #ecdfd0;
+  --spec-ink-soft: #b8ada0;
+  --spec-mute: #8a857f;
+  --spec-rose: #d4718a;
+  --spec-rose-soft: #e08a9e;
+  --spec-rule: rgba(236, 223, 208, 0.16);
+  --spec-rule-strong: rgba(236, 223, 208, 0.45);
+  --spec-term-bg: #0d0c0c;
+  --spec-term-ink: #ecdfd0;
+  background-color: var(--spec-paper);
+}
