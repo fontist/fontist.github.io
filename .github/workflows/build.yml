@@ -48,6 +48,9 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Verify subsite links bypass SPA router
+        run: npm run check:subsite-links
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
