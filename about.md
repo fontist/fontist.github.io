@@ -217,11 +217,11 @@ Fontist is proudly open source. We believe font management infrastructure should
 Ready to use Fontist in your automated workflows?
 
 <div class="get-started-links">
-  <a href="https://www.fontist.org/fontist/" class="gs-link gs-link-primary">
+  <a href="https://www.fontist.org/fontist/" target="_self" class="gs-link gs-link-primary">
     <span class="gs-title">Documentation</span>
     <span class="gs-desc">Learn how to install and use Fontist</span>
   </a>
-  <a href="https://www.fontist.org/formulas/" class="gs-link">
+  <a href="https://www.fontist.org/formulas/" target="_self" class="gs-link">
     <span class="gs-title">Browse Formulas</span>
     <span class="gs-desc">Explore 2,000+ available fonts</span>
   </a>

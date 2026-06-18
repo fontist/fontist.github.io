@@ -61,7 +61,11 @@ const icons = {
           Designed for automated systems, CI/CD pipelines, and digital publishing.
         </p>
         <div class="hero-actions">
-          <a href="https://www.fontist.org/fontist/" class="btn btn-primary">
+          <!-- target="_self" is mandatory on links to the separately-deployed
+               subsites (/fontist/, /fontisan/, /formulas/): without a target
+               attribute, VitePress's SPA router intercepts same-origin clicks
+               and renders its own 404. Enforced by scripts/check-subsite-links.mjs. -->
+          <a href="https://www.fontist.org/fontist/" target="_self" class="btn btn-primary">
             Get Started
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -103,7 +107,7 @@ const icons = {
           @mouseenter="hoveredCard = product.id"
           @mouseleave="hoveredCard = null"
         >
-          <a :href="product.link" class="card-link">
+          <a :href="product.link" target="_self" class="card-link">
             <div class="card-icon">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" v-html="icons[product.icon as keyof typeof icons]" />
             </div>
