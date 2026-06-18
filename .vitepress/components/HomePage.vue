@@ -1,37 +1,70 @@
 <script setup lang="ts">
 // Type Specimen homepage.
-// The page is treated as a printed type specimen: typography is the design
-// engine, the cream/ink palette is "paper", and the rose is the single
-// "printer's ink" accent. Palette + dark-mode live in theme/style.css
-// under `.specimen-home` (the pageClass set in index.md frontmatter).
+// Two distinct ideas, kept distinct:
+//  - SPECIMENS  → real typefaces (fonts you can install via Fontist), shown
+//                 at display size in their own face. This is the genuine
+//                 specimen move — "type, ready to install."
+//  - INSTRUMENTS → Fontist / Fontisan / Formulas, the *software tools*,
+//                  presented functionally (NOT as type samples).
+// The site-wide palette/typography system lives in theme/style.css.
 
-const products = [
+const specimens = [
+  {
+    name: "Fraunces",
+    cssFamily: "'Fraunces', Georgia, serif",
+    install: 'fontist install "Fraunces"',
+    note: "Display serif · variable opsz",
+  },
+  {
+    name: "Roboto",
+    cssFamily: "'Roboto', sans-serif",
+    install: 'fontist install "Roboto"',
+    note: "Neo-grotesque · 6 styles",
+  },
+  {
+    name: "IBM Plex Sans",
+    cssFamily: "'IBM Plex Sans', sans-serif",
+    install: 'fontist install "IBM Plex Sans"',
+    note: "Grotesque · 7 styles",
+  },
+  {
+    name: "Source Serif 4",
+    cssFamily: "'Source Serif 4', Georgia, serif",
+    install: 'fontist install "Source Serif"',
+    note: "Workhorse serif · variable",
+  },
+  {
+    name: "JetBrains Mono",
+    cssFamily: "'JetBrains Mono', monospace",
+    install: 'fontist install "JetBrains Mono"',
+    note: "Mono · 8 styles",
+  },
+];
+
+const instruments = [
   {
     num: "01",
     name: "Fontist",
-    tag: "Install & Manage",
-    role: "A cross-platform font installer.",
-    spec: "Win · Linux · macOS · CLI & Ruby API · native OS integration.",
+    role: "Install & manage fonts across Windows, Linux, and macOS — one command, native OS integration.",
+    spec: "CLI & Ruby API",
     link: "https://www.fontist.org/fontist/",
-    cta: "Open the documentation",
+    cta: "Documentation",
   },
   {
     num: "02",
     name: "Fontisan",
-    tag: "Build & Convert",
-    role: "Shape, convert, and build fonts.",
-    spec: "Pure Ruby · TTF/OTF/WOFF2 · variable · Type 1 · collections.",
+    role: "Build, convert, and shape fonts programmatically — pure Ruby, every modern format.",
+    spec: "TTF · OTF · WOFF2 · variable",
     link: "https://www.fontist.org/fontisan/",
-    cta: "Open the documentation",
+    cta: "Documentation",
   },
   {
     num: "03",
     name: "Formulas",
-    tag: "The Registry",
-    role: "A searchable index of formulae.",
-    spec: "2,175 formulae · 14,500 styles · openly-licensed · auto-updated.",
+    role: "A searchable registry of openly-licensed font formulae, auto-updated.",
+    spec: "2,175 formulae · 14,500 styles",
     link: "https://www.fontist.org/formulas/",
-    cta: "Browse the registry",
+    cta: "Browse",
   },
 ];
 </script>
@@ -40,7 +73,6 @@ const products = [
   <div class="specimen">
     <!-- Masthead -->
     <div class="masthead">
-      <span class="l">Fontist <span class="dot">●</span></span>
       <span class="c">A Specimen for Cross-Platform Font Management</span>
       <span class="r">Vol. 01 / MMXXVI</span>
     </div>
@@ -49,11 +81,6 @@ const products = [
     <section class="hero">
       <div class="ghost-numeral" aria-hidden="true">01</div>
       <div class="wrap">
-        <div class="meta-row">
-          <span><b>Specimen 01</b> — The Hero</span>
-          <span>Set in <b>Fraunces</b>, variable opsz 9–144</span>
-        </div>
-
         <h1>
           <span class="line">
             <span class="word" style="animation-delay:.05s">Fonts</span>
@@ -98,29 +125,55 @@ const products = [
       </div>
     </section>
 
-    <!-- Products -->
-    <section class="section products">
+    <!-- Specimens: REAL typefaces from the registry -->
+    <section class="section specimens">
       <div class="wrap">
         <header class="head">
           <div>
-            <p class="eyebrow">§ The Instrumentarium</p>
-            <h2>Three instruments<br />for the <em>font&nbsp;engineer.</em></h2>
+            <p class="eyebrow">§ Specimens</p>
+            <h2>Type, ready<br />to install.</h2>
           </div>
           <p class="lede">
-            A small family of tools that install, shape, and index openly-licensed type —
-            the same way, on every platform, in every pipeline.
+            A glimpse of the openly-licensed typefaces Fontist installs — each available
+            across Windows, Linux, and macOS with a single command. The registry indexes
+            2,175 of them.
           </p>
         </header>
 
-        <div v-for="p in products" :key="p.num" class="plate-row">
-          <div class="num">№ {{ p.num }}</div>
-          <h3 class="name">
-            {{ p.name }}<span class="tag">{{ p.tag }}</span>
-          </h3>
-          <div class="side">
-            <p class="role">{{ p.role }}</p>
-            <p class="spec-line">{{ p.spec }}</p>
-            <a :href="p.link" target="_self" rel="noreferrer">{{ p.cta }} →</a>
+        <ul class="spec-list">
+          <li v-for="s in specimens" :key="s.name" class="spec-row">
+            <div class="spec-sample" :style="{ fontFamily: s.cssFamily }">{{ s.name }}</div>
+            <div class="spec-detail">
+              <span class="prompt">$</span> <span class="cmd">{{ s.install }}</span>
+              <span class="sep">·</span>
+              <span class="note">{{ s.note }}</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- The Instruments: the TOOLS (functional, not type samples) -->
+    <section class="section instruments divider">
+      <div class="wrap">
+        <header class="head">
+          <div>
+            <p class="eyebrow">§ The Instruments</p>
+            <h2>Three tools.<br />One <em>pipeline.</em></h2>
+          </div>
+          <p class="lede">
+            The software that sources, shapes, and indexes the type — small, discrete,
+            and designed to compose.
+          </p>
+        </header>
+
+        <div class="inst-grid">
+          <div v-for="t in instruments" :key="t.num" class="inst-card">
+            <div class="inst-num">{{ t.num }}</div>
+            <h3 class="inst-name">{{ t.name }}</h3>
+            <p class="inst-role">{{ t.role }}</p>
+            <p class="inst-spec">{{ t.spec }}</p>
+            <a class="inst-link" :href="t.link" target="_self" rel="noreferrer">{{ t.cta }} →</a>
           </div>
         </div>
       </div>
@@ -170,9 +223,7 @@ const products = [
 </template>
 
 <style scoped>
-/* ── Layout primitives ────────────────────────────────────────── */
 .specimen {
-  font-family: "IBM Plex Sans", -apple-system, system-ui, sans-serif;
   color: var(--spec-ink);
   background-color: var(--spec-paper);
   overflow-x: hidden;
@@ -182,26 +233,10 @@ const products = [
   margin: 0 auto;
   padding: 0 clamp(20px, 4vw, 56px);
 }
-.section {
-  padding: clamp(64px, 11vw, 140px) 0;
-}
-.divider {
-  border-top: 1px solid var(--spec-rule);
-}
+.section { padding: clamp(64px, 11vw, 140px) 0; }
+.divider { border-top: 1px solid var(--spec-rule); }
 
-/* paper grain overlay */
-.specimen::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  pointer-events: none;
-  opacity: 0.045;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  mix-blend-mode: multiply;
-}
-
-/* ── Masthead ─────────────────────────────────────────────────── */
+/* Masthead */
 .masthead {
   border-bottom: 1px solid var(--spec-rule);
   padding: 14px clamp(20px, 4vw, 56px);
@@ -210,17 +245,14 @@ const products = [
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--spec-ink-soft);
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
+  justify-content: space-between;
   gap: 24px;
   align-items: center;
 }
-.masthead .l { justify-self: start; }
-.masthead .c { justify-self: center; color: var(--spec-ink); }
-.masthead .r { justify-self: end; }
-.masthead .dot { color: var(--spec-rose); font-weight: 500; }
+.masthead .c { color: var(--spec-ink); }
 
-/* ── Shared bits ──────────────────────────────────────────────── */
+/* Shared */
 .eyebrow {
   font-family: "IBM Plex Mono", ui-monospace, monospace;
   font-size: 11px;
@@ -232,14 +264,32 @@ const products = [
 .lede {
   font-family: "Fraunces", Georgia, serif;
   font-weight: 350;
-  font-size: clamp(20px, 2.1vw, 27px);
+  font-size: clamp(19px, 2vw, 25px);
   line-height: 1.4;
   color: var(--spec-ink-soft);
-  max-width: 38ch;
+  max-width: 40ch;
   margin: 0;
 }
+.head {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: end;
+  margin-bottom: clamp(48px, 8vw, 96px);
+}
+.head h2 {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 340;
+  font-size: clamp(34px, 5vw, 68px);
+  line-height: 0.98;
+  letter-spacing: -0.022em;
+  margin: 0;
+  color: var(--spec-ink);
+}
+.head h2 em { font-style: italic; color: var(--spec-rose); }
+.prompt { color: var(--spec-rose-soft); }
 
-/* ── Hero ─────────────────────────────────────────────────────── */
+/* Hero */
 .hero {
   position: relative;
   padding-top: clamp(40px, 7vw, 96px);
@@ -258,7 +308,6 @@ const products = [
   margin-bottom: clamp(28px, 5vw, 64px);
 }
 .hero .meta-row b { color: var(--spec-ink); font-weight: 500; }
-
 .hero h1 {
   font-family: "Fraunces", Georgia, serif;
   font-weight: 340;
@@ -267,7 +316,6 @@ const products = [
   line-height: 0.92;
   letter-spacing: -0.025em;
   margin: 0;
-  color: var(--spec-ink);
 }
 .hero h1 .line { display: block; overflow: hidden; }
 .hero h1 .word {
@@ -277,14 +325,10 @@ const products = [
 }
 .hero h1 em {
   font-style: italic;
-  font-weight: 360;
   color: var(--spec-rose);
   font-variation-settings: "opsz" 144, "wght" 380;
 }
-@keyframes specimen-set {
-  to { transform: translateY(0); }
-}
-
+@keyframes specimen-set { to { transform: translateY(0); } }
 .hero .below {
   display: grid;
   grid-template-columns: 1.4fr 0.9fr;
@@ -297,7 +341,6 @@ const products = [
   font-size: 13px;
   line-height: 1.7;
   color: var(--spec-ink-soft);
-  letter-spacing: 0.01em;
   margin: 0;
 }
 .hero .spec .pip { color: var(--spec-rose); padding: 0 0.35em; }
@@ -317,9 +360,6 @@ const products = [
   background: var(--spec-ink);
   padding: 14px 22px;
   text-decoration: none;
-  display: inline-flex;
-  gap: 10px;
-  align-items: center;
   transition: background 0.25s ease;
 }
 .btn-ink:hover { background: var(--spec-rose); }
@@ -335,8 +375,6 @@ const products = [
   transition: color 0.2s, border-color 0.2s;
 }
 .btn-ghost:hover { color: var(--spec-rose); border-color: var(--spec-rose); }
-
-/* terminal specimen plate */
 .plate {
   background: var(--spec-term-bg);
   color: var(--spec-term-ink);
@@ -345,8 +383,7 @@ const products = [
   font-size: 13px;
   line-height: 1.85;
   position: relative;
-  box-shadow: 18px 18px 0 -1px var(--spec-paper-deep),
-    18px 18px 0 var(--spec-rule);
+  box-shadow: 18px 18px 0 -1px var(--spec-paper-deep), 18px 18px 0 var(--spec-rule);
 }
 .plate::before {
   content: "SPECIMEN PLATE — LIVE";
@@ -360,11 +397,8 @@ const products = [
   padding: 2px 8px;
   border: 1px solid var(--spec-rule);
 }
-.plate .prompt { color: var(--spec-rose-soft); }
 .plate .ok { color: #8fb98a; }
-.plate .out { color: var(--spec-term-ink); opacity: 0.78; }
-
-/* ghost numeral */
+.plate .out { opacity: 0.78; }
 .hero .ghost-numeral {
   position: absolute;
   right: -2vw;
@@ -381,85 +415,76 @@ const products = [
 }
 .hero .wrap { position: relative; z-index: 1; }
 
-/* ── Products ─────────────────────────────────────────────────── */
-.products .head {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  align-items: end;
-  margin-bottom: clamp(48px, 8vw, 104px);
-}
-.products h2 {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 340;
-  font-size: clamp(36px, 5.4vw, 76px);
-  line-height: 0.98;
-  letter-spacing: -0.02em;
-  margin: 0;
-}
-.products h2 em { font-style: italic; color: var(--spec-rose); }
-
-.plate-row {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: clamp(28px, 5vw, 72px);
-  align-items: baseline;
-  padding: clamp(36px, 5vw, 64px) 0;
+/* Specimens: real typefaces, large, in their own face */
+.spec-list { list-style: none; margin: 0; padding: 0; }
+.spec-row {
+  padding: clamp(24px, 4vw, 44px) 0;
   border-top: 1px solid var(--spec-rule);
 }
-.plate-row:last-of-type { border-bottom: 1px solid var(--spec-rule); }
-.plate-row .num {
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 13px;
-  letter-spacing: 0.14em;
-  color: var(--spec-rose);
-}
-.plate-row .name {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 340;
-  font-size: clamp(48px, 8.5vw, 128px);
+.spec-row:last-child { border-bottom: 1px solid var(--spec-rule); }
+.spec-sample {
+  font-size: clamp(56px, 11vw, 152px);
   line-height: 0.95;
-  letter-spacing: -0.025em;
-  margin: 0;
-  font-variation-settings: "opsz" 144;
-  transition: font-variation-settings 0.5s ease, color 0.3s;
-}
-.plate-row .name .tag {
-  display: block;
-  font-family: "Fraunces", Georgia, serif;
-  font-style: italic;
-  font-weight: 360;
-  font-size: 0.42em;
-  color: var(--spec-rose);
-  margin-top: 0.18em;
-  letter-spacing: 0;
-}
-.plate-row:hover .name {
-  font-variation-settings: "opsz" 144, "wght" 460;
-  color: var(--spec-rose);
-}
-.plate-row .side {
-  text-align: right;
-  max-width: 26ch;
-}
-.plate-row .side .role {
-  font-family: "Fraunces", Georgia, serif;
-  font-style: italic;
-  font-weight: 380;
-  font-size: clamp(17px, 1.6vw, 22px);
+  letter-spacing: -0.02em;
   color: var(--spec-ink);
-  margin: 0 0 10px;
+  margin-bottom: 0.2em;
+  transition: color 0.3s ease;
 }
-.plate-row .side .spec-line {
+.spec-row:hover .spec-sample { color: var(--spec-rose); }
+.spec-detail {
   font-family: "IBM Plex Mono", ui-monospace, monospace;
   font-size: 12px;
-  line-height: 1.6;
+  letter-spacing: 0.04em;
   color: var(--spec-mute);
-  margin: 0;
 }
-.plate-row .side a {
-  display: inline-block;
-  margin-top: 14px;
+.spec-detail .cmd { color: var(--spec-ink-soft); }
+.spec-detail .sep { color: var(--spec-rose); padding: 0 0.5em; }
+
+/* Instruments: the tools — functional, restrained */
+.inst-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--spec-rule);
+  border: 1px solid var(--spec-rule);
+}
+.inst-card {
+  background: var(--spec-paper);
+  padding: clamp(28px, 3.5vw, 44px);
+  display: flex;
+  flex-direction: column;
+}
+.inst-num {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--spec-rose);
+  margin-bottom: 18px;
+}
+.inst-name {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 360;
+  font-variation-settings: "opsz" 72;
+  font-size: clamp(28px, 3vw, 38px);
+  letter-spacing: -0.02em;
+  margin: 0 0 14px;
+  color: var(--spec-ink);
+}
+.inst-role {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--spec-ink-soft);
+  margin: 0 0 16px;
+  flex: 1;
+}
+.inst-spec {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--spec-mute);
+  margin: 0 0 20px;
+}
+.inst-link {
   font-family: "IBM Plex Mono", ui-monospace, monospace;
   font-size: 12px;
   letter-spacing: 0.12em;
@@ -468,15 +493,17 @@ const products = [
   text-decoration: none;
   border-bottom: 1px solid var(--spec-rule-strong);
   padding-bottom: 2px;
+  align-self: flex-start;
+  transition: color 0.2s, border-color 0.2s;
 }
-.plate-row .side a:hover { color: var(--spec-rose); border-color: var(--spec-rose); }
+.inst-link:hover { color: var(--spec-rose); border-color: var(--spec-rose); }
 
-/* ── Colophon stats ───────────────────────────────────────────── */
+/* Colophon */
 .colophon { text-align: center; }
 .colophon p {
   font-family: "Fraunces", Georgia, serif;
   font-weight: 330;
-  font-size: clamp(26px, 4vw, 56px);
+  font-size: clamp(24px, 3.6vw, 48px);
   line-height: 1.25;
   letter-spacing: -0.015em;
   margin: 0 auto;
@@ -489,7 +516,7 @@ const products = [
   font-variation-settings: "opsz" 144, "wght" 420;
 }
 
-/* ── Why / story ──────────────────────────────────────────────── */
+/* Story */
 .story-grid {
   display: grid;
   grid-template-columns: 1fr 2fr;
@@ -506,7 +533,7 @@ const products = [
 .story .body p {
   font-family: "Fraunces", Georgia, serif;
   font-weight: 360;
-  font-size: clamp(19px, 1.9vw, 25px);
+  font-size: clamp(18px, 1.8vw, 23px);
   line-height: 1.55;
   color: var(--spec-ink-soft);
   margin: 0 0 1.2em;
@@ -514,7 +541,6 @@ const products = [
 .story .body p:first-child::first-letter {
   font-family: "Fraunces", Georgia, serif;
   font-style: italic;
-  font-weight: 460;
   font-size: 4.6em;
   float: left;
   line-height: 0.82;
@@ -538,7 +564,7 @@ const products = [
 }
 .story .body .signoff a:hover { color: var(--spec-rose); border-color: var(--spec-rose); }
 
-/* ── Footer colophon ──────────────────────────────────────────── */
+/* Footer */
 .foot {
   border-top: 1px solid var(--spec-rule);
   padding: 40px clamp(20px, 4vw, 56px) 56px;
@@ -560,12 +586,10 @@ const products = [
   color: var(--spec-ink-soft);
 }
 
-/* ── Responsive ───────────────────────────────────────────────── */
 @media (max-width: 860px) {
   .hero .below { grid-template-columns: 1fr; }
-  .products .head { grid-template-columns: 1fr; }
-  .plate-row { grid-template-columns: 1fr; gap: 14px; }
-  .plate-row .side { text-align: left; }
+  .head { grid-template-columns: 1fr; }
+  .inst-grid { grid-template-columns: 1fr; }
   .story-grid { grid-template-columns: 1fr; }
   .foot { grid-template-columns: 1fr; }
   .foot .r { text-align: left; }
