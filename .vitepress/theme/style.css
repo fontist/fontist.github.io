@@ -157,16 +157,47 @@ html.dark body::before {
   font-family: inherit !important;
 }
 /* Dropdown button — VitePress styles .button directly, so inheritance isn't enough */
-.VPNavBarMenuGroup .button {
+.VPNavBarMenuGroup .button,
+.VPNavBarExtra .button {
   font-family: var(--spec-font-mono) !important;
   font-size: 12px !important;
   letter-spacing: 0.14em !important;
   text-transform: uppercase !important;
   font-weight: 500 !important;
   color: var(--spec-ink-soft) !important;
+  line-height: 64px !important;
+  transition: color 0.2s ease;
 }
-.VPNavBarMenuGroup:hover .button {
+.VPNavBarMenuGroup:hover .button,
+.VPNavBarExtra:hover .button {
   color: var(--spec-rose) !important;
+}
+
+/* Flyout menu panel (shared by Integrations dropdown + ellipsis extra menu) */
+.VPMenu {
+  background: var(--spec-paper) !important;
+  border: 1px solid var(--spec-rule) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.VPMenu .group-title {
+  font-family: var(--spec-font-mono) !important;
+  font-size: 11px !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  color: var(--spec-mute) !important;
+}
+.VPMenuLink .item {
+  font-family: var(--spec-font-mono) !important;
+  font-size: 12px !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  color: var(--spec-ink-soft) !important;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.VPMenuLink .item:hover {
+  color: var(--spec-rose) !important;
+  background: var(--spec-paper-deep) !important;
 }
 
 /* Logo / title */
