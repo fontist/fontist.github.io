@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, onMounted, onUnmounted } from "vue";
 // Type Specimen homepage.
 // Two distinct ideas, kept distinct:
 //  - SPECIMENS  → real typefaces (fonts you can install via Fontist), shown
@@ -67,6 +68,51 @@ const instruments = [
     cta: "Browse",
   },
 ];
+
+const motds = [
+  "Installing fonts so humanity doesn't have to.",
+  "2,175 openly-licensed typefaces. One command. Zero headaches.",
+  "Making type accessible — because everyone deserves good fonts.",
+  "Stop worrying about fonts. We already did.",
+  "The font pipeline that runs while you sleep.",
+  "Automating typography for a more beautiful web.",
+];
+const motdText = ref("");
+const motdIndex = ref(0);
+let typeTimer: ReturnType<typeof setTimeout> | null = null;
+
+function typeMotd() {
+  const msg = motds[motdIndex.value];
+  let i = 0;
+  motdText.value = "";
+  (function step() {
+    if (i < msg.length) {
+      motdText.value = msg.slice(0, ++i);
+      typeTimer = setTimeout(step, 30 + Math.random() * 45);
+    } else {
+      typeTimer = setTimeout(eraseMotd, 3800);
+    }
+  })();
+}
+function eraseMotd() {
+  (function step() {
+    if (motdText.value.length > 0) {
+      motdText.value = motdText.value.slice(0, -1);
+      typeTimer = setTimeout(step, 18);
+    } else {
+      motdIndex.value = (motdIndex.value + 1) % motds.length;
+      typeTimer = setTimeout(typeMotd, 350);
+    }
+  })();
+}
+function skipMotd() {
+  if (typeTimer) clearTimeout(typeTimer);
+  motdText.value = "";
+  motdIndex.value = (motdIndex.value + 1) % motds.length;
+  typeMotd();
+}
+onMounted(typeMotd);
+onUnmounted(() => { if (typeTimer) clearTimeout(typeTimer); });
 </script>
 
 <template>
@@ -92,6 +138,10 @@ const instruments = [
             <span class="word" style="animation-delay:.33s">workflow.</span>
           </span>
         </h1>
+
+        <p class="motd" @click="skipMotd" title="Click for next message">
+          <span class="motd-text">{{ motdText }}</span><span class="motd-cursor"></span>
+        </p>
 
         <div class="below">
           <div>
@@ -328,6 +378,32 @@ const instruments = [
   font-variation-settings: "opsz" 144, "wght" 380;
 }
 @keyframes specimen-set { to { transform: translateY(0); } }
+
+.motd {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: clamp(14px, 1.5vw, 18px);
+  color: var(--spec-ink-soft);
+  margin: clamp(20px, 3vw, 32px) 0 0;
+  cursor: pointer;
+  user-select: none;
+  min-height: 1.6em;
+  transition: color 0.2s;
+}
+.motd:hover { color: var(--spec-ink); }
+.motd-cursor {
+  display: inline-block;
+  width: 9px;
+  height: 1.05em;
+  background: var(--spec-rose);
+  margin-left: 3px;
+  vertical-align: text-bottom;
+  animation: motd-blink 1.06s steps(1) infinite;
+}
+@keyframes motd-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
 .hero .below {
   display: grid;
   grid-template-columns: 1.4fr 0.9fr;
