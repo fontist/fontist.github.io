@@ -172,6 +172,18 @@ html.dark body::before {
 .VPNavBarExtra:hover .button {
   color: var(--spec-rose) !important;
 }
+/* VitePress renders the visible text in an inner .text span with its own
+   font-size (14px) and color — must target it directly, not via .button */
+.VPNavBarMenuGroup .button .text,
+.VPNavBarExtra .button .text {
+  font-size: 12px !important;
+  color: var(--spec-ink-soft) !important;
+  font-weight: 500 !important;
+}
+.VPNavBarMenuGroup:hover .button .text,
+.VPNavBarExtra:hover .button .text {
+  color: var(--spec-rose) !important;
+}
 
 /* Flyout menu panel (shared by Integrations dropdown + ellipsis extra menu) */
 .VPMenu {
