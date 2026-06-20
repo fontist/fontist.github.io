@@ -239,7 +239,7 @@ Ready to use Fontist in your automated workflows?
   border-bottom: 1px solid var(--spec-rule);
 }
 .about-tagline {
-  font-family: "Fraunces", Georgia, serif;
+  font-family: "Newsreader", Georgia, serif;
   font-style: italic;
   font-weight: 380;
   font-size: 1.4rem;
@@ -269,7 +269,7 @@ Ready to use Fontist in your automated workflows?
 .mission-statement {
   padding: 1.5rem 0 1.5rem 1.5rem;
   border-left: 3px solid var(--spec-rose);
-  font-family: "Fraunces", Georgia, serif;
+  font-family: "Newsreader", Georgia, serif;
   font-style: italic;
   font-weight: 380;
   font-size: 1.2rem;
@@ -296,7 +296,7 @@ Ready to use Fontist in your automated workflows?
 .use-case-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
 .use-case h4 {
   margin: 0 0 0.5rem;
-  font-family: "Fraunces", Georgia, serif;
+  font-family: "Newsreader", Georgia, serif;
   font-weight: 400;
   font-size: 1.05rem;
   color: var(--spec-ink);
@@ -326,7 +326,7 @@ Ready to use Fontist in your automated workflows?
 .gs-link-primary .gs-title,
 .gs-link-primary .gs-desc { color: #fff; }
 .gs-title {
-  font-family: "Fraunces", Georgia, serif;
+  font-family: "Newsreader", Georgia, serif;
   font-weight: 400;
   font-size: 1.05rem;
   color: var(--spec-ink);

@@ -10,9 +10,9 @@
 
 const specimens = [
   {
-    name: "Fraunces",
+    name: "Newsreader",
     cssFamily: "'Fraunces', Georgia, serif",
-    install: 'fontist install "Fraunces"',
+    install: 'fontist install "Newsreader"',
     note: "Display serif · variable opsz",
   },
   {
@@ -262,7 +262,7 @@ const instruments = [
   margin: 0 0 18px;
 }
 .lede {
-  font-family: "Fraunces", Georgia, serif;
+  font-family: "Newsreader", Georgia, serif;
   font-weight: 350;
   font-size: clamp(19px, 2vw, 25px);
   line-height: 1.4;
@@ -278,7 +278,7 @@ const instruments = [
   margin-bottom: clamp(48px, 8vw, 96px);
 }
 .head h2 {
-  font-family: "Fraunces", Georgia, serif;
+  font-family: "Newsreader", Georgia, serif;
   font-weight: 340;
   font-size: clamp(34px, 5vw, 68px);
   line-height: 0.98;
@@ -309,7 +309,7 @@ const instruments = [
 }
 .hero .meta-row b { color: var(--spec-ink); font-weight: 500; }
 .hero h1 {
-  font-family: "Fraunces", Georgia, serif;
+  font-family: "Newsreader", Georgia, serif;
   font-weight: 340;
   font-variation-settings: "opsz" 144;
   font-size: clamp(56px, 13.5vw, 196px);
@@ -317,9 +317,10 @@ const instruments = [
   letter-spacing: -0.025em;
   margin: 0;
 }
-.hero h1 .line { display: block; overflow: hidden; }
+.hero h1 .line { display: block; overflow: hidden; padding-top: 0.12em; }
 .hero h1 .word {
   display: inline-block;
+  margin-right: 0.25em;
   transform: translateY(110%);
   animation: specimen-set 1s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
 }
@@ -403,7 +404,7 @@ const instruments = [
   position: absolute;
   right: -2vw;
   bottom: -8vw;
-  font-family: "Fraunces", Georgia, serif;
+  font-family: "Newsreader", Georgia, serif;
   font-weight: 300;
   font-style: italic;
   font-size: 42vw;
@@ -462,7 +463,7 @@ const instruments = [
   margin-bottom: 18px;
 }
 .inst-name {
-  font-family: "Fraunces", Georgia, serif;
+  font-family: "Newsreader", Georgia, serif;
   font-weight: 360;
   font-variation-settings: "opsz" 72;
   font-size: clamp(28px, 3vw, 38px);
@@ -501,7 +502,7 @@ const instruments = [
 /* Colophon */
 .colophon { text-align: center; }
 .colophon p {
-  font-family: "Fraunces", Georgia, serif;
+  font-family: "Newsreader", Georgia, serif;
   font-weight: 330;
   font-size: clamp(24px, 3.6vw, 48px);
   line-height: 1.25;
@@ -531,7 +532,7 @@ const instruments = [
   margin: 0;
 }
 .story .body p {
-  font-family: "Fraunces", Georgia, serif;
+  font-family: "Newsreader", Georgia, serif;
   font-weight: 360;
   font-size: clamp(18px, 1.8vw, 23px);
   line-height: 1.55;
@@ -539,7 +540,7 @@ const instruments = [
   margin: 0 0 1.2em;
 }
 .story .body p:first-child::first-letter {
-  font-family: "Fraunces", Georgia, serif;
+  font-family: "Newsreader", Georgia, serif;
   font-style: italic;
   font-size: 4.6em;
   float: left;
@@ -579,7 +580,7 @@ const instruments = [
 }
 .foot .r { text-align: right; }
 .foot em {
-  font-family: "Fraunces", Georgia, serif;
+  font-family: "Newsreader", Georgia, serif;
   font-style: italic;
   text-transform: none;
   letter-spacing: 0;
