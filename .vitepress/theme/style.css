@@ -47,7 +47,7 @@
   --vp-sidebar-bg-color: var(--spec-paper);
 
   /* Type */
-  --spec-font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --spec-font-display: "Newsreader", "Iowan Old Style", Georgia, serif;
   --spec-font-body: "IBM Plex Sans", -apple-system, system-ui, sans-serif;
   --spec-font-mono: "IBM Plex Mono", ui-monospace, "JetBrains Mono", monospace;
 
@@ -137,8 +137,9 @@ html.dark body::before {
   display: none !important;
 }
 
-/* Nav links: mono, tracked, like a publication's running head */
-.VPNavBarMenuLink {
+/* Nav links + dropdown groups: mono, tracked */
+.VPNavBarMenuLink,
+.VPNavBarMenuGroup {
   font-family: var(--spec-font-mono) !important;
   font-size: 12px !important;
   letter-spacing: 0.14em !important;
@@ -147,10 +148,12 @@ html.dark body::before {
   font-weight: 500 !important;
   transition: color 0.2s ease;
 }
-.VPNavBarMenuLink:hover {
+.VPNavBarMenuLink:hover,
+.VPNavBarMenuGroup:hover {
   color: var(--spec-rose) !important;
 }
-.VPNavBarMenuLink .text {
+.VPNavBarMenuLink .text,
+.VPNavBarMenuGroup .text {
   font-family: inherit !important;
 }
 

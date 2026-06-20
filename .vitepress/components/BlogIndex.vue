@@ -78,7 +78,7 @@ function formatAuthors(authors: string[]): string {
 .post-updated { color: var(--spec-mute); margin-left: 1em; }
 
 .post-title {
-  font-family: "Fraunces", Georgia, serif;
+  font-family: "Newsreader", Georgia, serif;
   font-weight: 380;
   font-variation-settings: "opsz" 72;
   font-size: clamp(24px, 3vw, 36px);
