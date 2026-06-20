@@ -156,6 +156,18 @@ html.dark body::before {
 .VPNavBarMenuGroup .text {
   font-family: inherit !important;
 }
+/* Dropdown button — VitePress styles .button directly, so inheritance isn't enough */
+.VPNavBarMenuGroup .button {
+  font-family: var(--spec-font-mono) !important;
+  font-size: 12px !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  font-weight: 500 !important;
+  color: var(--spec-ink-soft) !important;
+}
+.VPNavBarMenuGroup:hover .button {
+  color: var(--spec-rose) !important;
+}
 
 /* Logo / title */
 .VPNavBar .VPNavBarTitle .title {
