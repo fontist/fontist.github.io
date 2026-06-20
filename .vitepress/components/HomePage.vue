@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
+import { data as formulaData } from "../formula-count.data";
+
+const formulaCount = formulaData.formulaCount;
+const openSourceCount = formulaData.openSourceCount;
+
 // Type Specimen homepage.
 // Two distinct ideas, kept distinct:
 //  - SPECIMENS  → real typefaces (fonts you can install via Fontist), shown
@@ -63,7 +68,7 @@ const instruments = [
     num: "03",
     name: "Formulas",
     role: "A searchable registry of openly-licensed font formulae, auto-updated.",
-    spec: "2,175 formulae · 14,500 styles",
+    spec: formulaCount.toLocaleString() + " formulae",
     link: "https://www.fontist.org/formulas/",
     cta: "Browse",
   },
@@ -71,11 +76,11 @@ const instruments = [
 
 const motds = [
   "Installing fonts so humanity doesn't have to.",
-  "2,175 openly-licensed typefaces. One command. Zero headaches.",
-  "Making type accessible — because everyone deserves good fonts.",
+  formulaCount.toLocaleString() + " fonts. One command.",
   "Stop worrying about fonts. We already did.",
+  "Making type accessible for everyone.",
   "The font pipeline that runs while you sleep.",
-  "Automating typography for a more beautiful web.",
+  "Automating typography for a better web.",
 ];
 const motdText = ref("");
 const motdIndex = ref(0);
@@ -127,21 +132,9 @@ onUnmounted(() => { if (typeTimer) clearTimeout(typeTimer); });
     <section class="hero">
       <div class="ghost-numeral" aria-hidden="true">01</div>
       <div class="wrap">
-        <h1>
-          <span class="line">
-            <span class="word" style="animation-delay:.05s">Fonts</span>
-            <span class="word" style="animation-delay:.12s">for</span>
-            <span class="word" style="animation-delay:.19s">the</span>
-          </span>
-          <span class="line">
-            <em><span class="word" style="animation-delay:.26s">modern</span></em>
-            <span class="word" style="animation-delay:.33s">workflow.</span>
-          </span>
+        <h1 class="hero-motd" @click="skipMotd" title="Click for next message">
+          {{ motdText }}<span class="motd-cursor"></span>
         </h1>
-
-        <p class="motd" @click="skipMotd" title="Click for next message">
-          <span class="motd-text">{{ motdText }}</span><span class="motd-cursor"></span>
-        </p>
 
         <div class="below">
           <div>
@@ -210,7 +203,7 @@ onUnmounted(() => { if (typeTimer) clearTimeout(typeTimer); });
             <h2>Available<br />type.</h2>
           </div>
           <p class="lede">
-            A small sample from the registry of 2,175 openly-licensed typefaces.
+            A small sample from the registry of {{ formulaCount.toLocaleString() }} openly-licensed typefaces.
           </p>
         </header>
 
@@ -231,8 +224,8 @@ onUnmounted(() => { if (typeTimer) clearTimeout(typeTimer); });
     <section class="section colophon divider">
       <div class="wrap">
         <p>
-          Indexed in <span class="n">2,175</span> formulae, spanning
-          <span class="n">14,500</span> styles, since <span class="n">MMXX.</span>
+          Indexed in <span class="n">{{ formulaCount.toLocaleString() }}</span> formulae —
+          <span class="n">{{ openSourceCount.toLocaleString() }}</span> openly licensed — since <span class="n">MMXX.</span>
         </p>
       </div>
     </section>
@@ -356,40 +349,22 @@ onUnmounted(() => { if (typeTimer) clearTimeout(typeTimer); });
   margin-bottom: clamp(28px, 5vw, 64px);
 }
 .hero .meta-row b { color: var(--spec-ink); font-weight: 500; }
-.hero h1 {
+.hero-motd {
   font-family: "Newsreader", Georgia, serif;
-  font-weight: 340;
-  font-variation-settings: "opsz" 144;
-  font-size: clamp(56px, 13.5vw, 196px);
-  line-height: 0.92;
-  letter-spacing: -0.025em;
+  font-weight: 360;
+  font-variation-settings: "opsz" 72;
+  font-size: clamp(32px, 5.5vw, 76px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
   margin: 0;
-}
-.hero h1 .line { display: block; overflow: hidden; padding-top: 0.12em; }
-.hero h1 .word {
-  display: inline-block;
-  margin-right: 0.25em;
-  transform: translateY(110%);
-  animation: specimen-set 1s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
-}
-.hero h1 em {
-  font-style: italic;
-  color: var(--spec-rose);
-  font-variation-settings: "opsz" 144, "wght" 380;
-}
-@keyframes specimen-set { to { transform: translateY(0); } }
-
-.motd {
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
-  font-size: clamp(14px, 1.5vw, 18px);
-  color: var(--spec-ink-soft);
-  margin: clamp(20px, 3vw, 32px) 0 0;
+  color: var(--spec-ink);
   cursor: pointer;
   user-select: none;
-  min-height: 1.6em;
+  min-height: 2.4em;
+  max-width: 18ch;
   transition: color 0.2s;
 }
-.motd:hover { color: var(--spec-ink); }
+.hero-motd:hover { color: var(--spec-ink); }
 .motd-cursor {
   display: inline-block;
   width: 9px;
