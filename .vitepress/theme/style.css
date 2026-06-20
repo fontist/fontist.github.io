@@ -199,17 +199,36 @@ html.dark body::before {
   text-transform: uppercase !important;
   color: var(--spec-mute) !important;
 }
-.VPMenuLink .item {
+/* Menu links — must out-specify VitePress's .VPLink.link (0-2-0),
+   so we chain .VPMenu parent to reach 0-2-1. Actual DOM:
+   .VPMenu > .items > .VPMenuLink > a.VPLink.link > span */
+.VPMenu .VPMenuLink a,
+.VPMenu .VPMenuLink a span {
   font-family: var(--spec-font-mono) !important;
   font-size: 12px !important;
   letter-spacing: 0.14em !important;
   text-transform: uppercase !important;
+  font-weight: 500 !important;
   color: var(--spec-ink-soft) !important;
   transition: color 0.2s ease, background 0.2s ease;
 }
-.VPMenuLink .item:hover {
+.VPMenu .VPMenuLink a:hover {
   color: var(--spec-rose) !important;
   background: var(--spec-paper-deep) !important;
+}
+.VPMenu .VPMenuLink a:hover span {
+  color: var(--spec-rose) !important;
+}
+/* Ellipsis menu: Appearance label + item labels — .VPMenu parent
+   boosts specificity above VitePress's scoped component styles */
+.VPMenu .item .label,
+.VPMenu .group .item {
+  font-family: var(--spec-font-mono) !important;
+  font-size: 12px !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  font-weight: 500 !important;
+  color: var(--spec-ink-soft) !important;
 }
 
 /* Logo / title */
