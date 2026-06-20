@@ -125,36 +125,8 @@ const instruments = [
       </div>
     </section>
 
-    <!-- Specimens: REAL typefaces from the registry -->
-    <section class="section specimens">
-      <div class="wrap">
-        <header class="head">
-          <div>
-            <p class="eyebrow">§ Specimens</p>
-            <h2>Type, ready<br />to install.</h2>
-          </div>
-          <p class="lede">
-            A glimpse of the openly-licensed typefaces Fontist installs — each available
-            across Windows, Linux, and macOS with a single command. The registry indexes
-            2,175 of them.
-          </p>
-        </header>
-
-        <ul class="spec-list">
-          <li v-for="s in specimens" :key="s.name" class="spec-row">
-            <div class="spec-sample" :style="{ fontFamily: s.cssFamily }">{{ s.name }}</div>
-            <div class="spec-detail">
-              <span class="prompt">$</span> <span class="cmd">{{ s.install }}</span>
-              <span class="sep">·</span>
-              <span class="note">{{ s.note }}</span>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- The Instruments: the TOOLS (functional, not type samples) -->
-    <section class="section instruments divider">
+    <!-- The Instruments: the TOOLS (first — this is what visitors need) -->
+    <section class="section instruments">
       <div class="wrap">
         <header class="head">
           <div>
@@ -176,6 +148,32 @@ const instruments = [
             <a class="inst-link" :href="t.link" target="_self" rel="noreferrer">{{ t.cta }} →</a>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- Specimens: a compact reference of available type (secondary) -->
+    <section class="section specimens divider">
+      <div class="wrap">
+        <header class="head">
+          <div>
+            <p class="eyebrow">§ Specimens</p>
+            <h2>Available<br />type.</h2>
+          </div>
+          <p class="lede">
+            A small sample from the registry of 2,175 openly-licensed typefaces.
+          </p>
+        </header>
+
+        <ul class="spec-list">
+          <li v-for="s in specimens" :key="s.name" class="spec-row">
+            <div class="spec-sample" :style="{ fontFamily: s.cssFamily }">{{ s.name }}</div>
+            <div class="spec-detail">
+              <span class="prompt">$</span> <span class="cmd">{{ s.install }}</span>
+              <span class="sep">·</span>
+              <span class="note">{{ s.note }}</span>
+            </div>
+          </li>
+        </ul>
       </div>
     </section>
 
@@ -419,16 +417,16 @@ const instruments = [
 /* Specimens: real typefaces, large, in their own face */
 .spec-list { list-style: none; margin: 0; padding: 0; }
 .spec-row {
-  padding: clamp(24px, 4vw, 44px) 0;
+  padding: clamp(12px, 1.5vw, 18px) 0;
   border-top: 1px solid var(--spec-rule);
 }
 .spec-row:last-child { border-bottom: 1px solid var(--spec-rule); }
 .spec-sample {
-  font-size: clamp(56px, 11vw, 152px);
-  line-height: 0.95;
-  letter-spacing: -0.02em;
+  font-size: clamp(22px, 2.5vw, 34px);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
   color: var(--spec-ink);
-  margin-bottom: 0.2em;
+  margin-bottom: 0.1em;
   transition: color 0.3s ease;
 }
 .spec-row:hover .spec-sample { color: var(--spec-rose); }
