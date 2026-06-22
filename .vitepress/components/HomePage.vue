@@ -16,9 +16,9 @@ const openSourceCount = formulaData.openSourceCount;
 
 const specimens = [
   {
-    name: "Newsreader",
+    name: "Spectral",
     cssFamily: "'Fraunces', Georgia, serif",
-    install: 'fontist install "Newsreader"',
+    install: 'fontist install "Spectral"',
     note: "Display serif · variable opsz",
   },
   {
@@ -273,7 +273,7 @@ onUnmounted(() => { if (typeTimer) clearTimeout(typeTimer); });
   overflow: hidden;
 }
 .hero-motd {
-  font-family: "Newsreader", Georgia, serif;
+  font-family: "Spectral", Georgia, serif;
   font-weight: 360;
   font-variation-settings: "opsz" 72;
   font-size: clamp(32px, 5.5vw, 76px);
@@ -351,7 +351,7 @@ onUnmounted(() => { if (typeTimer) clearTimeout(typeTimer); });
   position: absolute;
   right: -2vw;
   bottom: -8vw;
-  font-family: "Newsreader", Georgia, serif;
+  font-family: "Spectral", Georgia, serif;
   font-weight: 300;
   font-style: italic;
   font-size: 42vw;
@@ -410,7 +410,7 @@ onUnmounted(() => { if (typeTimer) clearTimeout(typeTimer); });
   margin-bottom: 18px;
 }
 .inst-name {
-  font-family: "Newsreader", Georgia, serif;
+  font-family: "Spectral", Georgia, serif;
   font-weight: 360;
   font-variation-settings: "opsz" 72;
   font-size: clamp(28px, 3vw, 38px);
@@ -449,7 +449,7 @@ onUnmounted(() => { if (typeTimer) clearTimeout(typeTimer); });
 /* Colophon */
 .colophon { text-align: center; }
 .colophon p {
-  font-family: "Newsreader", Georgia, serif;
+  font-family: "Spectral", Georgia, serif;
   font-weight: 330;
   font-size: clamp(24px, 3.6vw, 48px);
   line-height: 1.25;
@@ -479,7 +479,7 @@ onUnmounted(() => { if (typeTimer) clearTimeout(typeTimer); });
   margin: 0;
 }
 .story .body p {
-  font-family: "Newsreader", Georgia, serif;
+  font-family: "Spectral", Georgia, serif;
   font-weight: 360;
   font-size: clamp(18px, 1.8vw, 23px);
   line-height: 1.55;
@@ -487,7 +487,7 @@ onUnmounted(() => { if (typeTimer) clearTimeout(typeTimer); });
   margin: 0 0 1.2em;
 }
 .story .body p:first-child::first-letter {
-  font-family: "Newsreader", Georgia, serif;
+  font-family: "Spectral", Georgia, serif;
   font-style: italic;
   font-size: 4.6em;
   float: left;
