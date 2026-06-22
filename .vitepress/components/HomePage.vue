@@ -50,25 +50,25 @@ const specimens = [
 const instruments = [
   {
     num: "01",
-    name: "Fontist",
-    role: "Install & manage fonts across Windows, Linux, and macOS — one command, native OS integration.",
-    spec: "CLI & Ruby API",
-    link: "https://www.fontist.org/fontist/",
+    name: "Fontisan",
+    role: "The most comprehensive open-source font processor — pure Ruby, every major format from legacy Type 1 to modern WOFF2, from Apple DFONT to web SVG.",
+    spec: "TTF · OTF · WOFF/WOFF2 · Type 1 · TTC/OTC · DFONT · SVG · variable",
+    link: "https://www.fontist.org/fontisan/",
     cta: "Documentation",
   },
   {
     num: "02",
-    name: "Fontisan",
-    role: "Build, convert, and shape fonts programmatically — pure Ruby, every modern format.",
-    spec: "TTF · OTF · WOFF2 · variable",
-    link: "https://www.fontist.org/fontisan/",
+    name: "Fontist",
+    role: "Powered by Fontisan. Installs and manages fonts from a library of " + formulaCount.toLocaleString() + " openly-licensed typefaces — across Windows, Linux, and macOS.",
+    spec: "CLI & Ruby API · " + formulaCount.toLocaleString() + " formulae",
+    link: "https://www.fontist.org/fontist/",
     cta: "Documentation",
   },
   {
     num: "03",
     name: "Formulas",
-    role: "A searchable registry of openly-licensed font formulae, auto-updated.",
-    spec: formulaCount.toLocaleString() + " formulae",
+    role: "A searchable registry of openly-licensed font formulae — featuring type from Google, SIL, IBM, Adobe, and independent foundries. Auto-updated.",
+    spec: formulaCount.toLocaleString() + " formulae · " + openSourceCount.toLocaleString() + " open-source",
     link: "https://www.fontist.org/formulas/",
     cta: "Browse",
   },
@@ -168,17 +168,17 @@ onUnmounted(() => { if (typeTimer) clearTimeout(typeTimer); });
       </div>
     </section>
 
-    <!-- The Instruments: the TOOLS (first — this is what visitors need) -->
+    <!-- The Suite: Fontisan (powerhouse) → Fontist (powered by) → Formulas (registry) -->
     <section class="section instruments">
       <div class="wrap">
         <header class="head">
           <div>
-            <p class="eyebrow">§ The Instruments</p>
-            <h2>Three tools.<br />One <em>pipeline.</em></h2>
+            <p class="eyebrow">§ The Suite</p>
+            <h2>Engineer.<br />Manage. <em>Discover.</em></h2>
           </div>
           <p class="lede">
-            The software that sources, shapes, and indexes the type — small, discrete,
-            and designed to compose.
+            Fontisan processes every font format. Fontist installs them across every platform.
+            Formulas indexes every openly-licensed typeface.
           </p>
         </header>
 
