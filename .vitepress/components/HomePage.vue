@@ -17,7 +17,7 @@ const openSourceCount = formulaData.openSourceCount;
 const specimens = [
   {
     name: "Spectral",
-    cssFamily: "'Fraunces', Georgia, serif",
+    cssFamily: "'Spectral', Georgia, serif",
     install: 'fontist install "Spectral"',
     note: "Display serif · variable opsz",
   },
@@ -257,7 +257,7 @@ onUnmounted(() => { if (typeTimer) clearTimeout(typeTimer); });
 
     <!-- Footer colophon -->
     <footer class="foot">
-      <span>Set in <em>Fraunces</em>, <em>IBM&nbsp;Plex</em>, &amp; <em>JetBrains&nbsp;Mono</em>.</span>
+      <span>Set in <em>Spectral</em>, <em>IBM&nbsp;Plex</em>, &amp; <em>JetBrains&nbsp;Mono</em>.</span>
       <span class="r">Fontist · a Ribose project · © MMXXVI</span>
     </footer>
   </div>
