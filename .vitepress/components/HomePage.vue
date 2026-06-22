@@ -50,18 +50,18 @@ const specimens = [
 const instruments = [
   {
     num: "01",
-    name: "Fontisan",
-    role: "The most comprehensive open-source font processor — pure Ruby, every major format from legacy Type 1 to modern WOFF2, from Apple DFONT to web SVG.",
-    spec: "TTF · OTF · WOFF/WOFF2 · Type 1 · TTC/OTC · DFONT · SVG · variable",
-    link: "https://www.fontist.org/fontisan/",
-    cta: "Documentation",
-  },
-  {
-    num: "02",
     name: "Fontist",
     role: "Powered by Fontisan. Installs and manages fonts from a library of " + formulaCount.toLocaleString() + " openly-licensed typefaces — across Windows, Linux, and macOS.",
     spec: "CLI & Ruby API · " + formulaCount.toLocaleString() + " formulae",
     link: "https://www.fontist.org/fontist/",
+    cta: "Documentation",
+  },
+  {
+    num: "02",
+    name: "Fontisan",
+    role: "The most comprehensive open-source font processor — pure Ruby, every major format from legacy Type 1 to modern WOFF2, from Apple DFONT to web SVG.",
+    spec: "TTF · OTF · WOFF/WOFF2 · Type 1 · TTC/OTC · DFONT · SVG · variable",
+    link: "https://www.fontist.org/fontisan/",
     cta: "Documentation",
   },
   {
@@ -177,7 +177,7 @@ onUnmounted(() => { if (typeTimer) clearTimeout(typeTimer); });
             <h2>Engineer.<br />Manage. <em>Discover.</em></h2>
           </div>
           <p class="lede">
-            Fontisan processes every font format. Fontist installs them across every platform.
+            Fontist installs them across every platform. Fontisan processes every font format.
             Formulas indexes every openly-licensed typeface.
           </p>
         </header>
