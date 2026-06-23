@@ -1,6 +1,19 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import { blockDisplayName, scriptGroup, hexCp, safeChar, categoryName, featureInfo, blockSlug, PLANES, planeForCodepoint } from '../constants.ts'
+import {
+  blockDisplayName,
+  scriptGroup,
+  hexCp,
+  safeChar,
+  categoryName,
+  featureInfo,
+  blockSlug,
+  PLANES,
+  planeForCodepoint,
+  blockScriptFamily,
+  isCjkBlock,
+  scriptFamilyLabel,
+} from '../constants.ts'
 
 describe('blockDisplayName', () => {
   it('maps known blocks to human-friendly names', () => {
@@ -14,7 +27,7 @@ describe('blockDisplayName', () => {
     assert.equal(blockDisplayName('Some Unknown Block'), 'Some Unknown Block')
   })
   it('maps CJK-related blocks', () => {
-    assert.equal(blockDisplayName('CJK Unified Ideographs Extension A'), 'CJK Extension A')
+    assert.equal(blockDisplayName('CJK Unified Ideographs Extension A'), 'Extended CJK Characters')
     assert.equal(blockDisplayName('Hiragana'), 'Japanese Hiragana')
     assert.equal(blockDisplayName('Hangul Syllables'), 'Korean')
   })
@@ -28,9 +41,9 @@ describe('scriptGroup', () => {
     assert.equal(scriptGroup('Combining Diacritical Marks'), 'Latin')
   })
   it('groups CJK blocks', () => {
-    assert.equal(scriptGroup('CJK Unified Ideographs'), 'CJK (Chinese/Japanese/Korean)')
-    assert.equal(scriptGroup('Hiragana'), 'CJK (Chinese/Japanese/Korean)')
-    assert.equal(scriptGroup('Katakana'), 'CJK (Chinese/Japanese/Korean)')
+    assert.equal(scriptGroup('CJK Unified Ideographs'), 'CJK')
+    assert.equal(scriptGroup('Hiragana'), 'CJK')
+    assert.equal(scriptGroup('Katakana'), 'CJK')
   })
   it('groups Emoji blocks', () => {
     assert.equal(scriptGroup('Emoticons'), 'Emoji')
@@ -39,6 +52,84 @@ describe('scriptGroup', () => {
   it('groups Middle Eastern blocks', () => {
     assert.equal(scriptGroup('Arabic'), 'Middle Eastern')
     assert.equal(scriptGroup('Hebrew'), 'Middle Eastern')
+  })
+})
+
+describe('blockScriptFamily', () => {
+  it('classifies core Latin blocks', () => {
+    assert.equal(blockScriptFamily('Basic Latin'), 'latin')
+    assert.equal(blockScriptFamily('Latin Extended-A'), 'latin')
+    assert.equal(blockScriptFamily('IPA Extensions'), 'latin')
+  })
+  it('classifies CJK blocks including Kangxi, Yi, Phags-pa', () => {
+    assert.equal(blockScriptFamily('CJK Unified Ideographs'), 'cjk')
+    assert.equal(blockScriptFamily('Hiragana'), 'cjk')
+    assert.equal(blockScriptFamily('Katakana'), 'cjk')
+    assert.equal(blockScriptFamily('Hangul Syllables'), 'cjk')
+    assert.equal(blockScriptFamily('Bopomofo'), 'cjk')
+    assert.equal(blockScriptFamily('Kangxi Radicals'), 'cjk')
+    assert.equal(blockScriptFamily('Yi Syllables'), 'cjk')
+    assert.equal(blockScriptFamily('Phags-pa'), 'cjk')
+  })
+  it('classifies middle-eastern blocks consistently', () => {
+    assert.equal(blockScriptFamily('Arabic'), 'middle-eastern')
+    assert.equal(blockScriptFamily('Hebrew'), 'middle-eastern')
+    assert.equal(blockScriptFamily('Syriac'), 'middle-eastern')
+    assert.equal(blockScriptFamily('Thaana'), 'middle-eastern')
+    assert.equal(blockScriptFamily('Samaritan'), 'middle-eastern')
+    assert.equal(blockScriptFamily('Mandaic'), 'middle-eastern')
+  })
+  it('classifies Indic blocks consistently', () => {
+    assert.equal(blockScriptFamily('Devanagari'), 'south-se-asian')
+    assert.equal(blockScriptFamily('Bengali'), 'south-se-asian')
+    assert.equal(blockScriptFamily('Gurmukhi'), 'south-se-asian')
+    assert.equal(blockScriptFamily('Telugu'), 'south-se-asian')
+    assert.equal(blockScriptFamily('Malayalam'), 'south-se-asian')
+    assert.equal(blockScriptFamily('Thai'), 'south-se-asian')
+    assert.equal(blockScriptFamily('Myanmar'), 'south-se-asian')
+  })
+  it('classifies private-use and technical blocks', () => {
+    assert.equal(blockScriptFamily('Private Use Area'), 'private-use')
+    assert.equal(blockScriptFamily('Variation Selectors'), 'technical')
+    assert.equal(blockScriptFamily('Box Drawing'), 'technical')
+  })
+  it('returns "other" for unknown blocks', () => {
+    assert.equal(blockScriptFamily('Some Unknown Block'), 'other')
+  })
+})
+
+describe('isCjkBlock', () => {
+  it('returns true for the blocks that FontUnicodeBrowser previously missed', () => {
+    assert.equal(isCjkBlock('Kangxi Radicals'), true)
+    assert.equal(isCjkBlock('Yi Syllables'), true)
+    assert.equal(isCjkBlock('Yi Radicals'), true)
+    assert.equal(isCjkBlock('Phags-pa'), true)
+  })
+  it('returns true for core CJK blocks', () => {
+    assert.equal(isCjkBlock('CJK Unified Ideographs'), true)
+    assert.equal(isCjkBlock('Hiragana'), true)
+    assert.equal(isCjkBlock('Katakana'), true)
+    assert.equal(isCjkBlock('Hangul Jamo'), true)
+    assert.equal(isCjkBlock('Bopomofo'), true)
+  })
+  it('returns false for non-CJK blocks', () => {
+    assert.equal(isCjkBlock('Basic Latin'), false)
+    assert.equal(isCjkBlock('Arabic'), false)
+    assert.equal(isCjkBlock('Emoticons'), false)
+  })
+  it('matches case-insensitively', () => {
+    assert.equal(isCjkBlock('cjk unified ideographs'), true)
+    assert.equal(isCjkBlock('HIRAGANA'), true)
+  })
+})
+
+describe('scriptFamilyLabel', () => {
+  it('maps every ScriptFamily to its display label', () => {
+    assert.equal(scriptFamilyLabel('latin'), 'Latin')
+    assert.equal(scriptFamilyLabel('cjk'), 'CJK')
+    assert.equal(scriptFamilyLabel('middle-eastern'), 'Middle Eastern')
+    assert.equal(scriptFamilyLabel('south-se-asian'), 'South & SE Asian')
+    assert.equal(scriptFamilyLabel('other'), 'Other')
   })
 })
 
