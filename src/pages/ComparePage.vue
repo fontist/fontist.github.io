@@ -71,7 +71,7 @@ async function addFont(slug: string) {
   if (!availableSlugs.value.has(slug)) return
 
   const entry = allFonts.value.find(f => f.slug === slug)
-  const { fontId, ensureInjected } = injectFontFace(slug, `fonts/${slug}.woff`, true)
+  const { fontId, ensureInjected } = injectFontFace(slug, `fonts/${slug}.woff2`, true)
   ensureInjected()
 
   const col: FontColumn = {

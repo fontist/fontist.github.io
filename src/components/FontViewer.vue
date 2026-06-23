@@ -9,6 +9,7 @@ const props = defineProps({
   slug: { type: String, required: true },
   familyName: { type: String, default: '' },
   description: { type: String, default: '' },
+  fontPath: { type: String, default: null },
   redistributable: { type: Boolean, default: false },
   licenseName: { type: String, default: '' },
 })
@@ -176,8 +177,9 @@ onMounted(async () => {
   }
 
   if (props.redistributable) {
+    const path = props.fontPath || `fonts/${props.slug}.woff2`
     const { fontId: fid, ensureInjected } = injectFontFace(
-      props.slug, `fonts/${props.slug}.woff`, props.redistributable
+      props.slug, path, props.redistributable
     )
     fontId.value = fid
     fontReady.value = ensureInjected()

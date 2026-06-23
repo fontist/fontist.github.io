@@ -23,7 +23,7 @@ const fontCtx = computed<FontContext | null>(() => {
     slug: slug.value,
     familyName: slug.value,
     fontId: fontId.value,
-    fontPath: `fonts/${slug.value}.woff`,
+    fontPath: `fonts/${slug.value}.woff2`,
     redistributable: true,
     coverage: new Set(coverage.value.codepoints || []),
     color: '#bf4e6a',
@@ -35,7 +35,7 @@ const planes = computed(() => allBlocks.value.length ? getPlanes(allBlocks.value
 async function loadData() {
   const s = slug.value
   if (!s) return
-  const { fontId: fid, ensureInjected } = injectFontFace(s, `fonts/${s}.woff`, true)
+  const { fontId: fid, ensureInjected } = injectFontFace(s, `fonts/${s}.woff2`, true)
   fontId.value = fid
   fontReady.value = ensureInjected()
   coverage.value = await fetchCoverage(s)

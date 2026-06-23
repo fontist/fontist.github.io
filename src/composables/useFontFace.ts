@@ -1,3 +1,5 @@
+import { fontFormatForPath } from '../lib/fonts/format'
+
 const injectedFonts = new Set<string>()
 
 const isSSR = import.meta.env.SSR
@@ -15,11 +17,12 @@ export function injectFontFace(slug: string, fontPath: string, redistributable: 
       injectedFonts.add(slug)
       return true
     }
+    const format = fontFormatForPath(fontPath)
     const style = document.createElement('style')
     style.id = styleId
     style.textContent =
       `@font-face{font-family:'${fontId}';` +
-      `src:url('${basePath}${fontPath}') format('woff');` +
+      `src:url('${basePath}${fontPath}') format('${format}');` +
       `font-weight:100 900;font-display:swap;}`
     document.head.appendChild(style)
     injectedFonts.add(slug)
