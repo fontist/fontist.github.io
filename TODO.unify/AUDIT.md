@@ -503,31 +503,224 @@ the script obsolete via `dirStyle: 'nested'`).
 
 ---
 
+## S. Three large orphaned components + one orphaned module — **P1**
+
+`grep -rn "FontViewer\|FontSpecimen\|FontUnicodeBrowser"` returns zero
+hits outside the files themselves. Same for `src/ssg-routes.ts`.
+
+| File                                   | LOC  | Status                                              |
+|----------------------------------------|------|-----------------------------------------------------|
+| `src/components/FontViewer.vue`        | 1173 | Reimplements `safeChar`, `hexCp`, `planeOf` locally |
+| `src/components/FontSpecimen.vue`      | 270  | Reimplements specimen state machine                 |
+| `src/components/FontUnicodeBrowser.vue` | 337 | Was touched by commit a43ff5b but is not consumed   |
+| `src/ssg-routes.ts`                    | 96   | Superseded by `scripts/gen-ssg-routes.mjs` (mjs)    |
+
+**Principle violated:** YAGNI / dead code. MECE — two route generators
+exist; only one is wired up. The `FontViewer.vue` at 1173 LOC is the
+single biggest source file in the project and ships to no URL.
+
+**Fix:** Delete all four. Re-confirm zero importers immediately before
+deletion in case something has been added since this audit.
+
+**Note on FontUnicodeBrowser:** Commit a43ff5b cleaned the duplicate
+`scriptCategory` regex inside it as part of AUDIT O, but the file itself
+has no consumer. The cleanup was correct (would have been needed if it
+were live); the deletion is the next step.
+
+---
+
+## T. `blockSlug` regex duplicated four times — **P1**
+
+The canonical `blockSlug()` lives at `src/lib/unicode/constants.ts:177`.
+The same regex appears in:
+
+| Location                              | Form                                                |
+|---------------------------------------|-----------------------------------------------------|
+| `src/pages/FontBlockPage.vue:52`      | `b.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-\$/g, '')` |
+| `src/pages/FontUnicodePage.vue:73`    | identical                                           |
+| `src/ssg-routes.ts:25` (orphan)       | extracted as `blockToSlug()` — still a duplicate    |
+| `scripts/gen-ssg-routes.mjs`          | (build-time; can use a shared helper)               |
+
+**Principle violated:** DRY. AUDIT O was the same class of bug for the
+CJK classifier. This is the slug equivalent.
+
+**Fix:** Pages import `blockSlug()` from `lib/unicode/constants`. The
+build script imports from a shared path (it already cannot import from
+`src/` directly because of the ESM/types loading model, so a tiny
+`scripts/lib/slug.mjs` is the right boundary — or copy the 2-line
+function with a comment pointing at the canonical source).
+
+---
+
+## U. `FontContext` type lives in `lib/unicode/types/` — **P1**
+
+`src/lib/unicode/types/index.ts:45` declares `FontContext`:
+
+```ts
+export interface FontContext {
+  slug: string
+  familyName: string
+  fontId: string
+  fontPath: string | null
+  redistributable: boolean
+  coverage: Set<number>     // ← the only unicode-adjacent field
+  color: string
+}
+```
+
+**Principle violated:** MECE / dependency direction. `FontContext` is a
+font concept (slug, familyName, fontId, redistributable). The `coverage`
+field is a `Set<number>` of codepoints — it does not pull in any
+unicode-library type. The type sits in `lib/unicode/` only because
+`UnicodeBlockGrid` happens to consume it as a prop.
+
+**Layering inversion:** `lib/fonts/` should own this type and
+`lib/unicode/components/UnicodeBlockGrid.vue` should import it as a prop
+type. Today the dependency points the wrong way: unicode → fonts.
+
+**Fix:** Move `FontContext` to `src/lib/types/domain.ts` (the canonical
+types home we established in commit 9dfd865). Update the one importer
+(`UnicodeBlockGrid.vue`).
+
+---
+
+## V. Undefined CSS variable `--font-mono` — **P1**
+
+`grep -rn 'var(--font-mono' src/` returns 9 hits. The variable is not
+defined anywhere:
+
+```
+src/pages/ComparePage.vue:327, 380, 442, 471, 504
+src/pages/PropertyListPage.vue:66, 71, 72
+src/pages/FontPage.vue:314, 355
+```
+
+The canonical variable is `--vp-font-family-mono` (defined in the legacy
+bridge block at `src/styles/main.css`). All `var(--font-mono, ...)`
+expressions silently fall through to their fallback (`monospace`,
+`'SF Mono', monospace`) — so the rendered CSS works but ignores any
+future change to the canonical mono family.
+
+**Principle violated:** Single source of truth. AUDIT F.2 flagged the
+`--vp-c-*` legacy bridge; this is a separate but related leak — a
+variable name that was never aliased.
+
+**Fix:** Mechanical sweep. Replace `var(--font-mono, ...)` with
+`var(--vp-font-family-mono, ...)`. Verify with grep before/after.
+
+---
+
+## W. `FontBlockPage.vue` references undeclared `loading` ref — **P0 (correctness bug)**
+
+`src/pages/FontBlockPage.vue:101` has `<div v-else-if="loading">`, but
+the `<script setup>` block declares no `loading` ref. Vue resolves this
+to `undefined` at runtime, so the branch never matches.
+
+User-visible effect: when `block` is null on first paint (e.g. bad
+block param), the page renders "Block not found." instead of "Loading…".
+
+**Principle violated:** Type safety net missing — Vue SFC compilation
+does not error on undeclared template references in `<script setup>`.
+The runtime contract is implicit.
+
+**Fix:** Either delete the dead branch (block.value is always set by
+the time the template renders, given the `await loadData()` top-level
+await) or add `const loading = ref(true)` and wire it. The former is
+simpler.
+
+---
+
+## X. Specimen text hardcoded per page — **P2**
+
+`FontPage.vue` hardcodes:
+
+```ts
+const HERO_SPECIMEN = 'Finding efficient flow'
+const BODY_SPECIMEN = 'fluffy fish affords fine flavor · ...'
+const LIGATURE_SPECIMEN = 'ff fi fl ffi ffl'
+const NUMBER_SPECIMEN = '0123456789'
+```
+
+`FontViewer.vue` (orphan) has its own `DEFAULT_SPECIMEN`. `FontSpecimen.vue`
+(orphan) has a third specimen. Three sources of truth.
+
+**Principle violated:** Model-driven, semantically-driven. A CJK font
+should default to a CJK pangram. An Arabic font should default to an
+Arabic pangram. The script family is already classified
+(`blockScriptFamily`); the specimen picker is not wired to it.
+
+**Fix:** `src/lib/fonts/specimens.ts` exports `defaultSpecimenForFamily(family: FontFamily)`:
+- CJK → "永和九年歲在癸丑暮春之初期..."
+- Arabic → "نص حكيم له سر قاطع..."
+- Latin → current "Whereas recognition..."
+- etc.
+
+Defer until FontFamily entity exists (Phase 1 of
+`13-font-formula-page-architecture.md`).
+
+---
+
+## Y. `coverage` typed as `any` in three pages — **P1**
+
+Commit d1dd510 typed `useCoverage()` as `Promise<Coverage | null>`, but
+the consuming pages still type the local ref as `any`:
+
+| Page                    | Line | Code                       |
+|-------------------------|------|----------------------------|
+| `FontPage.vue`          | 17   | `const coverage = ref<any>(null)` |
+| `FontBlockPage.vue`     | 17   | identical                  |
+| `FontUnicodePage.vue`   | 15   | identical                  |
+
+The type work in commit d1dd510 is half-done: the loader returns a typed
+value, the pages immediately widen it back to `any`.
+
+**Principle violated:** Type safety / MECE.
+
+**Fix:** Import `Coverage` from `lib/types/domain.ts` and replace
+`ref<any>(null)` with `ref<Coverage | null>(null)` in all three pages.
+
+---
+
+## Z. `FormulaPage` → `/font/:slug` creates a circular data dependency — **P1**
+
+`FormulaPage.vue:110` links to `/font/${slug}`. `FontPage.vue:33` calls
+`findFormula(slug)`. So navigating Formula → Font → "Formula details"
+link (FontPage:95) lands the user back where they started, on a page
+that renders the same `FormulaData` differently.
+
+This is the user-visible symptom of AUDIT A.1 — both pages are formula
+pages wearing different clothes.
+
+**Fix:** Resolved by Phase 1 of `13-font-formula-page-architecture.md`.
+Until then, the "View Font Specimen" link should at minimum be removed
+from FormulaPage when the formula has only one family (the specimen IS
+the formula page in that case).
+
+---
+
 ## Summary by priority (updated)
 
 | Priority | Count | Items |
 |---|---|---|
-| **P0** | 3 (1 resolved) | A (data model), G (URL model), A.3, ~~L (Unicode provenance)~~ ✅ |
-| **P1** | 9 (3 resolved) | B (layering), C (types), D (tests), E (committed data), **M (schema validation)**, ~~**O (CJK regex DRY)**~~ ✅, ~~**Q (test/code drift)**~~ ✅ |
-| **P2** | 7 | F (CSS), H (perf), I (docs), J (build), K (a11y), **N (snake_case)**, **P (Suspense)**, **R (dirify reclassified)** |
+| **P0** | 4 (1 resolved) | A (data model), G (URL model), A.3, **W (loading ref bug)**, ~~L (Unicode provenance)~~ ✅ |
+| **P1** | 16 (3 resolved) | B (layering), C (types), D (tests), E (committed data), **M (schema validation)**, **S (orphan components 1173+270+337+96 LOC)**, **T (blockSlug DRY)**, **U (FontContext layering)**, **V (--font-mono undefined)**, **Y (coverage any)**, **Z (Formula→Font circular)**, ~~**O (CJK regex DRY)**~~ ✅, ~~**Q (test/code drift)**~~ ✅ |
+| **P2** | 9 | F (CSS), H (perf), I (docs), J (build), K (a11y), **N (snake_case)**, **P (Suspense)**, **R (dirify reclassified)**, **X (hardcoded specimens)** |
 
 ## What this session will resolve
 
-- **AUDIT.md** (this doc) — captures all findings including L–R extensions
-- **08-domain-model.md** — P0 spec for the entity model
-- **09-page-contract.md** — conventions for every page
-- **10-specs.md** — test plan covering D
-- **11-unicode-data-provenance.md** — analysis of L
-- **12-ucd-xml-pipeline.md** — spec + implementation for L.1
-- **Implementation:** B.2 (delete orphan grid), B.1 (useUnicodeBlock loader),
-  B.3 (FormulaBrowser router fix), D.1 (delete stale tests), C.1 (centralize types),
-  D.2 (add specs for loaders/theme/markdown/routes), Q (fix constants drift),
-  L.1 (gen-unicode-data.mjs), O (extract isCjkBlock)
+- **AUDIT.md** (extended) — captures S–Z findings
+- **13-font-formula-page-architecture.md** — Phase 1/2/3 spec for the A/G P0 split
+- **Implementation:** S (delete 4 orphans), T (use canonical blockSlug in
+  pages), W (fix loading ref bug), Y (type coverage in pages),
+  V (sweep --font-mono), U (relocate FontContext)
 
 Deferred (need user direction or out-of-session scope):
-- A/G full URL rename and entity split — P0 but high-risk
+- A/G full URL rename and entity split — P0 but high-risk (Phase 2+3
+  of `13-font-formula-page-architecture.md`)
 - E gitignore changes — needs `git rm --cached` coordination
 - F CSS split — visual regression risk
 - H perf optimizations — measure first
+- M schema validation — needs zod adoption decision
+- X model-driven specimens — depends on FontFamily entity
 
 Each deferred item has a clear spec in this directory; future work picks up the doc.
