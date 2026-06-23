@@ -33,7 +33,7 @@ async function loadData() {
   try {
     formula.value = await findFormula(s)
 
-    const { fontId: fid, ensureInjected } = injectFontFace(s, `fonts/${s}.woff`, true)
+    const { fontId: fid, ensureInjected } = injectFontFace(s, `fonts/${s}.woff2`, true)
     fontId.value = fid
     fontReady.value = ensureInjected()
     coverage.value = await fetchCoverage(s)

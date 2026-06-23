@@ -24,7 +24,7 @@ const fontCtx = computed<FontContext | null>(() => {
   if (!coverage.value) return null
   return {
     slug: slug.value, familyName: slug.value, fontId: fontId.value,
-    fontPath: `fonts/${slug.value}.woff`, redistributable: true,
+    fontPath: `fonts/${slug.value}.woff2`, redistributable: true,
     coverage: new Set(coverage.value.codepoints || []), color: '#bf4e6a',
   }
 })
@@ -43,7 +43,7 @@ const missingCount = computed(() => {
 async function loadData() {
   const s = slug.value
   if (!s) return
-  const { fontId: fid, ensureInjected } = injectFontFace(s, `fonts/${s}.woff`, true)
+  const { fontId: fid, ensureInjected } = injectFontFace(s, `fonts/${s}.woff2`, true)
   fontId.value = fid
   fontReady.value = ensureInjected()
   coverage.value = await fetchCoverage(s)

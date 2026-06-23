@@ -1,9 +1,10 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { injectFontFace } from '../composables/useFontFace'
 import { fetchCoverage } from '../composables/useCoverage'
 import { useUnicodeBlock } from '../composables/useUnicodeBlock'
 import { blockScriptFamily, hexCp, safeChar, type ScriptFamily } from '../lib/unicode/constants'
+import type { Coverage, CoverageBlock } from '../lib/types/domain'
 
 const FONT_SCRIPT_LABELS: Partial<Record<ScriptFamily, string>> = {
   'latin': 'Latin',
@@ -22,7 +23,8 @@ function fontScriptLabel(family: ScriptFamily): string {
 
 const props = defineProps({
   slug: { type: String, required: true },
-  redistributable: { type: Boolean, default: false }
+  redistributable: { type: Boolean, default: false },
+  fontPath: { type: String, default: null },
 })
 
 const coverage = ref(null)
@@ -113,8 +115,9 @@ async function selectBlock(idx) {
 
 onMounted(async () => {
   if (props.redistributable) {
+    const path = props.fontPath || `fonts/${props.slug}.woff2`
     const { fontId: fid, ensureInjected } = injectFontFace(
-      props.slug, `fonts/${props.slug}.woff`, props.redistributable
+      props.slug, path, props.redistributable
     )
     fontId.value = fid
     fontReady.value = ensureInjected()

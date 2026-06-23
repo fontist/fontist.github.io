@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import type { UnicodeBlock, UnicodeCharacter, GridMode } from '..'
 import type { FontContext } from '../../types/domain'
 import { isControlChar, controlAbbrev, controlName, displayChar } from '..'
+import { fontFormatForPath } from '../../fonts/format'
 
 const props = withDefaults(defineProps<{
   block: UnicodeBlock
@@ -55,7 +56,7 @@ const gridStyles = computed(() => {
       if (!document.getElementById(`ub-style-${id}`)) {
         const s = document.createElement('style')
         s.id = `ub-style-${id}`
-        s.textContent = `@font-face{font-family:'${id}';src:url('${f.fontPath}') format('woff');font-weight:100 900;font-display:swap;}`
+        s.textContent = `@font-face{font-family:'${id}';src:url('${f.fontPath}') format('${fontFormatForPath(f.fontPath)}');font-weight:100 900;font-display:swap;}`
         document.head.appendChild(s)
       }
       styles[f.slug] = `'${id}', sans-serif`
