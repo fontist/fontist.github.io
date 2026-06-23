@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url'
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const pub = resolve(root, 'public')
 
-const STATIC_ROUTES = ['/', '/about', '/blog', '/browse', '/compare', '/unicode']
+const STATIC_ROUTES = ['/', '/about', '/blog', '/browse', '/compare', '/fonts', '/unicode']
 
 const blockToSlug = (name) =>
   name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
@@ -43,6 +43,7 @@ function titleFromHeading(text, fallback) {
 
 
 const formulas = readJson(resolve(pub, 'formulas-data.json'), [])
+const familiesIndex = readJson(resolve(pub, 'font-families.json'), { families: [] })
 const blocksFile = readJson(resolve(pub, 'unicode-blocks.json'), {})
 const blockSlugs = Object.values(blocksFile).map((b) => blockToSlug(b.name)).filter(Boolean)
 
@@ -120,6 +121,12 @@ for (const f of formulas) {
   routes.add(`/font/${f.slug}/unicode`)
 }
 
+for (const fam of familiesIndex.families || []) {
+  if (!fam.slug) continue
+  routes.add(`/fonts/${fam.slug}`)
+  routes.add(`/fonts/${fam.slug}/unicode`)
+}
+
 const PLANE_KEYS = ['bmp', 'smp', 'sip', 'tip', 'ssp', 'pua-a', 'pua-b']
 for (const k of PLANE_KEYS) routes.add(`/unicode/plane/${k}`)
 
@@ -170,6 +177,7 @@ const urlset = routesArr
   .map((r) => {
     const loc = `https://www.fontist.org${r === '/' ? '' : r}`
     const priority = r === '/' ? '1.0'
+      : r.startsWith('/fonts/') && !r.endsWith('/unicode') ? '0.9'
       : r.startsWith('/font/') && !r.includes('/unicode') ? '0.9'
       : r.startsWith('/formula/') ? '0.8'
       : r.startsWith('/unicode/') ? '0.7'
