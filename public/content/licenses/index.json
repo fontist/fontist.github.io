@@ -1,0 +1,112 @@
+[
+  {
+    "slug": "adobe",
+    "title": "Adobe Software License",
+    "description": ""
+  },
+  {
+    "slug": "apache",
+    "title": "Apache License 2.0",
+    "description": ""
+  },
+  {
+    "slug": "apple-only",
+    "title": "Apple-only License",
+    "description": ""
+  },
+  {
+    "slug": "bitstream",
+    "title": "Bitstream Vera License",
+    "description": ""
+  },
+  {
+    "slug": "bsd",
+    "title": "BSD License",
+    "description": ""
+  },
+  {
+    "slug": "bundled",
+    "title": "Bundled Software License",
+    "description": ""
+  },
+  {
+    "slug": "cc-by-sa",
+    "title": "Creative Commons Attribution-ShareAlike 4.0",
+    "description": ""
+  },
+  {
+    "slug": "cc-by",
+    "title": "Creative Commons Attribution 4.0",
+    "description": ""
+  },
+  {
+    "slug": "cc0",
+    "title": "Creative Commons Zero (Public Domain)",
+    "description": ""
+  },
+  {
+    "slug": "free-use",
+    "title": "Freely Usable Fonts",
+    "description": ""
+  },
+  {
+    "slug": "freeware",
+    "title": "Freeware Font License",
+    "description": ""
+  },
+  {
+    "slug": "gpl",
+    "title": "GNU General Public License",
+    "description": ""
+  },
+  {
+    "slug": "gust",
+    "title": "GUST Font License",
+    "description": ""
+  },
+  {
+    "slug": "ipa",
+    "title": "IPA Font License",
+    "description": ""
+  },
+  {
+    "slug": "lgpl",
+    "title": "GNU Lesser General Public License",
+    "description": ""
+  },
+  {
+    "slug": "microsoft-web",
+    "title": "Microsoft Web Fonts License",
+    "description": ""
+  },
+  {
+    "slug": "mit",
+    "title": "MIT License",
+    "description": ""
+  },
+  {
+    "slug": "ms-office",
+    "title": "Microsoft Software License",
+    "description": ""
+  },
+  {
+    "slug": "ofl",
+    "title": "SIL Open Font License 1.1",
+    "description": ""
+  },
+  {
+    "slug": "public-domain",
+    "title": "Public Domain Fonts",
+    "description": ""
+  },
+  {
+    "slug": "ufl",
+    "title": "Ubuntu Font License 1.0",
+    "description": ""
+  },
+  {
+    "slug": "unknown",
+    "title": "License Not Specified",
+    "description": ""
+  }
+]

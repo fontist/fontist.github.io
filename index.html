@@ -7,6 +7,19 @@
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
     <title>Fontist — Install fonts anywhere</title>
+    <script>
+      // No-flash theme bootstrap — runs before Vue mounts
+      (function () {
+        try {
+          var k = 'fontist-theme';
+          var s = localStorage.getItem(k);
+          var t = s === 'light' || s === 'dark'
+            ? s
+            : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          if (t === 'dark') document.documentElement.classList.add('dark');
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="app"></div>
