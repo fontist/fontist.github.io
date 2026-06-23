@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { marked } from 'marked'
 import { useHead } from '@unhead/vue'
 import { useMarkdownLinks } from '../composables/useMarkdownLinks'
-import { loadMarkdown } from '../lib/markdown/loader'
+import { loadParsedMarkdown } from '../lib/markdown/loader'
 import type { Ref } from 'vue'
 
 const html = ref('')
@@ -11,39 +11,33 @@ const loading = ref(true)
 const contentRef = ref<HTMLElement | null>(null)
 useMarkdownLinks(contentRef as Ref<HTMLElement | null>)
 
-const md = await loadMarkdown('content/about.md')
-if (md) html.value = await marked(md)
+const parsed = await loadParsedMarkdown('content/about.md')
+if (parsed) {
+  html.value = await marked(parsed.body)
+}
 loading.value = false
 
-useHead({
-  title: 'About — Fontist',
+useHead(() => ({
+  title: parsed?.frontmatter.title ? `${parsed.frontmatter.title} — Fontist` : 'About — Fontist',
   meta: [
-    { name: 'description', content: 'About Fontist: an open-source font manager for installing, managing, and exploring openly-licensed fonts.' },
-    { property: 'og:title', content: 'About — Fontist' },
+    { name: 'description', content: parsed?.frontmatter.description || 'About Fontist: an open-source font manager for installing, managing, and exploring openly-licensed fonts.' },
+    { property: 'og:title', content: parsed?.frontmatter.title || 'About — Fontist' },
     { property: 'og:type', content: 'website' },
   ],
   link: [
     { rel: 'canonical', href: 'https://www.fontist.org/about' },
   ],
-})
+}))
 </script>
 
 <template>
   <div class="page-container">
-    <article ref="contentRef" class="markdown-content" v-html="html" v-if="!loading"></article>
+    <article ref="contentRef" class="md-doc" v-if="!loading" v-html="html"></article>
     <div v-else class="loading">Loading…</div>
   </div>
 </template>
 
 <style scoped>
-.page-container { max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
-.markdown-content { line-height: 1.7; color: #333; }
-.markdown-content :deep(h1) { font-size: 2rem; font-weight: 700; margin: 0 0 1rem; }
-.markdown-content :deep(h2) { font-size: 1.5rem; font-weight: 600; margin: 2rem 0 1rem; }
-.markdown-content :deep(h3) { font-size: 1.2rem; font-weight: 600; margin: 1.5rem 0 0.75rem; }
-.markdown-content :deep(p) { margin-bottom: 1rem; }
-.markdown-content :deep(a) { color: #bf4e6a; }
-.markdown-content :deep(code) { font-family: monospace; background: #f6f6f7; padding: 0.15em 0.35em; border-radius: 3px; }
-.markdown-content :deep(blockquote) { border-left: 3px solid #bf4e6a; padding-left: 1rem; margin: 1rem 0; color: #777; }
-.loading { text-align: center; padding: 4rem; color: #888; }
+.page-container { max-width: 820px; margin: 0 auto; padding: clamp(48px, 8vw, 96px) clamp(20px, 4vw, 56px) 96px; }
+.loading { text-align: center; padding: 4rem; color: var(--spec-mute); }
 </style>
