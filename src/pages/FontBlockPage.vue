@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
+import { useHead } from '@unhead/vue'
 import { injectFontFace } from '../composables/useFontFace'
 import { fetchCoverage } from '../composables/useCoverage'
 import type { UnicodeBlock, FontContext } from '../lib/unicode'
@@ -12,7 +13,6 @@ const router = useRouter()
 const slug = computed(() => route.params.slug as string)
 const blockParam = computed(() => route.params.block as string)
 
-const loading = ref(true)
 const block = ref<UnicodeBlock | null>(null)
 const coverage = ref<any>(null)
 const fontReady = ref(false)
@@ -23,7 +23,7 @@ const fontCtx = computed<FontContext | null>(() => {
   if (!coverage.value) return null
   return {
     slug: slug.value, familyName: slug.value, fontId: fontId.value,
-    woff2Path: `fonts/${slug.value}.woff2`, redistributable: true,
+    fontPath: `fonts/${slug.value}.woff`, redistributable: true,
     coverage: new Set(coverage.value.codepoints || []), color: '#bf4e6a',
   }
 })
@@ -40,10 +40,9 @@ const missingCount = computed(() => {
 })
 
 async function loadData() {
-  loading.value = true
   const s = slug.value
-  if (!s) { loading.value = false; return }
-  const { fontId: fid, ensureInjected } = injectFontFace(s, `fonts/${s}.woff2`, true)
+  if (!s) return
+  const { fontId: fid, ensureInjected } = injectFontFace(s, `fonts/${s}.woff`, true)
   fontId.value = fid
   fontReady.value = ensureInjected()
   coverage.value = await fetchCoverage(s)
@@ -58,11 +57,19 @@ async function loadData() {
     const chars = await loadBlockCharacters(found.name)
     block.value = { ...found, characters: chars, assignedCount: chars.length }
   }
-  loading.value = false
 }
 
-onMounted(loadData)
+await loadData()
 watch([slug, blockParam], loadData)
+
+useHead(() => ({
+  title: block.value
+    ? `${slug.value} / ${blockDisplayName(block.value.name)} — Coverage`
+    : `${slug.value} — Coverage`,
+  link: [
+    { rel: 'canonical', href: `https://www.fontist.org/font/${slug.value}/unicode/${blockParam.value}` },
+  ],
+}))
 
 function goToChar(cp: number) {
   const hex = cp.toString(16).toUpperCase().padStart(4, '0')
@@ -71,7 +78,7 @@ function goToChar(cp: number) {
 </script>
 
 <template>
-  <div class="fbp" v-if="!loading && block">
+  <div class="fbp" v-if="block">
     <header class="fbp-head">
       <RouterLink :to="`/font/${slug}/unicode`" class="fbp-back">← All blocks</RouterLink>
       <h1>{{ blockDisplayName(block.name) }}</h1>

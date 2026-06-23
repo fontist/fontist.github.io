@@ -1,29 +1,23 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
+import { useHead } from '@unhead/vue'
 import { injectFontFace } from '../composables/useFontFace'
 import { fetchCoverage } from '../composables/useCoverage'
 import { useFontVariation } from '../composables/useFontVariation'
 import { featureInfo } from '../lib/unicode'
+import { findFormula, type FormulaData } from '../lib/formulas/loader'
 
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 
 const { state, variationCSS, featureCSS, initAxes, initFeatures, setAxis, toggleFeature } = useFontVariation()
 
-interface FormulaData {
-  name: string; slug: string; familyCount: number; styleCount: number
-  familyNames: string[]; sourceType: string; licenseType: string
-  licenseCategory: string; licenseName: string
-}
-
 const formula = ref<FormulaData | null>(null)
 const coverage = ref<any>(null)
 const loading = ref(true)
 const fontReady = ref(false)
 const fontId = ref('')
-
-const basePath = import.meta.env.BASE_URL || '/'
 
 const HERO_SPECIMEN = 'Finding efficient flow'
 const BODY_SPECIMEN = 'fluffy fish affords fine flavor · whereas recognition of inherent dignity'
@@ -36,11 +30,9 @@ async function loadData() {
   if (!s) { loading.value = false; return }
 
   try {
-    const res = await fetch(`${basePath}formulas-data.json`)
-    const data = await res.json()
-    formula.value = data.find((f: any) => f.slug === s)
+    formula.value = await findFormula(s)
 
-    const { fontId: fid, ensureInjected } = injectFontFace(s, `fonts/${s}.woff2`, true)
+    const { fontId: fid, ensureInjected } = injectFontFace(s, `fonts/${s}.woff`, true)
     fontId.value = fid
     fontReady.value = ensureInjected()
     coverage.value = await fetchCoverage(s)
@@ -53,8 +45,25 @@ async function loadData() {
   finally { loading.value = false }
 }
 
-onMounted(loadData)
+await loadData()
 watch(slug, loadData)
+
+useHead(() => ({
+  title: formula.value ? `${formula.value.name} — Font Specimen` : 'Font Specimen — Fontist',
+  meta: [
+    { property: 'og:title', content: formula.value?.name || 'Fontist Font' },
+    { property: 'og:type', content: 'website' },
+    {
+      name: 'description',
+      content: formula.value
+        ? `${formula.value.name} font specimen, Unicode coverage, variable axes, and OpenType features. Install with: fontist install ${formula.value.formulaName || formula.value.slug}.`
+        : 'Interactive font specimen with Unicode coverage and OpenType features.',
+    },
+  ],
+  link: [
+    { rel: 'canonical', href: `https://www.fontist.org/font/${slug.value}` },
+  ],
+}))
 
 const familyName = computed(() => formula.value?.name || slug.value)
 const licenseName = computed(() => formula.value?.licenseName || 'Unknown')

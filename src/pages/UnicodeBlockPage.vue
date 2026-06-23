@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
+import { useHead } from '@unhead/vue'
 import { loadAllBlocks, loadBlockCharacters, blockDisplayName, hexCp, scriptGroup } from '../lib/unicode'
 import type { UnicodeBlock } from '../lib/unicode'
 import UnicodeBlockGrid from '../lib/unicode/components/UnicodeBlockGrid.vue'
@@ -9,7 +10,6 @@ const route = useRoute()
 const router = useRouter()
 const blockSlugParam = computed(() => route.params.blockSlug as string)
 
-const loading = ref(true)
 const block = ref<UnicodeBlock | null>(null)
 const characters = ref<any[]>([])
 
@@ -24,7 +24,6 @@ const isPrivateUse = computed(() =>
 )
 
 async function loadData() {
-  loading.value = true
   const allBlocks = await loadAllBlocks()
   const found = allBlocks.find(b => {
     const slug = b.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
@@ -33,12 +32,26 @@ async function loadData() {
   if (found) {
     block.value = found
     characters.value = await loadBlockCharacters(found.name)
+  } else {
+    block.value = null
   }
-  loading.value = false
 }
 
-onMounted(loadData)
+await loadData()
 watch(blockSlugParam, loadData)
+
+useHead(() => ({
+  title: block.value
+    ? `${blockDisplayName(block.value.name)} — Unicode Block`
+    : 'Unicode Block — Fontist',
+  meta: [
+    { property: 'og:title', content: block.value ? blockDisplayName(block.value.name) : 'Unicode Block' },
+    { property: 'og:type', content: 'website' },
+  ],
+  link: [
+    { rel: 'canonical', href: `https://www.fontist.org/unicode/block/${blockSlugParam.value}` },
+  ],
+}))
 
 function goToChar(cp: number) {
   const hex = cp.toString(16).toUpperCase().padStart(4, '0')
@@ -47,7 +60,7 @@ function goToChar(cp: number) {
 </script>
 
 <template>
-  <div class="ubp" v-if="!loading && block">
+  <div class="ubp" v-if="block">
     <header class="ubp-head">
       <RouterLink to="/unicode" class="ubp-back">← Unicode Browser</RouterLink>
       <h1>{{ blockDisplayName(block.name) }}</h1>
@@ -84,8 +97,7 @@ function goToChar(cp: number) {
     />
   </div>
 
-  <div v-else-if="!loading" class="ubp-loading">Block "{{ blockSlugParam }}" not found.</div>
-  <div v-else class="ubp-loading">Loading…</div>
+  <div v-else class="ubp-loading">Block "{{ blockSlugParam }}" not found.</div>
 </template>
 
 <style scoped>

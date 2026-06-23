@@ -1,29 +1,31 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref } from 'vue'
 import { marked } from 'marked'
+import { useHead } from '@unhead/vue'
 import { useMarkdownLinks } from '../composables/useMarkdownLinks'
+import { loadMarkdown } from '../lib/markdown/loader'
 import type { Ref } from 'vue'
 
-const route = useRoute()
 const html = ref('')
 const loading = ref(true)
 const contentRef = ref<HTMLElement | null>(null)
 useMarkdownLinks(contentRef as Ref<HTMLElement | null>)
 
-async function loadMarkdown(path: string) {
-  loading.value = true
-  try {
-    const res = await fetch(path)
-    if (res.ok) {
-      const md = await res.text()
-      html.value = await marked(md)
-    }
-  } catch {}
-  loading.value = false
-}
+const md = await loadMarkdown('content/about.md')
+if (md) html.value = await marked(md)
+loading.value = false
 
-onMounted(() => loadMarkdown('/content/about.md'))
+useHead({
+  title: 'About — Fontist',
+  meta: [
+    { name: 'description', content: 'About Fontist: an open-source font manager for installing, managing, and exploring openly-licensed fonts.' },
+    { property: 'og:title', content: 'About — Fontist' },
+    { property: 'og:type', content: 'website' },
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://www.fontist.org/about' },
+  ],
+})
 </script>
 
 <template>

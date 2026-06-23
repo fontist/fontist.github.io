@@ -8,7 +8,7 @@ const props = defineProps({
   slug: { type: String, required: true },
   familyName: { type: String, default: '' },
   description: { type: String, default: '' },
-  woff2Path: { type: String, default: null },
+  fontPath: { type: String, default: null },
   redistributable: { type: Boolean, default: false },
 })
 
@@ -31,8 +31,8 @@ const fontStyles = computed(() => {
 const weightAxis = computed(() => axes.value.find(a => a.tag === 'wght'))
 
 onMounted(async () => {
-  if (props.redistributable && props.woff2Path) {
-    const { fontId: fid, ensureInjected } = injectFontFace(props.slug, props.woff2Path, props.redistributable)
+  if (props.redistributable && props.fontPath) {
+    const { fontId: fid, ensureInjected } = injectFontFace(props.slug, props.fontPath, props.redistributable)
     fontId.value = fid
     fontReady.value = ensureInjected()
   }

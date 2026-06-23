@@ -49,12 +49,12 @@ const gridStyles = computed(() => {
   if (props.fonts.length === 0) return {}
   const styles: Record<string, string> = {}
   props.fonts.forEach((f, i) => {
-    if (f.woff2Path && f.redistributable) {
+    if (f.fontPath && f.redistributable) {
       const id = `ub-${f.slug.replace(/[^a-z0-9]/gi, '-')}`
       if (!document.getElementById(`ub-style-${id}`)) {
         const s = document.createElement('style')
         s.id = `ub-style-${id}`
-        s.textContent = `@font-face{font-family:'${id}';src:url('${f.woff2Path}') format('woff2');font-weight:100 900;font-display:swap;}`
+        s.textContent = `@font-face{font-family:'${id}';src:url('${f.fontPath}') format('woff');font-weight:100 900;font-display:swap;}`
         document.head.appendChild(s)
       }
       styles[f.slug] = `'${id}', sans-serif`
@@ -65,7 +65,7 @@ const gridStyles = computed(() => {
 
 function fontFamily(font: FontContext): string {
   const id = `ub-${font.slug.replace(/[^a-z0-9]/gi, '-')}`
-  return font.redistributable && font.woff2Path ? `'${id}', sans-serif` : 'sans-serif'
+  return font.redistributable && font.fontPath ? `'${id}', sans-serif` : 'sans-serif'
 }
 
 function displayName(char: UnicodeCharacter): string {

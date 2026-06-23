@@ -1,11 +1,14 @@
 import { test, expect } from "@playwright/test";
 
-// Nav consistency test — verifies every VitePress nav element matches the
-// specimen design language. Catches regressions on VitePress upgrades.
+// STALE — VitePress-era test, not run by `npm test` (only `*.test.mjs` runs).
 //
-// These are the elements that required specificity hacks in style.css
-// (lines 127–260). If VitePress changes its internal DOM structure or
-// adds new scoped styles, this test fails BEFORE a visual regression ships.
+// Targets `.VPNavBar*` selectors from the legacy VitePress theme. After the
+// vite-ssg migration, the nav is in `src/layouts/DefaultLayout.vue` using
+// `.nav-link` and `.nav-*` classes. To revive this test, rewrite selectors
+// against the new layout and add a `*.test.mjs` or Playwright config that
+// `npm test` will pick up.
+//
+// Left in-tree as a cleanup candidate — do not assume it passes today.
 
 const EXPECTED = {
   fontFamily: /IBM Plex Mono/i,

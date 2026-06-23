@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
+import { useHead } from '@unhead/vue'
 import { injectFontFace } from '../composables/useFontFace'
 import { fetchCoverage } from '../composables/useCoverage'
+import { loadFontsRegistry, loadFontMetadata } from '../lib/fonts/loader'
 
 const route = useRoute()
 const router = useRouter()
-const basePath = import.meta.env.BASE_URL || '/'
 
 interface FontEntry {
   slug: string
@@ -46,18 +47,16 @@ const fontNames = computed(() => allFonts.value.map(f => `${f.name} (${f.slug})`
 async function loadRegistry() {
   loadingRegistry.value = true
   try {
-    const res = await fetch(`${basePath}fonts.json`)
-    const data = await res.json()
-    allFonts.value = data.fonts.map((f: any) => ({
+    const data = await loadFontsRegistry()
+    allFonts.value = data.fonts.map((f) => ({
       slug: f.slug,
       name: f.canonical_name,
       formulas: f.formulas,
       styleCount: f.style_count,
     }))
 
-    const res2 = await fetch(`${basePath}font-metadata.json`)
-    const meta = await res2.json()
-    availableSlugs.value = new Set(meta.fonts.map((f: any) => f.slug))
+    const meta = await loadFontMetadata()
+    availableSlugs.value = new Set(meta.fonts.map((f) => f.slug))
   } catch (e) {
     console.error('Failed to load font registry', e)
   } finally {
@@ -71,7 +70,7 @@ async function addFont(slug: string) {
   if (!availableSlugs.value.has(slug)) return
 
   const entry = allFonts.value.find(f => f.slug === slug)
-  const { fontId, ensureInjected } = injectFontFace(slug, `fonts/${slug}.woff2`, true)
+  const { fontId, ensureInjected } = injectFontFace(slug, `fonts/${slug}.woff`, true)
   ensureInjected()
 
   const col: FontColumn = {
@@ -131,11 +130,21 @@ function specimenStyle(col: FontColumn): Record<string, string> {
   return s
 }
 
-onMounted(async () => {
-  await loadRegistry()
-  for (const slug of slugsFromUrl.value) {
-    await addFont(slug)
-  }
+await loadRegistry()
+for (const slug of slugsFromUrl.value) {
+  await addFont(slug)
+}
+
+useHead({
+  title: 'Compare Fonts — Fontist',
+  meta: [
+    { name: 'description', content: 'Compare up to four fonts side by side. Specimen text, weight axes, and Unicode coverage comparison.' },
+    { property: 'og:title', content: 'Compare Fonts — Fontist' },
+    { property: 'og:type', content: 'website' },
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://www.fontist.org/compare' },
+  ],
 })
 
 watch(slugsFromUrl, (newSlugs) => {

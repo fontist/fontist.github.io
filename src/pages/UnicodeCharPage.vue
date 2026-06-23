@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
+import { useHead } from '@unhead/vue'
 import {
   loadAllBlocks, loadBlockCharacters, hexCp, safeChar, categoryName,
   blockDisplayName, blockSlug, PLANES,
@@ -14,7 +15,6 @@ const router = useRouter()
 const hex = computed(() => route.params.hex as string)
 const cp = computed(() => parseInt(hex.value, 16))
 
-const loading = ref(true)
 const allBlocks = ref<UnicodeBlock[]>([])
 const charData = ref<any>(null)
 const allCharsInBlock = ref<any[]>([])
@@ -70,19 +70,29 @@ function navigateToCp(targetCp: number) {
   router.push(`/unicode/char/${h}`)
 }
 
-onMounted(async () => {
-  allBlocks.value = await loadAllBlocks()
-  const b = block.value
-  if (b) {
-    allCharsInBlock.value = await loadBlockCharacters(b.name)
-    charData.value = allCharsInBlock.value.find((c: any) => c.cp === cp.value)
-  }
-  loading.value = false
-})
+allBlocks.value = await loadAllBlocks()
+const b = block.value
+if (b) {
+  allCharsInBlock.value = await loadBlockCharacters(b.name)
+  charData.value = allCharsInBlock.value.find((c: any) => c.cp === cp.value)
+}
+
+useHead(() => ({
+  title: charData.value?.n
+    ? `U+${hex.value.toUpperCase()} ${charData.value.n} — Unicode Character`
+    : `U+${hex.value.toUpperCase()} — Unicode Character`,
+  meta: [
+    { property: 'og:title', content: `U+${hex.value.toUpperCase()}${charData.value?.n ? ' ' + charData.value.n : ''}` },
+    { property: 'og:type', content: 'website' },
+  ],
+  link: [
+    { rel: 'canonical', href: `https://www.fontist.org/unicode/char/${hex.value}` },
+  ],
+}))
 </script>
 
 <template>
-  <div class="ucp" v-if="!loading && charData">
+  <div class="ucp" v-if="charData">
     <!-- Breadcrumb -->
     <nav class="ucp-crumbs">
       <RouterLink to="/unicode">Unicode</RouterLink>

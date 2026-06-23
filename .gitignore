@@ -1,6 +1,23 @@
-# https://vitepress.dev/
-**/.vitepress/cache
-**/.vitepress/dist
+# vite-ssg build output
+dist
+dist-ssr
+*.local
+
+# Generated data fetched at build time by scripts/fetch-data.sh.
+# CI (build.yml) and the fetch script reproduce these on every build.
+/public/coverage/
+/public/fonts/*.woff2
+!/public/fonts/noto/
+/public/fonts.json
+/public/font-metadata.json
+/public/formulas-data.json
+/public/stats.json
+/public/search-index.json
+/public/ssg-routes.json
+/public/sitemap.xml
+
+# Optional full clone of formulas repo for raw YAML access.
+/vendor/
 
 #region https://github.com/github/gitignore/blob/main/Node.gitignore
 # Logs

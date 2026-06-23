@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
+import { useHead } from '@unhead/vue'
 import { injectFontFace } from '../composables/useFontFace'
 import { fetchCoverage } from '../composables/useCoverage'
 import type { UnicodeBlock, FontContext } from '../lib/unicode'
@@ -10,7 +11,6 @@ const route = useRoute()
 const router = useRouter()
 const slug = computed(() => route.params.slug as string)
 
-const loading = ref(true)
 const allBlocks = ref<UnicodeBlock[]>([])
 const coverage = ref<any>(null)
 const fontReady = ref(false)
@@ -22,7 +22,7 @@ const fontCtx = computed<FontContext | null>(() => {
     slug: slug.value,
     familyName: slug.value,
     fontId: fontId.value,
-    woff2Path: `fonts/${slug.value}.woff2`,
+    fontPath: `fonts/${slug.value}.woff`,
     redistributable: true,
     coverage: new Set(coverage.value.codepoints || []),
     color: '#bf4e6a',
@@ -32,19 +32,28 @@ const fontCtx = computed<FontContext | null>(() => {
 const planes = computed(() => allBlocks.value.length ? getPlanes(allBlocks.value) : [])
 
 async function loadData() {
-  loading.value = true
   const s = slug.value
-  if (!s) { loading.value = false; return }
-  const { fontId: fid, ensureInjected } = injectFontFace(s, `fonts/${s}.woff2`, true)
+  if (!s) return
+  const { fontId: fid, ensureInjected } = injectFontFace(s, `fonts/${s}.woff`, true)
   fontId.value = fid
   fontReady.value = ensureInjected()
   coverage.value = await fetchCoverage(s)
   allBlocks.value = await loadAllBlocks()
-  loading.value = false
 }
 
-onMounted(loadData)
+await loadData()
 watch(slug, loadData)
+
+useHead(() => ({
+  title: `${slug.value.replace(/\b\w/g, c => c.toUpperCase())} — Unicode Coverage`,
+  meta: [
+    { property: 'og:title', content: `${slug.value} Unicode Coverage` },
+    { property: 'og:type', content: 'website' },
+  ],
+  link: [
+    { rel: 'canonical', href: `https://www.fontist.org/font/${slug.value}/unicode` },
+  ],
+}))
 
 function blockSupportCount(block: UnicodeBlock): number {
   if (!coverage.value?.blocks) return 0
@@ -67,7 +76,7 @@ function navigateToBlock(blockName: string) {
 </script>
 
 <template>
-  <div class="fup" v-if="!loading">
+  <div class="fup">
     <header class="fup-head">
       <RouterLink :to="`/font/${slug}`" class="fup-back">← {{ slug }}</RouterLink>
       <h1>Unicode Coverage</h1>
@@ -105,8 +114,6 @@ function navigateToBlock(blockName: string) {
       </section>
     </div>
   </div>
-
-  <div v-else class="fup-loading">Loading Unicode data…</div>
 </template>
 
 <style scoped>

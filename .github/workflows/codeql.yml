@@ -4,7 +4,7 @@ name: codeql
 #
 # Scope: GitHub Actions workflows only (the `actions` language).
 #
-# This is a static VitePress site: the only JS/TS is a handful of small
+# This is a static vite-ssg site: the only JS/TS is a handful of small
 # config/data files plus Vue SFCs, none of which carry security-sensitive
 # logic. CodeQL's JavaScript extractor cannot usefully analyze Vue SFCs and
 # repeatedly failed under GitHub's default-setup autobuild ("CodeQL could not

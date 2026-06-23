@@ -1,0 +1,69 @@
+# Adobe Software License
+
+<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='auto' height='20' role='img' aria-label='License: Adobe Software'%3E%3Ctitle%3ELicense: Adobe Software%3C/title%3E%3ClinearGradient id='b' x2='0' y2='100%25'%3E%3Cstop offset='0' stop-color='%23bbb' stop-opacity='.1'/%3E%3Cstop offset='1' stop-opacity='.1'/%3E%3C/linearGradient%3E%3Cmask id='a'%3E%3Crect width='100%25' height='100%25' fill='%23fff' rx='3'/%3E%3C/mask%3E%3Cg mask='url(%23a)'%3E%3Cpath fill='%23555' d='M0 0h50v20H0z'/%3E%3Cpath fill='%238b5cf6' d='M50 0h80v20H50z'/%3E%3Cpath fill='url(%23b)' d='M0 0h130v20H0z'/%3E%3C/g%3E%3Cg fill='%23fff' text-anchor='middle' font-family='Verdana,Geneva,DejaVu Sans,sans-serif' font-size='11'%3E%3Ctext x='25' y='15'%3ELicense%3C/text%3E%3Ctext x='90' y='15'%3EAdobe Software%3C/text%3E%3C/g%3E%3C/svg%3E" alt="License: Adobe Software"> <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='auto' height='20' role='img' aria-label='Category: Bundled Software'%3E%3Ctitle%3ECategory: Bundled Software%3C/title%3E%3ClinearGradient id='b' x2='0' y2='100%25'%3E%3Cstop offset='0' stop-color='%23bbb' stop-opacity='.1'/%3E%3Cstop offset='1' stop-opacity='.1'/%3E%3C/linearGradient%3E%3Cmask id='a'%3E%3Crect width='100%25' height='100%25' fill='%23fff' rx='3'/%3E%3C/mask%3E%3Cg mask='url(%23a)'%3E%3Cpath fill='%23555' d='M0 0h50v20H0z'/%3E%3Cpath fill='%238b5cf6' d='M50 0h80v20H50z'/%3E%3Cpath fill='url(%23b)' d='M0 0h130v20H0z'/%3E%3C/g%3E%3Cg fill='%23fff' text-anchor='middle' font-family='Verdana,Geneva,DejaVu Sans,sans-serif' font-size='11'%3E%3Ctext x='25' y='15'%3ECategory%3C/text%3E%3Ctext x='90' y='15'%3EBundled Software%3C/text%3E%3C/g%3E%3C/svg%3E" alt="Category: Bundled Software">
+
+**SPDX Identifier:** Not on SPDX
+
+## Quick Summary
+
+Fonts bundled with Adobe software (Reader, Acrobat, Creative Suite) can be used on any computer where the Adobe software is installed. Once installed, you may use those fonts with any application on that computer.
+
+## Permissions Overview
+
+### ✅ Allows For
+
+| Context | Permission | Notes |
+|---------|------------|-------|
+| Viewing | ✅ Full | View PDFs and documents |
+| Printing | ✅ Full | Print documents using bundled fonts |
+| Desktop (with Adobe software) | ✅ Full | Use with any application on that computer |
+| Server/CI (with Adobe software) | ✅ Full | If Adobe software is installed |
+| Cloud VMs (with Adobe software) | ✅ Full | If Adobe software is installed |
+
+### ⚠️ Conditional
+
+| Permission | Condition |
+|------------|-----------|
+| Embedding | May be embedded in documents for viewing/printing only |
+
+### ❌ Disallows For
+
+| Permission | Notes |
+|------------|-------|
+| Extraction | Cannot extract fonts from Adobe software |
+| Standalone use without Adobe | Cannot use fonts without Adobe software installed |
+| Redistribution | Cannot redistribute fonts separately |
+| Modification | Cannot modify fonts |
+| Commercial redistribution | Cannot use for commercial font distribution |
+
+
+## Sample License Text
+
+From formula: `adobe_reader_19`
+
+<details>
+<summary>View Full License Text</summary>
+
+```
+Adobe End-User License Agreement
+By downloading software of Adobe Systems Incorporated or its subsidiaries ("Adobe") from this site, you agree to the following terms and conditions. If you do not agree with such terms and conditions do not download the software. The terms of an end user license agreement accompanying a particular software file upon installation or download of the software shall supersede the terms presented below.
+
+The export and re-export of Adobe software products are controlled by the United States Export Administration Regulations and such software may not be exported or re-exported to Cuba, Iran, Iraq, Libya, North Korea, Sudan, Syria, or any country to which the United States embargoes goods. In addition, Adobe software may not be distributed to persons on the Table of Denial Orders, the Entity List, or the List of Specially Designated Nationals.
+
+By downloading or using an Adobe software product you are certifying that you are not a national of Cuba, Iran, Iraq, Libya, North Korea, Sudan, Syria, or any country to which the United States embargoes goods and that you are not a person on the Table of Denial Orders, the Entity List, or the List of Specially Designated Nationals.
+
+If the software is designed for use with an application software product (the "Host Application") published by Adobe, Adobe grants you a nonexclusive license to use such software with the Host Application only, provided you possess a valid license from Adobe for the Host Application. Except as set forth below, such software is licensed to you subject to the terms and conditions of the End-User License Agreement from Adobe governing your use of the Host Application.
+
+DISCLAIMER OF WARRANTIES: YOU AGREE THAT ADOBE HAS MADE NO EXPRESS WARRANTIES TO YOU REGARDING THE SOFTWARE AND THAT THE SOFTWARE IS BEING PROVIDED TO YOU "AS IS" WITHOUT WARRANTY OF ANY KIND. ADOBE DISCLAIMS ALL WARRANTIES WITH REGARD TO THE SOFTWARE, EXPRESS OR IMPLIED, INCLUDING, WITHOUT LIMITATION, ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, MERCHANTABLE QUALITY, OR NONINFRINGEMENT OF THIRD-PARTY RIGHTS. Some states or jurisdictions do not allow the exclusion of implied warranties, so the above limitations may not apply to you.
+
+LIMIT OF LIABILITY: IN NO EVENT WILL ADOBE BE LIABLE TO YOU FOR ANY LOSS OF USE, INTERRUPTION OF BUSINESS, OR ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES OF ANY KIND (INCLUDING LOST PROFITS) REGARDLESS OF THE FORM OF ACTION WHETHER IN CONTRACT, TORT (INCLUDING NEGLIGENCE), STRICT PRODUCT LIABILITY OR OTHERWISE, EVEN IF ADOBE HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. Some states or jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
+```
+
+</details>
+
+
+## See Also
+
+- [Adobe Font Licensing](https://www.adobe.com/type/legal.html)
+- [Adobe Reader](https://get.adobe.com/reader/)
+

@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { marked } from 'marked'
+import { useHead } from '@unhead/vue'
 import { useMarkdownLinks } from '../composables/useMarkdownLinks'
+import { loadMarkdown } from '../lib/markdown/loader'
 import type { Ref } from 'vue'
 
 const route = useRoute()
 const html = ref('')
 const loading = ref(true)
+const title = ref('')
 const contentRef = ref<HTMLElement | null>(null)
 useMarkdownLinks(contentRef as Ref<HTMLElement | null>)
 
@@ -15,22 +18,31 @@ const slug = computed(() => route.params.slug as string)
 
 async function loadPost(s: string) {
   loading.value = true
-  try {
-    const res = await fetch(`/content/blog/${s}.md`)
-    if (res.ok) {
-      const md = await res.text()
-      html.value = await marked(md)
-    } else {
-      html.value = '<p>Post not found.</p>'
-    }
-  } catch {
-    html.value = '<p>Failed to load post.</p>'
+  const md = await loadMarkdown(`content/blog/${s}.md`)
+  if (md) {
+    html.value = await marked(md)
+    const m = md.match(/^#\s+(.+)$/m)
+    title.value = m ? m[1].trim() : s.replace(/-/g, ' ')
+  } else {
+    html.value = '<p>Post not found.</p>'
+    title.value = 'Post not found'
   }
   loading.value = false
 }
 
-onMounted(() => loadPost(slug.value))
+await loadPost(slug.value)
 watch(slug, (s) => { if (s) loadPost(s) })
+
+useHead(() => ({
+  title: title.value ? `${title.value} — Fontist Blog` : 'Fontist Blog',
+  meta: [
+    { property: 'og:title', content: title.value || 'Fontist Blog' },
+    { property: 'og:type', content: 'article' },
+  ],
+  link: [
+    { rel: 'canonical', href: `https://www.fontist.org/blog/${slug.value}` },
+  ],
+}))
 </script>
 
 <template>

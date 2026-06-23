@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useHead } from '@unhead/vue'
+import { fetchJson } from '../lib/ssr-fetch'
 
 interface BlogPost {
   slug: string
@@ -10,29 +12,32 @@ interface BlogPost {
 }
 
 const posts = ref<BlogPost[]>([])
-const loading = ref(true)
 
-onMounted(async () => {
-  try {
-    const res = await fetch('/content/blog/index.json')
-    if (res.ok) {
-      posts.value = await res.json()
-    } else {
-      throw new Error('no index')
-    }
-  } catch {
-    posts.value = [
-      { slug: '2022-02-11-introducing-fontist', title: 'Introducing Fontist', date: '2022-02-11' },
-      { slug: '2022-02-11-macos-fonts', title: 'macOS Fonts', date: '2022-02-11' },
-      { slug: '2024-01-23-office-fonts', title: 'Office Fonts', date: '2024-01-23' },
-      { slug: '2024-02-29-new-websites', title: 'New Websites', date: '2024-02-29' },
-      { slug: '2024-03-02-creating-formulas', title: 'Creating Formulas', date: '2024-03-02' },
-      { slug: '2026-03-12-unified-design', title: 'Unified Design and Logo', date: '2026-03-12' },
-      { slug: '2026-04-14-formula-v5', title: 'Formula v5', date: '2026-04-14' },
-      { slug: '2026-05-03-windows-fod-fonts', title: 'Windows FOD Fonts', date: '2026-05-03' },
-    ]
-  }
-  loading.value = false
+try {
+  posts.value = await fetchJson<BlogPost[]>('content/blog/index.json')
+} catch {
+  posts.value = [
+    { slug: '2022-02-11-introducing-fontist', title: 'Introducing Fontist', date: '2022-02-11' },
+    { slug: '2022-02-11-macos-fonts', title: 'macOS Fonts', date: '2022-02-11' },
+    { slug: '2024-01-23-office-fonts', title: 'Office Fonts', date: '2024-01-23' },
+    { slug: '2024-02-29-new-websites', title: 'New Websites', date: '2024-02-29' },
+    { slug: '2024-03-02-creating-formulas', title: 'Creating Formulas', date: '2024-03-02' },
+    { slug: '2026-03-12-unified-design', title: 'Unified Design and Logo', date: '2026-03-12' },
+    { slug: '2026-04-14-formula-v5', title: 'Formula v5', date: '2026-04-14' },
+    { slug: '2026-05-03-windows-fod-fonts', title: 'Windows FOD Fonts', date: '2026-05-03' },
+  ]
+}
+
+useHead({
+  title: 'Blog — Fontist',
+  meta: [
+    { name: 'description', content: 'News and updates from the Fontist project — releases, new features, and font discoveries.' },
+    { property: 'og:title', content: 'Blog — Fontist' },
+    { property: 'og:type', content: 'website' },
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://www.fontist.org/blog' },
+  ],
 })
 </script>
 
@@ -42,8 +47,7 @@ onMounted(async () => {
       <h1>Blog</h1>
       <p>News and updates from the Fontist project.</p>
     </header>
-    <div v-if="loading" class="loading">Loading…</div>
-    <ul v-else class="post-list">
+    <ul class="post-list">
       <li v-for="post in posts" :key="post.slug" class="post-item">
         <RouterLink :to="`/blog/${post.slug}`" class="post-link">
           <span class="post-title">{{ post.title }}</span>

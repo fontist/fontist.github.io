@@ -1,17 +1,28 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
+import { useHead } from '@unhead/vue'
+import { loadAllFormulas } from '../lib/formulas/loader'
 
 const formulaCount = ref(0)
 
-onMounted(async () => {
-  try {
-    const res = await fetch('/formulas-data.json')
-    if (res.ok) {
-      const data = await res.json()
-      formulaCount.value = data.length || 0
-    }
-  } catch {}
+try {
+  const data = await loadAllFormulas()
+  formulaCount.value = data.length
+} catch {}
+
+useHead({
+  title: 'Fontist — Install fonts anywhere',
+  meta: [
+    { name: 'description', content: 'Install, manage, and explore openly-licensed fonts across Windows, Linux, and macOS. Open-source font manager for developers.' },
+    { property: 'og:title', content: 'Fontist — Install fonts anywhere' },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: 'https://www.fontist.org/' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://www.fontist.org/' },
+  ],
 })
 </script>
 

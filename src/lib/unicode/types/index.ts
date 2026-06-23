@@ -46,7 +46,7 @@ export interface FontContext {
   slug: string
   familyName: string
   fontId: string
-  woff2Path: string | null
+  fontPath: string | null
   redistributable: boolean
   coverage: Set<number>
   color: string

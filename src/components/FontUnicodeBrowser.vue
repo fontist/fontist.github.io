@@ -114,7 +114,7 @@ async function selectBlock(idx) {
 onMounted(async () => {
   if (props.redistributable) {
     const { fontId: fid, ensureInjected } = injectFontFace(
-      props.slug, `fonts/${props.slug}.woff2`, props.redistributable
+      props.slug, `fonts/${props.slug}.woff`, props.redistributable
     )
     fontId.value = fid
     fontReady.value = ensureInjected()

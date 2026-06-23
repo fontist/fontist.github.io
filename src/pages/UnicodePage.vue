@@ -1,22 +1,30 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useHead } from '@unhead/vue'
 import { loadAllBlocks, getPlanes, blockDisplayName, hexCp, blockSlug } from '../lib/unicode'
 import type { UnicodeBlock } from '../lib/unicode'
 
-const loading = ref(true)
 const allBlocks = ref<UnicodeBlock[]>([])
-
 const planes = computed(() => getPlanes(allBlocks.value))
 
-onMounted(async () => {
-  allBlocks.value = await loadAllBlocks()
-  loading.value = false
+allBlocks.value = await loadAllBlocks()
+
+useHead({
+  title: 'Unicode Browser — Fontist',
+  meta: [
+    { name: 'description', content: 'Explore all Unicode planes, blocks, and codepoints. Browse scripts, categories, and bidirectional classes.' },
+    { property: 'og:title', content: 'Unicode Browser — Fontist' },
+    { property: 'og:type', content: 'website' },
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://www.fontist.org/unicode' },
+  ],
 })
 </script>
 
 <template>
-  <div class="uc" v-if="!loading">
+  <div class="uc">
     <header class="uc-header">
       <h1>Unicode Browser</h1>
       <p>The complete Unicode standard. All 7 planes, all 346 blocks, every assigned character.</p>
@@ -36,8 +44,6 @@ onMounted(async () => {
       </RouterLink>
     </div>
   </div>
-
-  <div v-else class="uc-loading">Loading Unicode standard…</div>
 </template>
 
 <style scoped>

@@ -1,5 +1,8 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { RouterLink } from 'vue-router'
+import { loadAllFormulas } from '../lib/formulas/loader'
+
 
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
 
@@ -7,7 +10,6 @@ const formulasData = ref([])
 const searchQuery = ref('')
 const selectedLicenses = ref(['all'])
 const selectedSources = ref(['all'])
-const basePath = import.meta.env.BASE_URL || '/'
 
 const licenseOptions = [
   { value: 'all', label: 'All Licenses', icon: 'all', count: 0 },
@@ -142,10 +144,7 @@ onMounted(async () => {
     // Initialize from URL params first
     initFromUrl()
 
-    // Use import.meta.env.BASE_URL to get the correct base path
-    const basePath = import.meta.env.BASE_URL || '/'
-    const response = await fetch(`${basePath}formulas-data.json`)
-    const data = await response.json()
+    const data = await loadAllFormulas()
     formulasData.value = data
 
     // Set 'all' counts to total
@@ -205,18 +204,6 @@ function scrollToLetter(letter) {
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
-function goToFormula(slug) {
-  // Formula pages are rendered in CI batches (docs.yml build-batch matrix),
-  // and each batch's VitePress router manifest only includes its own pages.
-  // SPA navigation from /browse/ to a formula in a different batch hits a
-  // "Page not found" 404 even though the SSR HTML exists on the server.
-  // Bypass SPA routing for formula clicks — full page load fetches the
-  // correct HTML which loads the correct app chunk for that formula's batch.
-  // No trailing slash: cleanUrls:true route map expects /browse/foo, and
-  // GitHub Pages serves /browse/foo/index.html for either form.
-  window.location.href = `${basePath}font/${slug}`
-}
-
 function toggleLicense(value) {
   if (value === 'all') {
     selectedLicenses.value = ['all']
@@ -268,7 +255,7 @@ function toggleSource(value) {
           <div v-for="letter in activeLetters" :key="letter" :id="'letter-' + letter" class="letter-group">
             <h3 class="letter-heading">{{ letter }}</h3>
             <div class="formula-items">
-              <a v-for="f in groupedFormulas[letter]" :key="f.slug" :href="`${basePath}font/${f.slug}`" class="formula-item" @click.stop.prevent="goToFormula(f.slug)">
+              <RouterLink v-for="f in groupedFormulas[letter]" :key="f.slug" :to="`/font/${f.slug}`" class="formula-item">
                 <div class="formula-main">
                   <span class="formula-name">{{ f.name }}</span>
                   <span class="formula-key">{{ f.formulaName }}</span>
@@ -277,7 +264,7 @@ function toggleSource(value) {
                   <span class="formula-badges"><span :title="f.licenseName" v-html="getLicenseBadge(f)"></span> <span :title="f.sourceType" v-html="getSourceBadge(f)"></span></span>
                   <span class="formula-counts">{{ f.familyCount }} {{ f.familyCount === 1 ? 'family' : 'families' }}, {{ f.styleCount }} {{ f.styleCount === 1 ? 'style' : 'styles' }}</span>
                 </div>
-              </a>
+              </RouterLink>
             </div>
           </div>
         </div>

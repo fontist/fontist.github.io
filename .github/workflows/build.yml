@@ -45,7 +45,7 @@ jobs:
           git clone --depth 1 https://github.com/fontist/fontist-archive.git /tmp/archive
           mkdir -p public/coverage public/fonts
           cp -r /tmp/archive/coverage/* public/coverage/ 2>/dev/null || true
-          cp /tmp/archive/fonts/*.woff2 public/fonts/ 2>/dev/null || true
+          cp /tmp/archive/fonts/*.woff public/fonts/ 2>/dev/null || true
           cp /tmp/archive/fonts.json public/ 2>/dev/null || true
           cp /tmp/archive/font-metadata.json public/ 2>/dev/null || true
           rm -rf /tmp/archive
