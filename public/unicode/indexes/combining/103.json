@@ -1,1 +1,1 @@
-{"property": "103", "count": 2, "characters": [{"cp": 3640, "n": "THAI CHARACTER SARA U", "b": "Thai"}, {"cp": 3641, "n": "THAI CHARACTER SARA UU", "b": "Thai"}]}
+{"characters":[{"b":"Thai","cp":3640,"n":"THAI CHARACTER SARA U"},{"b":"Thai","cp":3641,"n":"THAI CHARACTER SARA UU"}],"count":2,"property":"103"}

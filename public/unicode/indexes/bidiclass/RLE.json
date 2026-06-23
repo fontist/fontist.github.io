@@ -1,1 +1,1 @@
-{"property": "RLE", "count": 1, "characters": [{"cp": 8235, "n": "RIGHT-TO-LEFT EMBEDDING", "b": "General Punctuation"}]}
+{"characters":[{"b":"General Punctuation","cp":8235,"n":"RIGHT-TO-LEFT EMBEDDING"}],"count":1,"property":"RLE"}

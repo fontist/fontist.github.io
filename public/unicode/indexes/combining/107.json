@@ -1,1 +1,1 @@
-{"property": "107", "count": 4, "characters": [{"cp": 3656, "n": "THAI CHARACTER MAI EK", "b": "Thai"}, {"cp": 3657, "n": "THAI CHARACTER MAI THO", "b": "Thai"}, {"cp": 3658, "n": "THAI CHARACTER MAI TRI", "b": "Thai"}, {"cp": 3659, "n": "THAI CHARACTER MAI CHATTAWA", "b": "Thai"}]}
+{"characters":[{"b":"Thai","cp":3656,"n":"THAI CHARACTER MAI EK"},{"b":"Thai","cp":3657,"n":"THAI CHARACTER MAI THO"},{"b":"Thai","cp":3658,"n":"THAI CHARACTER MAI TRI"},{"b":"Thai","cp":3659,"n":"THAI CHARACTER MAI CHATTAWA"}],"count":4,"property":"107"}

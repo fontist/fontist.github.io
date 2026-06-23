@@ -1,1 +1,1 @@
-{"property": "122", "count": 4, "characters": [{"cp": 3784, "n": "LAO TONE MAI EK", "b": "Lao"}, {"cp": 3785, "n": "LAO TONE MAI THO", "b": "Lao"}, {"cp": 3786, "n": "LAO TONE MAI TI", "b": "Lao"}, {"cp": 3787, "n": "LAO TONE MAI CATAWA", "b": "Lao"}]}
+{"characters":[{"b":"Lao","cp":3784,"n":"LAO TONE MAI EK"},{"b":"Lao","cp":3785,"n":"LAO TONE MAI THO"},{"b":"Lao","cp":3786,"n":"LAO TONE MAI TI"},{"b":"Lao","cp":3787,"n":"LAO TONE MAI CATAWA"}],"count":4,"property":"122"}

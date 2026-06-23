@@ -1,1 +1,1 @@
-{"property": "218", "count": 2, "characters": [{"cp": 12330, "n": "IDEOGRAPHIC LEVEL TONE MARK", "b": "CJK Symbols and Punctuation"}, {"cp": 7674, "n": "COMBINING DOT BELOW LEFT", "b": "Combining Diacritical Marks Supplement"}]}
+{"characters":[{"b":"Combining Diacritical Marks Supplement","cp":7674,"n":"COMBINING DOT BELOW LEFT"},{"b":"CJK Symbols and Punctuation","cp":12330,"n":"IDEOGRAPHIC LEVEL TONE MARK"}],"count":2,"property":"218"}
