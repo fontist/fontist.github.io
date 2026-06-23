@@ -94,7 +94,7 @@ function goToChar(cp: number) {
 .pdp-back { font-size: 0.85rem; color: var(--fontist-rose, #bf4e6a); text-decoration: none; }
 .pdp-up { font-size: 0.78rem; color: var(--vp-c-text-3, #888); text-decoration: none; }
 .pdp-up:hover { color: var(--fontist-rose, #bf4e6a); }
-.pdp-head h1 { font-family: var(--font-mono, monospace); font-size: 1.3rem; margin: 0; }
-.pdp-count { font-size: 0.75rem; font-family: var(--font-mono, monospace); color: var(--vp-c-text-3, #888); margin-left: auto; }
+.pdp-head h1 { font-family: var(--spec-font-mono); font-size: 1.3rem; margin: 0; }
+.pdp-count { font-size: 0.75rem; font-family: var(--spec-font-mono); color: var(--vp-c-text-3, #888); margin-left: auto; }
 .pdp-loading { display: flex; align-items: center; justify-content: center; height: 50vh; color: var(--vp-c-text-3, #888); }
 </style>

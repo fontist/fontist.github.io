@@ -4,9 +4,10 @@ import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import { injectFontFace } from '../composables/useFontFace'
 import { fetchCoverage } from '../composables/useCoverage'
-import type { UnicodeBlock, FontContext } from '../lib/unicode'
-import { loadAllBlocks, loadBlockCharacters, blockDisplayName, hexCp } from '../lib/unicode'
+import type { UnicodeBlock } from '../lib/unicode'
+import { loadAllBlocks, loadBlockCharacters, blockDisplayName, blockSlug, hexCp } from '../lib/unicode'
 import UnicodeBlockGrid from '../lib/unicode/components/UnicodeBlockGrid.vue'
+import type { FontContext, Coverage } from '../lib/types/domain'
 
 const route = useRoute()
 const router = useRouter()
@@ -14,7 +15,7 @@ const slug = computed(() => route.params.slug as string)
 const blockParam = computed(() => route.params.block as string)
 
 const block = ref<UnicodeBlock | null>(null)
-const coverage = ref<any>(null)
+const coverage = ref<Coverage | null>(null)
 const fontReady = ref(false)
 const selectedCp = ref<number | null>(null)
 const fontId = ref('')
@@ -48,10 +49,7 @@ async function loadData() {
   coverage.value = await fetchCoverage(s)
 
   const allBlocks = await loadAllBlocks()
-  const found = allBlocks.find(b => {
-    const sl = b.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
-    return sl === blockParam.value
-  })
+  const found = allBlocks.find(b => blockSlug(b.name) === blockParam.value)
 
   if (found) {
     const chars = await loadBlockCharacters(found.name)
@@ -98,7 +96,6 @@ function goToChar(cp: number) {
     />
   </div>
 
-  <div v-else-if="loading" class="fbp-loading">Loading…</div>
   <div v-else class="fbp-loading">Block not found.</div>
 </template>
 

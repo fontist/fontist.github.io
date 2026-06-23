@@ -191,7 +191,7 @@ useHead(() => ({
   margin-bottom: 0.5rem;
 }
 .plane-short {
-  font-family: var(--font-mono, 'SF Mono', monospace);
+  font-family: var(--spec-font-mono);
   font-size: 1.5rem;
   font-weight: 800;
   color: var(--fontist-rose, #bf4e6a);
@@ -210,7 +210,7 @@ useHead(() => ({
   gap: 0.4rem;
   font-size: 0.8rem;
   color: var(--vp-c-text-3, #888);
-  font-family: var(--font-mono, 'SF Mono', monospace);
+  font-family: var(--spec-font-mono);
 }
 .plane-sep { opacity: 0.4; }
 .plane-ref {
@@ -251,7 +251,7 @@ useHead(() => ({
   min-width: 3rem;
   padding: 0.15rem 0.5rem;
   border-radius: 3px;
-  font-family: var(--font-mono, 'SF Mono', monospace);
+  font-family: var(--spec-font-mono);
   font-size: 0.72rem;
   font-weight: 700;
   color: #fff;
@@ -274,13 +274,13 @@ useHead(() => ({
   color: var(--vp-c-text-1, #1a1a1a);
 }
 .version-year {
-  font-family: var(--font-mono, 'SF Mono', monospace);
+  font-family: var(--spec-font-mono);
   font-size: 0.72rem;
   color: var(--vp-c-text-3, #888);
 }
 .version-block-count {
   margin-left: auto;
-  font-family: var(--font-mono, 'SF Mono', monospace);
+  font-family: var(--spec-font-mono);
   font-size: 0.7rem;
   color: var(--vp-c-text-3, #888);
 }
@@ -315,7 +315,7 @@ useHead(() => ({
 }
 
 .block-code {
-  font-family: var(--font-mono, 'SF Mono', monospace);
+  font-family: var(--spec-font-mono);
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--fontist-rose, #bf4e6a);
@@ -323,7 +323,7 @@ useHead(() => ({
   cursor: pointer;
 }
 .block-code-dash {
-  font-family: var(--font-mono, 'SF Mono', monospace);
+  font-family: var(--spec-font-mono);
   font-size: 0.7rem;
   color: var(--vp-c-text-3, #aaa);
 }
@@ -339,7 +339,7 @@ useHead(() => ({
 }
 
 .block-size {
-  font-family: var(--font-mono, 'SF Mono', monospace);
+  font-family: var(--spec-font-mono);
   font-size: 0.68rem;
   color: var(--vp-c-text-3, #aaa);
   white-space: nowrap;

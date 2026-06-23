@@ -42,14 +42,4 @@ export interface BlockCoverage {
   missingCodepoints: number[]
 }
 
-export interface FontContext {
-  slug: string
-  familyName: string
-  fontId: string
-  fontPath: string | null
-  redistributable: boolean
-  coverage: Set<number>
-  color: string
-}
-
 export type GridMode = 'standalone' | 'per-font' | 'multi-font'

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { UnicodeBlock, UnicodeCharacter, FontContext, GridMode } from '..'
+import type { UnicodeBlock, UnicodeCharacter, GridMode } from '..'
+import type { FontContext } from '../../types/domain'
 import { isControlChar, controlAbbrev, controlName, displayChar } from '..'
 
 const props = withDefaults(defineProps<{

@@ -68,20 +68,63 @@ export interface ParsedMarkdown {
   body: string
 }
 
+// ---------- Font rendering context ----------
+// Lives in the fonts domain (not lib/unicode/types) because it carries font
+// identity + a coverage set. The unicode grid component accepts it as a prop
+// (rendering concern), which is why the dependency direction is fonts → unicode,
+// not the reverse.
+
+export interface FontContext {
+  slug: string
+  familyName: string
+  fontId: string
+  fontPath: string | null
+  redistributable: boolean
+  coverage: Set<number>
+  color: string
+}
+
 // ---------- Coverage (was `any` in useCoverage.ts — AUDIT C.3) ----------
+// Shape pinned to actual fontist-archive output (scripts/fetch-data.sh).
+// `blocks`, `variable_axes`, `opentype_features`, `total_blocks` are
+// optional — non-variable fonts (the common case) omit them.
+
+export interface CoverageBlock {
+  name: string
+  range: string
+  start: number
+  end: number
+  codepoints: number[]
+}
 
 export interface CoverageVariableAxis {
   tag: string
+  name: string
   min: number
-  max: number
   default: number
+  max: number
+}
+
+export interface CoverageFeature {
+  tag: string
+  name: string
+}
+
+export interface CoveragePlanes {
+  bmp: boolean
+  smp: boolean
+  sip: boolean
 }
 
 export interface Coverage {
-  codepoints: number[]
-  blocks: Array<{ name: string; supported: number; total: number }>
-  variable_axes: CoverageVariableAxis[]
-  opentype_features: string[]
+  slug: string
+  redistributable: boolean
   total_codepoints: number
-  supported_blocks: string[]
+  supported_blocks: number
+  total_blocks?: number
+  planes: CoveragePlanes
+  codepoints: number[]
+  blocks?: CoverageBlock[]
+  variable_axes?: CoverageVariableAxis[]
+  opentype_features?: CoverageFeature[]
 }

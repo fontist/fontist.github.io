@@ -324,7 +324,7 @@ watch(slugsFromUrl, (newSlugs) => {
 .cmp-add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .cmp-count {
   font-size: 0.75rem;
-  font-family: var(--font-mono, monospace);
+  font-family: var(--spec-font-mono);
   color: var(--vp-c-text-3, #888);
 }
 
@@ -377,7 +377,7 @@ watch(slugsFromUrl, (newSlugs) => {
 .cmp-suggestion {
   padding: 0.3rem 0.8rem;
   font-size: 0.78rem;
-  font-family: var(--font-mono, monospace);
+  font-family: var(--spec-font-mono);
   background: var(--vp-c-bg-soft, #f6f6f7);
   border: 1px solid var(--vp-c-divider, #e8e6e0);
   border-radius: 4px;
@@ -439,7 +439,7 @@ watch(slugsFromUrl, (newSlugs) => {
   color: var(--fontist-rose, #bf4e6a);
 }
 .cmp-col-slug {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--spec-font-mono);
   font-size: 0.68rem;
   color: var(--vp-c-text-3, #aaa);
 }
@@ -468,7 +468,7 @@ watch(slugsFromUrl, (newSlugs) => {
   margin-bottom: 0.3rem;
 }
 .cmp-weight-val {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--spec-font-mono);
   color: var(--fontist-rose, #bf4e6a);
 }
 .cmp-slider {
@@ -501,7 +501,7 @@ watch(slugsFromUrl, (newSlugs) => {
   gap: 0.1rem;
 }
 .cmp-stat-num {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--spec-font-mono);
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--vp-c-text-1, #1a1a1a);

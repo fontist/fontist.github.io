@@ -1,4 +1,5 @@
-import type { UnicodeBlock, UnicodeCharacter, CoverageStatus, FontContext, GridMode } from '../types'
+import type { UnicodeBlock, UnicodeCharacter, CoverageStatus, GridMode } from '../types'
+import type { FontContext } from '../../types/domain'
 import { hexCp, safeChar } from '../constants'
 
 export function computeCoverage(block: UnicodeBlock, fontCoverage: Set<number>): {
