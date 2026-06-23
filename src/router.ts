@@ -24,7 +24,9 @@ export const routes: RouteRecordRaw[] = [
   { path: '/unicode/combining/:cc', name: 'unicode-combining-class', component: () => import('./pages/PropertyDetailPage.vue'), props: { property: 'combining', title: 'Combining Class' } },
   { path: '/unicode/bidiclass', name: 'unicode-bidiclasses', component: () => import('./pages/PropertyListPage.vue'), props: { property: 'bidiclass', title: 'Bidirectional Classes', label: 'classes' } },
   { path: '/unicode/bidiclass/:bc', name: 'unicode-bidiclass', component: () => import('./pages/PropertyDetailPage.vue'), props: { property: 'bidiclass', title: 'Bidirectional Class' } },
+  { path: '/guide', name: 'guide-index', component: () => import('./pages/GuideIndexPage.vue') },
   { path: '/guide/:path(.*)*', name: 'guide', component: () => import('./pages/GuidePage.vue') },
+  { path: '/licenses', name: 'licenses-index', component: () => import('./pages/LicensesIndexPage.vue') },
   { path: '/licenses/:path(.*)*', name: 'licenses', component: () => import('./pages/LicensePage.vue') },
   { path: '/:path(.*)*', name: 'not-found', component: () => import('./pages/NotFound.vue') },
 ]

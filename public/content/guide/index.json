@@ -1,0 +1,62 @@
+[
+  {
+    "slug": "choosing-formula",
+    "title": "Choosing a Formula",
+    "description": "How to choose the right Fontist formula for your needs"
+  },
+  {
+    "slug": "create-formula",
+    "title": "Create a Formula",
+    "description": ""
+  },
+  {
+    "slug": "formula-structure",
+    "title": "Formula Structure",
+    "description": "Understanding the YAML structure of Fontist formulas"
+  },
+  {
+    "slug": "private-repositories",
+    "title": "Private repositories",
+    "description": ""
+  },
+  {
+    "slug": "use-cases/cloud-vms",
+    "title": "Cloud VMs",
+    "description": "Using Fontist formulas on cloud virtual machines"
+  },
+  {
+    "slug": "use-cases/containerized",
+    "title": "Docker & Containers",
+    "description": "Using Fontist formulas in Docker containers and Kubernetes"
+  },
+  {
+    "slug": "use-cases/desktop-publishing",
+    "title": "Desktop Publishing",
+    "description": "Using Fontist formulas for desktop publishing applications"
+  },
+  {
+    "slug": "use-cases/document-generation",
+    "title": "Document Generation",
+    "description": "Using Fontist formulas for automated document generation"
+  },
+  {
+    "slug": "use-cases/pdf-generation",
+    "title": "PDF Generation",
+    "description": "Using Fontist formulas for PDF generation in various programming languages"
+  },
+  {
+    "slug": "use-cases/server-side",
+    "title": "CI/CD & Servers",
+    "description": "Using Fontist formulas in continuous integration and server environments"
+  },
+  {
+    "slug": "use-cases/web-development",
+    "title": "Web Development",
+    "description": "Using Fontist formulas for web development and self-hosted web fonts"
+  },
+  {
+    "slug": "what-is-formula",
+    "title": "What is a Formula?",
+    "description": "Understanding Fontist formulas - recipes for installing fonts"
+  }
+]
