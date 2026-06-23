@@ -3,6 +3,10 @@ dist
 dist-ssr
 *.local
 
+# vite-ssg scratch directory (SSG rendering intermediate). Should never
+# be committed — only `dist/` is the published output.
+.vite-ssg-temp/
+
 # Generated data fetched at build time by scripts/fetch-data.sh.
 # CI (build.yml) and the fetch script reproduce these on every build.
 /public/coverage/
