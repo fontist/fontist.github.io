@@ -3,7 +3,7 @@ import { ref, computed, watch } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import { marked } from 'marked'
-import { fetchText } from '../lib/ssr-fetch'
+import { loadParsedMarkdown } from '../lib/markdown/loader'
 import { useMarkdownLinks } from '../composables/useMarkdownLinks'
 
 const route = useRoute()
@@ -34,13 +34,11 @@ async function loadLicense() {
   notFound.value = false
 
   for (const p of candidates.value) {
-    try {
-      const md = await fetchText(p)
-      if (md) {
-        html.value = await marked(md)
-        return
-      }
-    } catch {}
+    const parsed = await loadParsedMarkdown(p)
+    if (parsed) {
+      html.value = await marked(parsed.body)
+      return
+    }
   }
   notFound.value = true
 }
@@ -71,13 +69,4 @@ useHead(() => ({
 <style scoped>
 .license-page { max-width: 800px; }
 .lp-notfound { padding: 3rem 1rem; text-align: center; color: var(--vp-c-text-2); }
-.lp-content { line-height: 1.7; color: var(--vp-c-text-1); }
-.lp-content :deep(h1) { font-size: 2rem; font-weight: 600; margin: 0 0 1rem; }
-.lp-content :deep(h2) { font-size: 1.5rem; font-weight: 600; margin: 2rem 0 1rem; }
-.lp-content :deep(p) { margin-bottom: 1rem; }
-.lp-content :deep(a) { color: var(--fontist-rose, #bf4e6a); }
-.lp-content :deep(code) { font-family: monospace; background: var(--vp-c-bg-soft, #f8f7f4); padding: 0.15em 0.35em; border-radius: 3px; }
-.lp-content :deep(table) { width: 100%; border-collapse: collapse; margin: 1rem 0; }
-.lp-content :deep(th), .lp-content :deep(td) { border: 1px solid var(--vp-c-divider); padding: 0.5rem; text-align: left; }
-.lp-content :deep(img) { height: 20px; vertical-align: middle; }
 </style>
