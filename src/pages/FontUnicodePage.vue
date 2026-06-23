@@ -4,15 +4,16 @@ import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import { injectFontFace } from '../composables/useFontFace'
 import { fetchCoverage } from '../composables/useCoverage'
-import type { UnicodeBlock, FontContext } from '../lib/unicode'
-import { loadAllBlocks, getPlanes, PLANES, blockDisplayName, hexCp } from '../lib/unicode'
+import type { UnicodeBlock } from '../lib/unicode'
+import { loadAllBlocks, getPlanes, PLANES, blockDisplayName, blockSlug, hexCp } from '../lib/unicode'
+import type { FontContext, Coverage } from '../lib/types/domain'
 
 const route = useRoute()
 const router = useRouter()
 const slug = computed(() => route.params.slug as string)
 
 const allBlocks = ref<UnicodeBlock[]>([])
-const coverage = ref<any>(null)
+const coverage = ref<Coverage | null>(null)
 const fontReady = ref(false)
 const fontId = ref('')
 
@@ -57,7 +58,7 @@ useHead(() => ({
 
 function blockSupportCount(block: UnicodeBlock): number {
   if (!coverage.value?.blocks) return 0
-  const cov = coverage.value.blocks.find((b: any) => b.name === block.name)
+  const cov = coverage.value.blocks.find(b => b.name === block.name)
   return cov?.codepoints?.length || 0
 }
 
@@ -70,8 +71,7 @@ function blockStatus(block: UnicodeBlock): string {
 }
 
 function navigateToBlock(blockName: string) {
-  const blockSlug = blockName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
-  router.push(`/font/${slug.value}/unicode/${blockSlug}`)
+  router.push(`/font/${slug.value}/unicode/${blockSlug(blockName)}`)
 }
 </script>
 

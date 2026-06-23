@@ -7,6 +7,7 @@ import { fetchCoverage } from '../composables/useCoverage'
 import { useFontVariation } from '../composables/useFontVariation'
 import { featureInfo } from '../lib/unicode'
 import { findFormula, type FormulaData } from '../lib/formulas/loader'
+import type { Coverage } from '../lib/types/domain'
 
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
@@ -14,7 +15,7 @@ const slug = computed(() => route.params.slug as string)
 const { state, variationCSS, featureCSS, initAxes, initFeatures, setAxis, toggleFeature } = useFontVariation()
 
 const formula = ref<FormulaData | null>(null)
-const coverage = ref<any>(null)
+const coverage = ref<Coverage | null>(null)
 const loading = ref(true)
 const fontReady = ref(false)
 const fontId = ref('')
@@ -38,9 +39,9 @@ async function loadData() {
     coverage.value = await fetchCoverage(s)
 
     if (coverage.value?.variable_axes)
-      initAxes(coverage.value.variable_axes.map((a: any) => ({ tag: a.tag, default: a.default })))
+      initAxes(coverage.value.variable_axes.map(a => ({ tag: a.tag, default: a.default })))
     if (coverage.value?.opentype_features)
-      initFeatures(coverage.value.opentype_features.map((f: any) => ({ tag: f.tag })))
+      initFeatures(coverage.value.opentype_features.map(f => ({ tag: f.tag })))
   } catch (e) { console.error(e) }
   finally { loading.value = false }
 }
@@ -69,7 +70,7 @@ const familyName = computed(() => formula.value?.name || slug.value)
 const licenseName = computed(() => formula.value?.licenseName || 'Unknown')
 const axes = computed(() => coverage.value?.variable_axes || [])
 const features = computed(() => coverage.value?.opentype_features || [])
-const weightAxis = computed(() => axes.value.find((a: any) => a.tag === 'wght'))
+const weightAxis = computed(() => axes.value.find(a => a.tag === 'wght'))
 
 const specimenStyle = computed(() => {
   const s: Record<string, string> = { fontFamily: `'${fontId.value}', sans-serif` }
@@ -311,7 +312,7 @@ const blockCount = computed(() => coverage.value?.supported_blocks || 0)
   color: var(--vp-c-text-3, #888);
 }
 .fp-axis-value {
-  font-family: var(--font-mono, 'SF Mono', monospace);
+  font-family: var(--spec-font-mono);
   font-size: 0.82rem;
   font-weight: 600;
   color: var(--fontist-rose, #bf4e6a);
@@ -352,7 +353,7 @@ const blockCount = computed(() => coverage.value?.supported_blocks || 0)
 .fp-axis-range {
   display: flex;
   justify-content: space-between;
-  font-family: var(--font-mono, 'SF Mono', monospace);
+  font-family: var(--spec-font-mono);
   font-size: 0.62rem;
   color: var(--vp-c-text-3, #aaa);
 }
@@ -394,7 +395,7 @@ const blockCount = computed(() => coverage.value?.supported_blocks || 0)
   border-color: var(--fontist-rose, #bf4e6a);
 }
 .fp-chip-tag {
-  font-family: var(--font-mono, 'SF Mono', monospace);
+  font-family: var(--spec-font-mono);
   font-size: 0.68rem;
   font-weight: 700;
   color: var(--vp-c-text-3, #888);
@@ -470,7 +471,7 @@ const blockCount = computed(() => coverage.value?.supported_blocks || 0)
   color: var(--vp-c-text-1, #1a1a1a);
 }
 .fp-section-meta {
-  font-family: var(--font-mono, 'SF Mono', monospace);
+  font-family: var(--spec-font-mono);
   font-size: 0.72rem;
   color: var(--vp-c-text-3, #888);
 }
@@ -494,7 +495,7 @@ const blockCount = computed(() => coverage.value?.supported_blocks || 0)
   gap: 0.6rem;
 }
 .fp-feature-tag {
-  font-family: var(--font-mono, 'SF Mono', monospace);
+  font-family: var(--spec-font-mono);
   font-size: 0.68rem;
   font-weight: 700;
   color: var(--fontist-rose, #bf4e6a);
@@ -539,7 +540,7 @@ const blockCount = computed(() => coverage.value?.supported_blocks || 0)
 }
 .fp-stat-card:hover { background: var(--vp-c-bg-soft, #faf8f5); }
 .fp-stat-num {
-  font-family: var(--font-mono, 'SF Mono', monospace);
+  font-family: var(--spec-font-mono);
   font-size: 1.8rem;
   font-weight: 700;
   color: var(--vp-c-text-1, #1a1a1a);
