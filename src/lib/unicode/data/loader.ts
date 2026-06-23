@@ -1,14 +1,32 @@
-import type { UnicodeBlock, UnicodeCharacter, PlaneKey, UnicodePlane } from '../types'
-import { PLANES, planeForCodepoint, blockDisplayName, scriptGroup, hexCp, safeChar, blockSlug } from '../constants'
+import type { UnicodeBlock, UnicodeCharacter, PlaneKey, UnicodePlane } from '../types.ts'
+import { PLANES, planeForCodepoint, blockDisplayName, scriptGroup, hexCp, safeChar, blockSlug } from '../constants.ts'
 import { fetchJson } from '../../ssr-fetch'
+
+interface RawBlockCharacter {
+  cp: number
+  n?: string
+  c?: string
+  s?: string
+}
+
+interface RawBlockFile {
+  chars?: RawBlockCharacter[]
+}
 
 const blockCache = new Map<string, UnicodeBlock>()
 let allBlocks: UnicodeBlock[] | null = null
 
+interface RawBlockIndexEntry {
+  start: number
+  end: number
+  name: string
+  unicode_version?: string
+}
+
 export async function loadAllBlocks(): Promise<UnicodeBlock[]> {
   if (allBlocks) return allBlocks
 
-  const raw = await fetchJson<{ start: number; end: number; name: string; unicode_version?: string }[]>('unicode-blocks.json')
+  const raw = await fetchJson<RawBlockIndexEntry[]>('unicode-blocks.json')
 
   allBlocks = raw.map(b => ({
     name: b.name,
@@ -30,9 +48,8 @@ export async function loadBlockCharacters(blockName: string): Promise<UnicodeCha
   const slug = blockSlug(blockName)
 
   try {
-    const data = await fetchJson<{ chars?: any[] }>(`unicode/blocks/${slug}.json`)
-    return (data.chars || []).map((c: any) => ({
-      ...c,
+    const data = await fetchJson<RawBlockFile>(`unicode/blocks/${slug}.json`)
+    return (data.chars || []).map(c => ({
       cp: c.cp,
       hex: hexCp(c.cp),
       char: safeChar(c.cp),

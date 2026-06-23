@@ -30,6 +30,11 @@ export function useFontVariation() {
     }
   }
 
+  function reset() {
+    for (const k of Object.keys(state.axes)) delete state.axes[k]
+    for (const k of Object.keys(state.features)) delete state.features[k]
+  }
+
   function setAxis(tag: string, value: number) {
     state.axes[tag] = value
   }
@@ -38,5 +43,5 @@ export function useFontVariation() {
     state.features[tag] = state.features[tag] === 'on' ? 'off' : 'on'
   }
 
-  return { state, variationCSS, featureCSS, initAxes, initFeatures, setAxis, toggleFeature }
+  return { state, variationCSS, featureCSS, initAxes, initFeatures, setAxis, toggleFeature, reset }
 }

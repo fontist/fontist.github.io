@@ -19,6 +19,29 @@ function readJson(path, fallback) {
   }
 }
 
+// Extract frontmatter as a key→value getter. Values have surrounding double
+// quotes stripped. Returns get('')→'' for files without frontmatter.
+// Mirrors src/lib/markdown/frontmatter.ts but stays in .mjs so this script
+// can run without a TypeScript loader.
+function parseFrontmatterGetters(text) {
+  const fm = text.startsWith('---\n')
+    ? text.slice(4, text.indexOf('\n---\n', 4))
+    : ''
+  return (key) => {
+    const m = fm.match(new RegExp(`^${key}:\\s*(.+)$`, 'm'))
+    if (!m) return ''
+    let v = m[1].trim()
+    if (v.startsWith('"') && v.endsWith('"')) v = v.slice(1, -1)
+    return v
+  }
+}
+
+function titleFromHeading(text, fallback) {
+  const m = text.match(/^#\s+(.+)$/m)
+  return m ? m[1].trim() : fallback
+}
+
+
 const formulas = readJson(resolve(pub, 'formulas-data.json'), [])
 const blocksFile = readJson(resolve(pub, 'unicode-blocks.json'), {})
 const blockSlugs = Object.values(blocksFile).map((b) => blockToSlug(b.name)).filter(Boolean)
@@ -31,21 +54,8 @@ try {
   blogIndex = files.map((f) => {
     const slug = f.replace(/\.md$/, '')
     const text = readFileSync(resolve(pub, 'content/blog', f), 'utf8')
-    const fm = text.startsWith('---\n')
-      ? text.slice(4, text.indexOf('\n---\n', 4))
-      : ''
-    const get = (key) => {
-      const m = fm.match(new RegExp(`^${key}:\\s*(.+)$`, 'm'))
-      if (!m) return ''
-      let v = m[1].trim()
-      if (v.startsWith('"') && v.endsWith('"')) v = v.slice(1, -1)
-      return v
-    }
-    let title = get('title')
-    if (!title) {
-      const m = text.match(/^#\s+(.+)$/m)
-      title = m ? m[1].trim() : slug
-    }
+    const get = parseFrontmatterGetters(text)
+    let title = get('title') || titleFromHeading(text, slug)
     let date = get('date')
     if (!date) {
       const m = slug.match(/^(\d{4}-\d{2}-\d{2})/)
@@ -79,22 +89,9 @@ function collectGuides(dir, base = '') {
       let description = ''
       try {
         const text = readFileSync(resolve(dir, ent.name), 'utf8')
-        const fm = text.startsWith('---\n')
-          ? text.slice(4, text.indexOf('\n---\n', 4))
-          : ''
-        const get = (key) => {
-          const m = fm.match(new RegExp(`^${key}:\\s*(.+)$`, 'm'))
-          if (!m) return ''
-          let v = m[1].trim()
-          if (v.startsWith('"') && v.endsWith('"')) v = v.slice(1, -1)
-          return v
-        }
-        title = get('title')
+        const get = parseFrontmatterGetters(text)
+        title = get('title') || titleFromHeading(text, slug.split('/').pop())
         description = get('description')
-        if (!title) {
-          const m = text.match(/^#\s+(.+)$/m)
-          title = m ? m[1].trim() : slug.split('/').pop()
-        }
       } catch {
         title = slug.split('/').pop()
       }
@@ -143,22 +140,9 @@ try {
       let description = ''
       try {
         const text = readFileSync(resolve(pub, 'content/licenses', ent.name), 'utf8')
-        const fm = text.startsWith('---\n')
-          ? text.slice(4, text.indexOf('\n---\n', 4))
-          : ''
-        const get = (key) => {
-          const m = fm.match(new RegExp(`^${key}:\\s*(.+)$`, 'm'))
-          if (!m) return ''
-          let v = m[1].trim()
-          if (v.startsWith('"') && v.endsWith('"')) v = v.slice(1, -1)
-          return v
-        }
-        title = get('title')
+        const get = parseFrontmatterGetters(text)
+        title = get('title') || titleFromHeading(text, slug)
         description = get('description')
-        if (!title) {
-          const m = text.match(/^#\s+(.+)$/m)
-          title = m ? m[1].trim() : slug
-        }
       } catch {
         title = slug
       }
