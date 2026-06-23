@@ -1,0 +1,190 @@
+# 13 — Font & Formula Page Architecture
+
+> The user asked: "Do we have formula and font pages now?" Short answer:
+> **We have both URL routes, but they render the same entity.** This doc is
+> the architecture for splitting them.
+
+## Current state (2026-06-23)
+
+### URL surface
+
+| Route                          | Page component           | Loads                |
+|--------------------------------|--------------------------|----------------------|
+| `/font/:slug`                  | `FontPage.vue`           | `findFormula(slug)`  |
+| `/font/:slug/unicode`          | `FontUnicodePage.vue`    | `fetchCoverage(slug)`|
+| `/font/:slug/unicode/:block`   | `FontBlockPage.vue`      | both                 |
+| `/formula/:slug`               | `FormulaPage.vue`        | `findFormula(slug)`  |
+| `/browse`                      | `BrowsePage.vue`         | `loadAllFormulas()`  |
+
+### The conflation
+
+`FontPage.vue:33` and `FormulaPage.vue:17` both call `findFormula(slug)` on
+the same slug and render fields from the resulting `FormulaData` record.
+The `/font/:slug` URL does not address a font — it addresses a formula and
+renders it as a specimen.
+
+`FormulaData` itself mixes concerns (AUDIT A.2):
+
+```ts
+export interface FormulaData {
+  name: string            // formula display name
+  formulaName: string     // formula key (fontist install X)
+  slug: string
+  familyCount: number     // formula property
+  styleCount: number      // formula property
+  familyNames: string[]   // FONT property (a list of font families)
+  sourceType: string
+  platforms: string[]
+  licenseType: string     // formula property
+  licenseCategory: string
+  licenseName: string
+}
+```
+
+### Concrete user-visible bugs this causes
+
+1. **`/font/yu` shows 10 families collapsed under "Yu"** — there is no URL
+   for Yu Mincho specifically, even though it's a distinct font family.
+2. **Two formulas can ship "Roboto"** — only one wins the slug. The other
+   is unreachable.
+3. **`/font/:slug` and `/formula/:slug` render overlapping data** — the
+   "View Font Specimen →" button on FormulaPage links to a page that just
+   re-presents formula metadata as a specimen.
+4. **`FontUnicodePage` builds `fontCtx.familyName = slug.value`** (line 23)
+   — the family name shown in the Unicode coverage UI is the formula slug,
+   not an actual family name.
+
+## Target entity model
+
+Five entities, three URL surfaces:
+
+```
+Formula ─────owns─────► FontFamily ──has──► Style ──has──► FontFile
+   │                       │                              │
+   │                       │                              │
+   └──provides──► Coverage ◄──────────────────────────────┘
+                   (per font file)
+```
+
+| Entity       | Cardinality     | URL                              |
+|--------------|-----------------|----------------------------------|
+| Formula      | 4,283           | `/formula/:slug`                 |
+| FontFamily   | ~6,000+         | `/font/:familySlug`              |
+| Style        | ~25,000+        | `/font/:familySlug/:styleSlug`   |
+| FontFile     | 1 per style     | (no URL — internal)              |
+| Coverage     | 1 per file      | (no URL — data)                  |
+
+`/browse` becomes `/formulas` (AUDIT G.2) and continues to list formulas.
+A new `/fonts` index lists font families with their style counts and
+formula provenance.
+
+## Three-phase migration
+
+### Phase 1 — Untangle the loaders (no URL change)
+
+Pure refactor, no behavior change.
+
+1. Move `familyNames`, `styleCount` out of `FormulaData` into a derived
+   `FontFamily[]` accessor on the formula loader.
+2. Add `loadFontFamily(slug)` to `src/lib/fonts/loader.ts` that resolves
+   a family slug → family entity, knowing which formulas provide it.
+3. `FontPage.vue` switches from `findFormula(slug)` to
+   `loadFontFamily(slug)`. It still works for the common case (one
+   formula = one family) but the data flow is now correct.
+4. Introduce the `FontFamily` type in `src/lib/types/domain.ts`:
+
+```ts
+export interface FontFamily {
+  slug: string             // canonical family slug
+  name: string             // display name ("Roboto")
+  formulaSlugs: string[]   // which formulas provide this family
+  styleCount: number
+  redistributable: boolean
+  licenseName: string
+}
+```
+
+**Risk:** existing `/font/:slug` URLs that addressed a formula slug may
+break if the family slug differs. Mitigation: in the loader, fall back to
+formula slug → first family when a direct family lookup misses. Log a
+deprecation.
+
+### Phase 2 — Add the reverse index
+
+Build at SSG time. Spec already drafted in AUDIT A.3:
+
+```json
+// public/font-families.json (NEW)
+{
+  "generated_at": "...",
+  "total_families": 6234,
+  "families": [
+    {
+      "slug": "roboto",
+      "name": "Roboto",
+      "formula_slugs": ["google", "roboto"],
+      "style_count": 18,
+      "redistributable": true,
+      "license_name": "Apache-2.0"
+    }
+  ]
+}
+```
+
+Generated by `scripts/gen-font-families.mjs` reading
+`formulas-data.json` + `font-metadata.json`. Run as part of
+`scripts/fetch-data.sh` after the upstream pull.
+
+`/fonts` index page consumes this. `/formula/:slug` page renders a
+"Font families" section linking to `/font/:familySlug`.
+
+### Phase 3 — URL rename (breaking change)
+
+After Phase 1+2 are stable:
+
+- Rename `/font/:slug` → `/fonts/:familySlug` (plural, REST convention).
+- Add 301 redirects from old `/font/X` → new `/fonts/X` where a family
+  slug matches.
+- Rename `/browse` → `/formulas` with similar redirect.
+- Update sitemap, internal links, OG canonical URLs.
+
+**This is the only phase that requires user sign-off** — it changes
+public URLs. Phases 1 and 2 are pure refactors.
+
+## What this session will do
+
+Phase 1 only — and only the parts that don't change URL behavior:
+
+- Introduce the `FontFamily` type in `lib/types/domain.ts` (spec only,
+  not yet populated).
+- Fix the immediate bugs:
+  - `FontBlockPage.vue:101` references undeclared `loading` ref
+  - `coverage` typed as `any` in three pages despite `Coverage` type existing
+  - `blockSlug` regex reimplemented inline in two pages despite canonical
+    `blockSlug()` in `constants.ts:177`
+- **Defer** the actual loader split + URL rename. The risk of breaking
+  4,283 pre-rendered font URLs without coordination is too high for a
+  single session.
+
+Phase 2 (reverse index) and Phase 3 (URL rename) require:
+- Sign-off on the URL scheme
+- Coordination with sitemap.xml consumers
+- A redirects strategy (GitHub Pages supports Jekyll redirects-from, or
+  we add a small `_redirects` file if we move to Netlify-style hosting)
+
+## Open questions for the user
+
+1. **Should `/font/:slug` continue to address formulas (current behavior)
+   or only families (target behavior)?** The current behavior is wrong
+   but stable. Switching breaks inbound links.
+2. **Is `/fonts` (plural) the right index URL?** Alternative: keep
+   `/browse` as the formulas index, add `/fonts` as the families index.
+3. **Should the family slug be derived from `canonical_name` or from the
+   formula slug?** "Roboto" the family vs "google" the formula — these
+   are different namespaces.
+
+## Related
+
+- AUDIT.md §A (data model conflation), §G (URL model)
+- 08-domain-model.md (target entity model)
+- 09-page-contract.md (page composition-root conventions)
