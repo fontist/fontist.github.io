@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
+import { useHead } from '@unhead/vue'
 import { marked } from 'marked'
+import { fetchText } from '../lib/ssr-fetch'
 import { useMarkdownLinks } from '../composables/useMarkdownLinks'
 
 const route = useRoute()
 const html = ref('')
-const loading = ref(true)
 const notFound = ref(false)
 const contentRef = ref<HTMLElement | null>(null)
 
@@ -18,45 +19,48 @@ const licensePath = computed(() => {
   return ''
 })
 
-const basePath = import.meta.env.BASE_URL || '/'
-
-async function loadLicense() {
-  loading.value = true
-  notFound.value = false
-  html.value = ''
-
+const candidates = computed(() => {
   const path = licensePath.value || ''
   const fileBase = path || 'index'
-
-  const urls = [
-    `${basePath}content/licenses/${fileBase}.md`,
-    `${basePath}content/licenses/${path ? path + '/' : ''}index.md`,
-    `${basePath}content/licenses/index.md`,
+  return [
+    `content/licenses/${fileBase}.md`,
+    `content/licenses/${path ? path + '/' : ''}index.md`,
+    `content/licenses/index.md`,
   ]
+})
 
-  for (const url of urls) {
+async function loadLicense() {
+  html.value = ''
+  notFound.value = false
+
+  for (const p of candidates.value) {
     try {
-      const res = await fetch(url)
-      if (res.ok) {
-        const md = await res.text()
+      const md = await fetchText(p)
+      if (md) {
         html.value = await marked(md)
-        break
+        return
       }
     } catch {}
   }
-
-  if (!html.value) notFound.value = true
-  loading.value = false
+  notFound.value = true
 }
 
-onMounted(loadLicense)
+await loadLicense()
 watch(licensePath, loadLicense)
+
+useHead(() => ({
+  title: notFound.value
+    ? 'License — Not Found'
+    : `${(licensePath.value || 'Licenses').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())} — Fontist License`,
+  link: [
+    { rel: 'canonical', href: `https://www.fontist.org/licenses/${licensePath.value}` },
+  ],
+}))
 </script>
 
 <template>
   <div class="page-container license-page">
-    <div v-if="loading" class="lp-loading"><p>Loading…</p></div>
-    <div v-else-if="notFound" class="lp-notfound">
+    <div v-if="notFound" class="lp-notfound">
       <h1>License page not found</h1>
       <RouterLink to="/licenses">← Back to Licenses</RouterLink>
     </div>
@@ -66,7 +70,7 @@ watch(licensePath, loadLicense)
 
 <style scoped>
 .license-page { max-width: 800px; }
-.lp-loading, .lp-notfound { padding: 3rem 1rem; text-align: center; color: var(--vp-c-text-2); }
+.lp-notfound { padding: 3rem 1rem; text-align: center; color: var(--vp-c-text-2); }
 .lp-content { line-height: 1.7; color: var(--vp-c-text-1); }
 .lp-content :deep(h1) { font-size: 2rem; font-weight: 600; margin: 0 0 1rem; }
 .lp-content :deep(h2) { font-size: 1.5rem; font-weight: 600; margin: 2rem 0 1rem; }

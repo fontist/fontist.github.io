@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { marked } from 'marked'
+import { useHead } from '@unhead/vue'
 import { useMarkdownLinks } from '../composables/useMarkdownLinks'
+import { loadMarkdown } from '../lib/markdown/loader'
 
 const route = useRoute()
 const html = ref('')
 const loading = ref(true)
 const notFound = ref(false)
+const title = ref('Guide')
 const contentRef = ref<HTMLElement | null>(null)
 
 useMarkdownLinks(contentRef)
@@ -17,8 +20,6 @@ const guidePath = computed(() => {
   if (Array.isArray(params) && params.length > 0) return params.join('/')
   return ''
 })
-
-const basePath = import.meta.env.BASE_URL || '/'
 
 async function loadGuide() {
   loading.value = true
@@ -30,29 +31,35 @@ async function loadGuide() {
   const fileBase = segments.length > 0 ? segments[segments.length - 1] : 'index'
   const dir = segments.length > 1 ? segments.slice(0, -1).join('/') + '/' : ''
 
-  const urls = [
-    `${basePath}content/guide/${dir}${fileBase}.md`,
-    `${basePath}content/guide/${path ? path + '/' : ''}index.md`,
-    `${basePath}content/guide/index.md`,
+  const candidates = [
+    `content/guide/${dir}${fileBase}.md`,
+    `content/guide/${path ? path + '/' : ''}index.md`,
+    `content/guide/index.md`,
   ]
 
-  for (const url of urls) {
-    try {
-      const res = await fetch(url)
-      if (res.ok) {
-        const md = await res.text()
-        html.value = await marked(md)
-        break
-      }
-    } catch {}
+  for (const c of candidates) {
+    const md = await loadMarkdown(c)
+    if (md) {
+      html.value = await marked(md)
+      const m = md.match(/^#\s+(.+)$/m)
+      title.value = m ? m[1].trim() : 'Fontist Guide'
+      break
+    }
   }
 
   if (!html.value) notFound.value = true
   loading.value = false
 }
 
-onMounted(loadGuide)
+await loadGuide()
 watch(guidePath, loadGuide)
+
+useHead(() => ({
+  title: `${title.value} — Fontist`,
+  link: [
+    { rel: 'canonical', href: `https://www.fontist.org/guide/${guidePath.value}` },
+  ],
+}))
 </script>
 
 <template>

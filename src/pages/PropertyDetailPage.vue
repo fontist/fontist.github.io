@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
-import { hexCp, safeChar, displayChar, blockSlug } from '../lib/unicode'
+import { useHead } from '@unhead/vue'
+import { hexCp, safeChar, blockSlug } from '../lib/unicode'
+import { fetchJson } from '../lib/ssr-fetch'
 import UnicodeBlockGrid from '../lib/unicode/components/UnicodeBlockGrid.vue'
 
 const route = useRoute()
 const router = useRouter()
-const basePath = import.meta.env.BASE_URL || '/'
 
 const props = defineProps<{
   property: 'scripts' | 'category' | 'combining' | 'bidiclass'
   title: string
 }>()
 
-const loading = ref(true)
 const data = ref<{ property: string; count: number; characters: any[] } | null>(null)
 
 const valueParam = computed(() => route.params.code as string)
-const indexUrl = computed(() => `${basePath}unicode/indexes/${props.property}/${valueParam.value}.json`)
+const indexUrl = computed(() => `unicode/indexes/${props.property}/${valueParam.value}.json`)
 
 const blockWithChars = computed(() => {
   if (!data.value) return null
@@ -29,7 +29,7 @@ const blockWithChars = computed(() => {
     plane: 'bmp' as const,
     displayName: `${props.title}: ${valueParam.value}`,
     scriptGroup: '',
-    characters: data.value.characters.map(c => ({
+    characters: data.value.characters.map((c: any) => ({
       cp: c.cp,
       hex: hexCp(c.cp),
       char: safeChar(c.cp),
@@ -43,17 +43,23 @@ const blockWithChars = computed(() => {
 })
 
 async function loadData() {
-  loading.value = true
   data.value = null
   try {
-    const res = await fetch(indexUrl.value)
-    if (res.ok) data.value = await res.json()
+    data.value = await fetchJson<typeof data.value>(indexUrl.value)
   } catch (e) { console.error(e) }
-  finally { loading.value = false }
 }
 
-onMounted(loadData)
-watch(valueParam, loadData)
+await loadData()
+watch([valueParam, () => props.property], loadData)
+
+useHead(() => ({
+  title: data.value
+    ? `${props.title}: ${valueParam.value} (${data.value.count.toLocaleString()} chars) — Unicode`
+    : `${props.title}: ${valueParam.value} — Unicode`,
+  link: [
+    { rel: 'canonical', href: `https://www.fontist.org/unicode/${props.property}/${valueParam.value}` },
+  ],
+}))
 
 function goToChar(cp: number) {
   const hex = cp.toString(16).toUpperCase().padStart(4, '0')
@@ -62,7 +68,7 @@ function goToChar(cp: number) {
 </script>
 
 <template>
-  <div class="pdp" v-if="!loading && data">
+  <div class="pdp" v-if="data">
     <header class="pdp-head">
       <RouterLink to="/unicode" class="pdp-back">← Unicode</RouterLink>
       <RouterLink :to="`/unicode/${property}`" class="pdp-up">{{ title }} ↑</RouterLink>
@@ -79,8 +85,7 @@ function goToChar(cp: number) {
     />
   </div>
 
-  <div v-else-if="!loading" class="pdp-loading">No characters found for "{{ valueParam }}".</div>
-  <div v-else class="pdp-loading">Loading…</div>
+  <div v-else class="pdp-loading">No characters found for "{{ valueParam }}".</div>
 </template>
 
 <style scoped>

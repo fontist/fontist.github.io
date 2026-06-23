@@ -1,16 +1,14 @@
 import type { UnicodeBlock, UnicodeCharacter, PlaneKey, UnicodePlane } from '../types'
 import { PLANES, planeForCodepoint, blockDisplayName, scriptGroup, hexCp, safeChar } from '../constants'
+import { fetchJson } from '../../ssr-fetch'
 
 const blockCache = new Map<string, UnicodeBlock>()
 let allBlocks: UnicodeBlock[] | null = null
 
-const basePath = import.meta.env.BASE_URL || '/'
-
 export async function loadAllBlocks(): Promise<UnicodeBlock[]> {
   if (allBlocks) return allBlocks
 
-  const res = await fetch(`${basePath}unicode-blocks.json`)
-  const raw: { start: number; end: number; name: string; unicode_version?: string }[] = await res.json()
+  const raw = await fetchJson<{ start: number; end: number; name: string; unicode_version?: string }[]>('unicode-blocks.json')
 
   allBlocks = raw.map(b => ({
     name: b.name,
@@ -31,10 +29,8 @@ export async function loadAllBlocks(): Promise<UnicodeBlock[]> {
 export async function loadBlockCharacters(blockName: string): Promise<UnicodeCharacter[]> {
   const slug = blockName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 
-  const res = await fetch(`${basePath}unicode/blocks/${slug}.json`)
-  if (!res.ok) return []
   try {
-    const data = await res.json()
+    const data = await fetchJson<{ chars?: any[] }>(`unicode/blocks/${slug}.json`)
     return (data.chars || []).map((c: any) => ({
       ...c,
       cp: c.cp,

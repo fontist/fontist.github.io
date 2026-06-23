@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useRoute, RouterLink } from 'vue-router'
+import { ref, computed } from 'vue'
+import { RouterLink } from 'vue-router'
+import { useHead } from '@unhead/vue'
 import { hexCp } from '../lib/unicode'
-
-const route = useRoute()
-const basePath = import.meta.env.BASE_URL || '/'
+import { fetchJson } from '../lib/ssr-fetch'
 
 const props = defineProps<{
   property: 'scripts' | 'category' | 'combining' | 'bidiclass'
@@ -17,21 +16,23 @@ interface IndexEntry {
   count: number
 }
 
-const loading = ref(true)
 const entries = ref<IndexEntry[]>([])
 
-const indexUrl = computed(() => `${basePath}unicode/indexes/by-${props.property === 'scripts' ? 'script' : props.property === 'category' ? 'category' : props.property === 'combining' ? 'combining' : 'bidi'}.json`)
+const indexUrl = computed(() => `unicode/indexes/by-${props.property === 'scripts' ? 'script' : props.property === 'category' ? 'category' : props.property === 'combining' ? 'combining' : 'bidi'}.json`)
 const detailPrefix = computed(() => `/unicode/${props.property}`)
 
-onMounted(async () => {
-  try {
-    const res = await fetch(indexUrl.value)
-    const data = await res.json()
-    entries.value = Object.entries(data)
-      .map(([value, count]) => ({ value, count: count as number }))
-      .sort((a, b) => b.count - a.count)
-  } catch (e) { console.error(e) }
-  finally { loading.value = false }
+try {
+  const data = await fetchJson<Record<string, number>>(indexUrl.value)
+  entries.value = Object.entries(data)
+    .map(([value, count]) => ({ value, count: count as number }))
+    .sort((a, b) => b.count - a.count)
+} catch (e) { console.error(e) }
+
+useHead({
+  title: `${props.title} — Unicode ${props.property}`,
+  link: [
+    { rel: 'canonical', href: `https://www.fontist.org/unicode/${props.property}` },
+  ],
 })
 </script>
 
@@ -43,7 +44,7 @@ onMounted(async () => {
       <span class="plp-count">{{ entries.length }} {{ label }}</span>
     </header>
 
-    <div class="plp-grid" v-if="!loading">
+    <div class="plp-grid">
       <RouterLink
         v-for="entry in entries"
         :key="entry.value"
@@ -54,8 +55,6 @@ onMounted(async () => {
         <span class="plp-count-num">{{ entry.count.toLocaleString() }}</span>
       </RouterLink>
     </div>
-
-    <div v-else class="plp-loading">Loading…</div>
   </div>
 </template>
 

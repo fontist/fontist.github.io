@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
+import { useHead } from '@unhead/vue'
 import { loadAllBlocks, PLANES, hexCp, blockSlug } from '../lib/unicode'
 import type { UnicodeBlock, PlaneKey } from '../lib/unicode'
 
 const route = useRoute()
 const planeId = computed(() => route.params.planeId as string)
 
-const loading = ref(true)
 const allBlocks = ref<UnicodeBlock[]>([])
 
 const plane = computed(() =>
@@ -71,14 +71,24 @@ const totalCodepoints = computed(() => {
   return plane.value.end - plane.value.start + 1
 })
 
-onMounted(async () => {
-  allBlocks.value = await loadAllBlocks()
-  loading.value = false
-})
+allBlocks.value = await loadAllBlocks()
+
+useHead(() => ({
+  title: plane.value
+    ? `${plane.value.shortName} — Unicode Plane`
+    : 'Unicode Plane — Fontist',
+  meta: [
+    { property: 'og:title', content: plane.value?.shortName || 'Unicode Plane' },
+    { property: 'og:type', content: 'website' },
+  ],
+  link: [
+    { rel: 'canonical', href: `https://www.fontist.org/unicode/plane/${planeId.value}` },
+  ],
+}))
 </script>
 
 <template>
-  <div class="plane" v-if="!loading && plane">
+  <div class="plane" v-if="plane">
     <!-- Plane header -->
     <header class="plane-header">
       <RouterLink to="/unicode" class="plane-back">← Unicode</RouterLink>

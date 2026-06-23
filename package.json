@@ -1,7 +1,10 @@
 {
   "scripts": {
     "dev": "vite",
-    "build": "vite-ssg build",
+    "fetch-data": "bash scripts/fetch-data.sh",
+    "gen-routes": "node scripts/gen-ssg-routes.mjs",
+    "build": "bash scripts/fetch-data.sh && node scripts/gen-ssg-routes.mjs && vite-ssg build",
+    "build:no-fetch": "node scripts/gen-ssg-routes.mjs && vite-ssg build",
     "preview": "vite preview",
     "format": "prettier -w .",
     "test": "node --test tests/*.test.mjs"

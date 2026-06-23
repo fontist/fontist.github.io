@@ -1,36 +1,20 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useHead } from '@unhead/vue'
+import { findFormula, type FormulaData } from '../lib/formulas/loader'
 
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
-
-interface FormulaData {
-  name: string
-  formulaName: string
-  slug: string
-  familyCount: number
-  styleCount: number
-  familyNames: string[]
-  sourceType: string
-  platforms: string[]
-  licenseType: string
-  licenseCategory: string
-  licenseName: string
-}
 
 const formula = ref<FormulaData | null>(null)
 const loading = ref(true)
 const copied = ref(false)
 
-const basePath = import.meta.env.BASE_URL || '/'
-
 async function loadData() {
   loading.value = true
   try {
-    const res = await fetch(`${basePath}formulas-data.json`)
-    const data: FormulaData[] = await res.json()
-    formula.value = data.find((f) => f.slug === slug.value) || null
+    formula.value = await findFormula(slug.value)
   } catch (e) {
     console.error('Failed to load formula data:', e)
   } finally {
@@ -38,8 +22,27 @@ async function loadData() {
   }
 }
 
-onMounted(loadData)
+await loadData()
 watch(slug, loadData)
+
+useHead(() => ({
+  title: formula.value
+    ? `${formula.value.name} — Fontist Formula`
+    : 'Formula — Fontist',
+  meta: [
+    { property: 'og:title', content: formula.value?.name || 'Fontist Formula' },
+    { property: 'og:type', content: 'website' },
+    {
+      name: 'description',
+      content: formula.value
+        ? `Install ${formula.value.name} with fontist: ${formula.value.formulaName}. ${formula.value.familyCount} families, ${formula.value.styleCount} styles, ${formula.value.licenseName}.`
+        : 'Fontist formula details and install command.',
+    },
+  ],
+  link: [
+    { rel: 'canonical', href: `https://www.fontist.org/formula/${slug.value}` },
+  ],
+}))
 
 function copyInstall() {
   if (!formula.value) return

@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{ (e: 'select', cp: number): void }>()
 
 function fontStyle(font: FontContext): Record<string, string> {
-  if (!font.redistributable || !font.woff2Path) return {}
+  if (!font.redistributable || !font.fontPath) return {}
   return { fontFamily: `'${font.fontId}', sans-serif` }
 }
 

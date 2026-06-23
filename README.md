@@ -2,7 +2,7 @@
 
 [![build](https://github.com/fontist/fontist.github.io/actions/workflows/build.yml/badge.svg)](https://github.com/fontist/fontist.github.io/actions/workflows/build.yml)
 
-This is the source for [fontist.org](https://www.fontist.org), built with [VitePress](https://vitepress.dev/). It is the **root** of a family of sites that together cover the Fontist project — this repo hosts the landing page, blog, and about pages, while each tool's documentation lives in its own repository and is deployed to a subpath of `fontist.org`.
+This is the source for [fontist.org](https://www.fontist.org), built with [Vite](https://vitejs.dev/) + [vite-ssg](https://github.com/antfu-collective/vite-ssg) + Vue Router. It is the **root** of a family of sites that together cover the Fontist project — this repo hosts the landing page, blog, about pages, and the formulas/font/unicode browsers, while each tool's documentation lives in its own repository and is deployed to a subpath of `fontist.org`.
 
 ## Site architecture
 
@@ -12,14 +12,14 @@ This is the source for [fontist.org](https://www.fontist.org), built with [ViteP
 flowchart TD
     subgraph repos["Repositories — each builds & deploys independently"]
         direction LR
-        R0["<b>fontist/fontist.github.io</b><br/>(this repo)<br/>VitePress · build.yml"]
+        R0["<b>fontist/fontist.github.io</b><br/>(this repo)<br/>Vite + vite-ssg · build.yml"]
         R1["fontist/fontist<br/>(docs/)<br/>VitePress · docs.yml"]
         R2["fontist/fontisan<br/>(docs/)<br/>VitePress · docs.yml"]
         R3["fontist/formulas<br/>(docs/)<br/>VitePress + custom build · docs.yml"]
     end
     subgraph site["fontist.org (custom domain)"]
         direction LR
-        U0["/<br/>landing · blog · about"]
+        U0["/<br/>landing · blog · about · formula & unicode browsers"]
         U1["/fontist/<br/>Fontist gem docs"]
         U2["/fontisan/<br/>Fontisan gem docs"]
         U3["/formulas/<br/>formula index (4,300+)"]
@@ -37,7 +37,7 @@ flowchart TD
 
 | Site | URL | Source repo | Default branch | Build entrypoint |
 |---|---|---|---|---|
-| Root (landing, blog, about) | `fontist.org/` | `fontist/fontist.github.io` *(this repo)* | `main` | `npm run build` |
+| Root (landing, blog, about, browsers) | `fontist.org/` | `fontist/fontist.github.io` *(this repo)* | `main` | `npm run build` |
 | Fontist docs | `fontist.org/fontist/` | [`fontist/fontist`](https://github.com/fontist/fontist) (`docs/`) | `main` | `npm run build` *(in `docs/`)* |
 | Fontisan docs | `fontist.org/fontisan/` | [`fontist/fontisan`](https://github.com/fontist/fontisan) (`docs/`) | `main` | `npm run build` *(in `docs/`)* |
 | Formulas index | `fontist.org/formulas/` | [`fontist/formulas`](https://github.com/fontist/formulas) (`docs/`) | `v5` | `npm run build` *(in `docs/`, custom `build.js`)* |
@@ -51,9 +51,14 @@ flowchart TD
 ```bash
 npm install
 npm run dev       # start the local dev server (prints the local URL)
-npm run build     # builds to .vitepress/dist (includes post-build "dirify" step)
+npm run build     # fetch data → generate routes/sitemap → vite-ssg build → dist/
 npm run preview   # preview the production build
 ```
+
+The build step runs three things in order:
+1. `scripts/fetch-data.sh` — pulls `formulas-data.json`, `fonts.json`, `font-metadata.json`, `coverage/`, and `fonts/*.woff2` from sibling repos / `fontist-archive`.
+2. `scripts/gen-ssg-routes.mjs` — derives the `includedRoutes` list and `public/sitemap.xml` from the fetched JSON.
+3. `vite-ssg build` — pre-renders every page listed in `includedRoutes` plus the static routes to `dist/`.
 
 ### Subsites
 
@@ -82,7 +87,7 @@ Every site deploys **automatically** when changes are pushed/merged to its defau
 
 | Repo | Workflow | What it does |
 |---|---|---|
-| `fontist/fontist.github.io` | [`build.yml`](.github/workflows/build.yml) | build → verify → upload artifact → deploy to Pages |
+| `fontist/fontist.github.io` | [`build.yml`](.github/workflows/build.yml) | fetch data → build → verify → upload artifact → deploy to Pages |
 | `fontist/fontist` | `docs.yml` | same pattern (runs in `docs/`) |
 | `fontist/fontisan` | `docs.yml` | same pattern (runs in `docs/`) |
 | `fontist/formulas` | `docs.yml` | batched build (4,300+ pages) → combine → deploy |
@@ -91,20 +96,19 @@ Each site builds to static HTML and deploys via `actions/upload-pages-artifact` 
 
 ## Adding blog posts
 
-1. Create a new `.md` file in [`blog/`](blog/) with frontmatter (`title`, `description`, `authors`, optional `date`).
-2. Add an entry to [`blog/index.md`](blog/index.md).
+1. Create a new `.md` file in [`public/content/blog/`](public/content/blog/) with frontmatter (`title`, `description`, `authors`, optional `date`).
+2. Add an entry to [`public/content/blog/index.json`](public/content/blog/index.json) *(or have the loader scan the directory)*.
 
-Blog posts get `BlogPosting` JSON-LD structured data automatically via the `transformHead` hook in [.vitepress/config.ts](.vitepress/config.ts).
+Blog posts get `BlogPosting` JSON-LD structured data automatically via the `useHead()` call in `src/pages/BlogPostPage.vue`.
 
 ## Conventions shared across all sites
 
 For consistency, every site in the ecosystem follows these conventions. If you add a new site or change one, keep these aligned:
 
-- **Per-page Open Graph / Twitter tags** — each site derives `og:title`, `og:description`, `og:url` from the page's frontmatter/H1 via a `transformHead` hook in `.vitepress/config.ts`, rather than using a single site-wide value.
+- **Per-page Open Graph / Twitter tags** — each site derives `og:title`, `og:description`, `og:url` from the page's data via `useHead()` in the page component, rather than using a single site-wide value.
 - **Shared social card** — `og:image` points to `https://www.fontist.org/og-image.png` (PNG; SVG has poor support on Twitter/Facebook/LinkedIn).
-- **`sitemap.xml` + `robots.txt`** — each site generates both. Subsites post-process the sitemap to insert their `base` path, because VitePress omits `base` from sitemap routes.
-- **Directory-style URLs** — a post-build step (`scripts/post-build.mjs` here and in fontist/fontisan; custom `build.js` in formulas) converts `foo.html` → `foo/index.html` so both `/foo` and `/foo/` resolve on GitHub Pages (which otherwise 404s on the trailing slash for file routes).
-- **Cross-site links carry `target="_self"`** (in `nav`/`sidebar` config) so VitePress's client-side router doesn't intercept same-origin clicks and render a client-side 404. Inline markdown links to other sites in the domain are auto-tagged `target="_blank"` by VitePress.
+- **`sitemap.xml` + `robots.txt`** — each site generates both. This site emits `public/sitemap.xml` at build time from `scripts/gen-ssg-routes.mjs`.
+- **Directory-style URLs** — vite-ssg natively emits `foo/index.html` for the `foo` route, so both `/foo` and `/foo/` resolve on GitHub Pages.
 
 ## See also
 

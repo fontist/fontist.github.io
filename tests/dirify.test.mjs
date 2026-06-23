@@ -4,10 +4,17 @@ import { mkdirSync, writeFileSync, readFileSync, existsSync, rmSync, readdirSync
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 
-// Unit tests for the dirify-urls script logic.
-// The script moves file-routes (foo.html → foo/index.html) so GitHub Pages
-// resolves both /foo and /foo/. These tests verify the logic without a
-// full VitePress build by creating a fake dist structure.
+// Self-contained test of the dirify-urls algorithm.
+//
+// Historical context: the legacy VitePress build emitted `foo.html` and a
+// post-build `scripts/dirify-urls.mjs` script moved them to `foo/index.html`
+// so GitHub Pages resolved both `/foo` and `/foo/`. The migration to vite-ssg
+// made the script obsolete — `vite.config.ts` sets `ssgOptions.dirStyle =
+// 'nested'` and vite-ssg emits `foo/index.html` natively.
+//
+// The test is retained as a documented reference of the algorithm. It runs
+// the logic inline against a fake dist tree, so it stays meaningful even
+// without the original script.
 
 const TEST_DIST = join(tmpdir(), `test-dist-${Date.now()}`);
 
