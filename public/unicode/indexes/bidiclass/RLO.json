@@ -1,1 +1,1 @@
-{"property": "RLO", "count": 1, "characters": [{"cp": 8238, "n": "RIGHT-TO-LEFT OVERRIDE", "b": "General Punctuation"}]}
+{"characters":[{"b":"General Punctuation","cp":8238,"n":"RIGHT-TO-LEFT OVERRIDE"}],"count":1,"property":"RLO"}

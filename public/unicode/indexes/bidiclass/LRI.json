@@ -1,1 +1,1 @@
-{"property": "LRI", "count": 1, "characters": [{"cp": 8294, "n": "LEFT-TO-RIGHT ISOLATE", "b": "General Punctuation"}]}
+{"characters":[{"b":"General Punctuation","cp":8294,"n":"LEFT-TO-RIGHT ISOLATE"}],"count":1,"property":"LRI"}

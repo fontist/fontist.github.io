@@ -1,1 +1,1 @@
-{"property": "S", "count": 3, "characters": [{"cp": 9, "n": "<control>", "b": "Basic Latin"}, {"cp": 11, "n": "<control>", "b": "Basic Latin"}, {"cp": 31, "n": "<control>", "b": "Basic Latin"}]}
+{"characters":[{"b":"Basic Latin","cp":9,"n":"CHARACTER TABULATION"},{"b":"Basic Latin","cp":11,"n":"LINE TABULATION"},{"b":"Basic Latin","cp":31,"n":"INFORMATION SEPARATOR ONE"}],"count":3,"property":"S"}

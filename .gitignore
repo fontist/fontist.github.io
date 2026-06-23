@@ -19,6 +19,11 @@ dist-ssr
 # Optional full clone of formulas repo for raw YAML access.
 /vendor/
 
+# UCD XML download cache. Repopulated by `npm run gen-unicode`.
+# Stored under /vendor/ucd/ — keep this rule above any future /vendor/*
+# patterns you add.
+
+
 #region https://github.com/github/gitignore/blob/main/Node.gitignore
 # Logs
 logs

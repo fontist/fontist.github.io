@@ -1,1 +1,1 @@
-{"property": "27", "count": 2, "characters": [{"cp": 2288, "n": "ARABIC OPEN FATHATAN", "b": "Arabic Extended-A"}, {"cp": 1611, "n": "ARABIC FATHATAN", "b": "Arabic"}]}
+{"characters":[{"b":"Arabic","cp":1611,"n":"ARABIC FATHATAN"},{"b":"Arabic Extended-A","cp":2288,"n":"ARABIC OPEN FATHATAN"}],"count":2,"property":"27"}

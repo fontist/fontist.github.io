@@ -3,11 +3,13 @@
     "dev": "vite",
     "fetch-data": "bash scripts/fetch-data.sh",
     "gen-routes": "node scripts/gen-ssg-routes.mjs",
+    "gen-unicode": "node scripts/gen-unicode-data.mjs",
     "build": "bash scripts/fetch-data.sh && node scripts/gen-ssg-routes.mjs && vite-ssg build",
     "build:no-fetch": "node scripts/gen-ssg-routes.mjs && vite-ssg build",
     "preview": "vite preview",
     "format": "prettier -w .",
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs src/lib/markdown/__tests__/*.test.ts src/lib/unicode/__tests__/*.test.ts src/lib/__tests__/*.test.ts scripts/__tests__/*.test.ts",
+    "test:watch": "node --test --watch tests/*.test.mjs src/lib/markdown/__tests__/*.test.ts src/lib/unicode/__tests__/*.test.ts src/lib/__tests__/*.test.ts scripts/__tests__/*.test.ts"
   },
   "type": "module",
   "dependencies": {
