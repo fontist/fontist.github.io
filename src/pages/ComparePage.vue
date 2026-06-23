@@ -5,6 +5,7 @@ import { useHead } from '@unhead/vue'
 import { injectFontFace } from '../composables/useFontFace'
 import { fetchCoverage } from '../composables/useCoverage'
 import { loadFontsRegistry, loadFontMetadata } from '../lib/fonts/loader'
+import type { Coverage } from '../lib/types/domain'
 
 const route = useRoute()
 const router = useRouter()
@@ -20,7 +21,7 @@ interface FontColumn {
   slug: string
   name: string
   fontId: string
-  coverage: any
+  coverage: Coverage | null
   weight: number
   weightMin: number
   weightMax: number
@@ -87,7 +88,7 @@ async function addFont(slug: string) {
 
   col.coverage = await fetchCoverage(slug)
   if (col.coverage?.variable_axes) {
-    const wght = col.coverage.variable_axes.find((a: any) => a.tag === 'wght')
+    const wght = col.coverage.variable_axes.find(a => a.tag === 'wght')
     if (wght) {
       col.weightMin = wght.min
       col.weightMax = wght.max

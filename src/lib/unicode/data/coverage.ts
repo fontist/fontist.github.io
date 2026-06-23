@@ -1,6 +1,6 @@
-import type { UnicodeBlock, UnicodeCharacter, CoverageStatus, GridMode } from '../types'
-import type { FontContext } from '../../types/domain'
-import { hexCp, safeChar } from '../constants'
+import type { UnicodeBlock, UnicodeCharacter, CoverageStatus, GridMode } from '../types.ts'
+import type { FontContext } from '../../types/domain.ts'
+import { hexCp, safeChar } from '../constants.ts'
 
 export function computeCoverage(block: UnicodeBlock, fontCoverage: Set<number>): {
   status: CoverageStatus
@@ -12,8 +12,12 @@ export function computeCoverage(block: UnicodeBlock, fontCoverage: Set<number>):
   const total = block.characters.length || (block.end - block.start + 1)
   if (total === 0) return { status: 'none', supportedCount: 0, totalCount: 0, percentage: 0, missing: [] }
 
-  const supported = block.characters.filter(c => fontCoverage.has(c.cp))
-  const missing = block.characters.filter(c => !fontCoverage.has(c.cp)).map(c => c.cp)
+  const supported: number[] = []
+  const missing: number[] = []
+  for (const c of block.characters) {
+    if (fontCoverage.has(c.cp)) supported.push(c.cp)
+    else missing.push(c.cp)
+  }
   const pct = Math.round((supported.length / total) * 100)
 
   return {

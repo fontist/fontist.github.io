@@ -7,12 +7,12 @@ import { fetchCoverage } from '../composables/useCoverage'
 import { useFontVariation } from '../composables/useFontVariation'
 import { featureInfo } from '../lib/unicode'
 import { findFormula, type FormulaData } from '../lib/formulas/loader'
-import type { Coverage } from '../lib/types/domain'
+import type { Coverage, CoverageVariableAxis, CoverageFeature } from '../lib/types/domain'
 
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 
-const { state, variationCSS, featureCSS, initAxes, initFeatures, setAxis, toggleFeature } = useFontVariation()
+const { state, variationCSS, featureCSS, initAxes, initFeatures, setAxis, toggleFeature, reset } = useFontVariation()
 
 const formula = ref<FormulaData | null>(null)
 const coverage = ref<Coverage | null>(null)
@@ -38,6 +38,7 @@ async function loadData() {
     fontReady.value = ensureInjected()
     coverage.value = await fetchCoverage(s)
 
+    reset()
     if (coverage.value?.variable_axes)
       initAxes(coverage.value.variable_axes.map(a => ({ tag: a.tag, default: a.default })))
     if (coverage.value?.opentype_features)
@@ -68,8 +69,8 @@ useHead(() => ({
 
 const familyName = computed(() => formula.value?.name || slug.value)
 const licenseName = computed(() => formula.value?.licenseName || 'Unknown')
-const axes = computed(() => coverage.value?.variable_axes || [])
-const features = computed(() => coverage.value?.opentype_features || [])
+const axes = computed<CoverageVariableAxis[]>(() => coverage.value?.variable_axes || [])
+const features = computed<CoverageFeature[]>(() => coverage.value?.opentype_features || [])
 const weightAxis = computed(() => axes.value.find(a => a.tag === 'wght'))
 
 const specimenStyle = computed(() => {
