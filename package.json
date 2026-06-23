@@ -1,18 +1,24 @@
 {
   "scripts": {
-    "dev": "vitepress dev",
-    "build": "vitepress build && node scripts/dirify-urls.mjs",
-    "preview": "vitepress preview",
+    "dev": "vite",
+    "build": "vite-ssg build",
+    "preview": "vite preview",
     "format": "prettier -w .",
-    "check:subsite-links": "node scripts/check-subsite-links.mjs",
     "test": "node --test tests/*.test.mjs"
   },
   "type": "module",
+  "dependencies": {
+    "marked": "^18.0.5",
+    "vue": "^3.5.0",
+    "vue-router": "^4.4.0"
+  },
   "devDependencies": {
     "@types/node": "^25.4.0",
+    "@vitejs/plugin-vue": "^5.1.0",
     "node-html-parser": "^7.0.1",
     "prettier": "^3.8.1",
     "typescript": "^5.9.3",
-    "vitepress": "^1.6.4"
+    "vite": "^5.4.0",
+    "vite-ssg": "^0.24.3"
   }
 }

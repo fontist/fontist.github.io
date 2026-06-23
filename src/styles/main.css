@@ -1,0 +1,458 @@
+/* ===================================================================
+   Fontist Formulas — Global Styles
+   Ported from VitePress theme/style.css.
+   Keeps --vp-c-* variable names for component compatibility.
+   =================================================================== */
+
+:root {
+  /* Brand Colors from Logo */
+  --fontist-rose: #bf4e6a;
+  --fontist-rose-light: #d4718a;
+  --fontist-dark: #4d4b54;
+  --fontist-gray: #676565;
+  --fontist-cream: #e1dfd2;
+  --fontist-beige: #bebbac;
+  --fontist-pale: #dddac8;
+
+  /* Brand aliases (formerly VitePress overrides) */
+  --vp-c-brand-1: var(--fontist-rose);
+  --vp-c-brand-2: #a3435a;
+  --vp-c-brand-3: var(--fontist-dark);
+  --vp-c-brand-soft: rgba(191, 78, 106, 0.14);
+
+  /* Text Colors */
+  --vp-c-text-1: var(--fontist-dark);
+  --vp-c-text-2: var(--fontist-gray);
+  --vp-c-text-3: #8a8888;
+
+  /* Background Colors */
+  --vp-c-bg-soft: #f8f7f4;
+  --vp-c-bg-alt: #f2f1ed;
+  --vp-c-bg: #ffffff;
+
+  /* Divider */
+  --vp-c-divider: #e2e2e3;
+
+  /* Fonts */
+  --vp-font-family-base: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --vp-font-family-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+
+  /* Nav height — used by FontViewer height calc */
+  --vp-nav-height: 56px;
+}
+
+/* Dark Mode */
+html.dark {
+  --vp-c-brand-1: var(--fontist-rose-light);
+  --vp-c-brand-2: var(--fontist-rose);
+  --vp-c-brand-3: #e1dfd2;
+  --vp-c-brand-soft: rgba(212, 113, 138, 0.14);
+
+  --vp-c-text-1: #e1dfd2;
+  --vp-c-text-2: #bebbac;
+  --vp-c-text-3: #8a8888;
+
+  --vp-c-bg: #1a1918;
+  --vp-c-bg-soft: #222120;
+  --vp-c-bg-alt: #2a2826;
+
+  --vp-c-divider: #3a3836;
+}
+
+/* ===================================================================
+   Reset & Base
+   =================================================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--vp-font-family-base);
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: var(--vp-c-brand-1);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+a:hover {
+  color: var(--vp-c-brand-2);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ===================================================================
+   App-level layout styles
+   =================================================================== */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  height: var(--vp-nav-height);
+  padding: 0 1.5rem;
+  background: var(--vp-c-bg);
+  border-bottom: 1px solid var(--vp-c-divider);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--vp-c-text-1);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.nav-logo img {
+  height: 32px;
+  width: auto;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.nav-links a {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--vp-c-text-2);
+  text-decoration: none;
+  padding: 0.375rem 0;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.nav-links a:hover,
+.nav-links a.router-link-active {
+  color: var(--vp-c-brand-1);
+  border-bottom-color: var(--vp-c-brand-1);
+}
+
+.nav-spacer {
+  flex: 1;
+}
+
+.nav-external {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-external a {
+  font-size: 0.875rem;
+  color: var(--vp-c-text-3);
+  text-decoration: none;
+}
+
+.nav-external a:hover {
+  color: var(--vp-c-brand-1);
+}
+
+.app-content {
+  flex: 1;
+  width: 100%;
+}
+
+/* ===================================================================
+   Page-level shared styles
+   =================================================================== */
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+  margin-bottom: 1rem;
+}
+
+/* ===================================================================
+   Utility classes ported from VitePress default theme
+   =================================================================== */
+.font-filename {
+  display: inline-block;
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+  position: relative;
+}
+
+.font-styles-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.font-styles-table th,
+.font-styles-table td {
+  padding: 0.5rem;
+  text-align: left;
+  border: 1px solid var(--vp-c-divider);
+}
+
+.font-styles-table th {
+  background: var(--vp-c-bg-soft);
+  font-weight: 600;
+}
+
+.sha-cell {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sha-value {
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.8rem;
+  color: var(--vp-c-text-2);
+}
+
+.sha-copy-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--vp-c-brand-1);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.7rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.sha-cell:hover .sha-copy-btn {
+  opacity: 1;
+}
+
+.sha-copy-btn:hover {
+  background: var(--vp-c-brand-2);
+  color: white;
+}
+
+.sha-copy-btn.copied {
+  background: #28a745;
+  border-color: #28a745;
+  color: white;
+}
+
+.source-badge {
+  height: 20px;
+  vertical-align: middle;
+}
+
+.v5-tag {
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.1em 0.4em;
+  border-radius: 3px;
+  vertical-align: middle;
+  margin-left: 0.3em;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+}
+
+/* ===================================================================
+   Scrollbars
+   =================================================================== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--vp-c-divider);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--vp-c-text-3);
+}
+
+/* ===================================================================
+   Responsive nav
+   =================================================================== */
+@media (max-width: 768px) {
+  .app-nav {
+    gap: 1rem;
+    padding: 0 1rem;
+    overflow-x: auto;
+  }
+
+  .nav-links {
+    gap: 1rem;
+  }
+
+  .nav-external {
+    display: none;
+  }
+}
+
+/* ===================================================================
+   Noto Sans — Universal Unicode fallback font (locally hosted)
+   Ensures every character renders visibly on Unicode browser pages.
+   =================================================================== */
+@font-face {
+  font-family: 'Noto Sans';
+  src: url('/formulas/fonts/noto/noto-sans-400-latin.woff2') format('woff2');
+  font-weight: 400;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+FEFF, U+FFFD;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  src: url('/formulas/fonts/noto/noto-sans-400-latin-ext.woff2') format('woff2');
+  font-weight: 400;
+  unicode-range: U+0100-02AF, U+0300-0301, U+0304, U+1E00-1E9F, U+2020, U+20A0-20C0, U+A720-A7FF;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  src: url('/formulas/fonts/noto/noto-sans-700-latin.woff2') format('woff2');
+  font-weight: 700;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+FEFF, U+FFFD;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  src: url('/formulas/fonts/noto/noto-sans-700-latin-ext.woff2') format('woff2');
+  font-weight: 700;
+  unicode-range: U+0100-02AF, U+0300-0301, U+0304, U+1E00-1E9F, U+2020, U+20A0-20C0, U+A720-A7FF;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  src: url('/formulas/fonts/noto/noto-sans-400-greek.woff2') format('woff2');
+  font-weight: 400;
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  src: url('/formulas/fonts/noto/noto-sans-400-cyrillic.woff2') format('woff2');
+  font-weight: 400;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  src: url('/formulas/fonts/noto/noto-sans-400-cyrillic-ext.woff2') format('woff2');
+  font-weight: 400;
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  src: url('/formulas/fonts/noto/noto-sans-hebrew-400.woff2') format('woff2');
+  font-weight: 400;
+  unicode-range: U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  src: url('/formulas/fonts/noto/noto-sans-arabic-400.woff2') format('woff2');
+  font-weight: 400;
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+FB50-FBC1, U+FBD3-FD3D, U+FD50-FD8F, U+FD92-FDC7, U+FDF0-FDF9;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  src: url('/formulas/fonts/noto/noto-sans-400-devanagari.woff2') format('woff2');
+  font-weight: 400;
+  unicode-range: U+0900-097F, U+1CD0-1CF9, U+20B9, U+A830-A839, U+A8E0-A8FF;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  src: url('/formulas/fonts/noto/noto-sans-thai-400.woff2') format('woff2');
+  font-weight: 400;
+  unicode-range: U+0E00-0E7F;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  src: url('/formulas/fonts/noto/noto-sans-jp-400.woff2') format('woff2');
+  font-weight: 400;
+  unicode-range: U+3040-309F, U+30A0-30FF, U+31F0-31FF, U+4E00-9FFF;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  src: url('/formulas/fonts/noto/noto-sans-kr-400.woff2') format('woff2');
+  font-weight: 400;
+  unicode-range: U+AC00-D7AF, U+1100-11FF, U+3130-318F;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  src: url('/formulas/fonts/noto/noto-sans-400-vietnamese.woff2') format('woff2');
+  font-weight: 400;
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;
+  font-display: swap;
+}
+
+/* ===================================================================
+   Unicode glyph rendering — use Noto Sans as universal fallback
+   Applied to all Unicode browser character displays
+   =================================================================== */
+.ucp-glyph, .ubp-glyph, .ubp-d-glyph, .ubp-cell-glyph,
+.uc-cell-glyph, .uc-glyph, .fp-specimen {
+  font-family: 'Source Sans Pro', 'Source Sans 3', Roboto, 'San Francisco', 'Segoe UI', sans-serif;
+}
+
+/* Unicode browser glyph grid cells */
+.ubp-cell .ubp-glyph,
+.uc-cell .uc-cell-glyph,
+.ucp-nav-btn .ucp-nav-glyph {
+  font-family: 'Source Sans Pro', 'Source Sans 3', Roboto, 'San Francisco', 'Segoe UI', sans-serif;
+}
+
+/* Large character preview on char page */
+.ucp-glyph-area .ucp-glyph {
+  font-family: 'Source Sans Pro', 'Source Sans 3', Roboto, 'San Francisco', 'Segoe UI', sans-serif;
+}
