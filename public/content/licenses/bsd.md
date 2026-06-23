@@ -1,0 +1,49 @@
+# BSD License
+
+<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='auto' height='20' role='img' aria-label='License: BSD'%3E%3Ctitle%3ELicense: BSD%3C/title%3E%3ClinearGradient id='b' x2='0' y2='100%25'%3E%3Cstop offset='0' stop-color='%23bbb' stop-opacity='.1'/%3E%3Cstop offset='1' stop-opacity='.1'/%3E%3C/linearGradient%3E%3Cmask id='a'%3E%3Crect width='100%25' height='100%25' fill='%23fff' rx='3'/%3E%3C/mask%3E%3Cg mask='url(%23a)'%3E%3Cpath fill='%23555' d='M0 0h50v20H0z'/%3E%3Cpath fill='%2328a745' d='M50 0h80v20H50z'/%3E%3Cpath fill='url(%23b)' d='M0 0h130v20H0z'/%3E%3C/g%3E%3Cg fill='%23fff' text-anchor='middle' font-family='Verdana,Geneva,DejaVu Sans,sans-serif' font-size='11'%3E%3Ctext x='25' y='15'%3ELicense%3C/text%3E%3Ctext x='90' y='15'%3EBSD%3C/text%3E%3C/g%3E%3C/svg%3E" alt="License: BSD"> <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='auto' height='20' role='img' aria-label='Category: Open Source'%3E%3Ctitle%3ECategory: Open Source%3C/title%3E%3ClinearGradient id='b' x2='0' y2='100%25'%3E%3Cstop offset='0' stop-color='%23bbb' stop-opacity='.1'/%3E%3Cstop offset='1' stop-opacity='.1'/%3E%3C/linearGradient%3E%3Cmask id='a'%3E%3Crect width='100%25' height='100%25' fill='%23fff' rx='3'/%3E%3C/mask%3E%3Cg mask='url(%23a)'%3E%3Cpath fill='%23555' d='M0 0h50v20H0z'/%3E%3Cpath fill='%2328a745' d='M50 0h80v20H50z'/%3E%3Cpath fill='url(%23b)' d='M0 0h130v20H0z'/%3E%3C/g%3E%3Cg fill='%23fff' text-anchor='middle' font-family='Verdana,Geneva,DejaVu Sans,sans-serif' font-size='11'%3E%3Ctext x='25' y='15'%3ECategory%3C/text%3E%3Ctext x='90' y='15'%3EOpen Source%3C/text%3E%3C/g%3E%3C/svg%3E" alt="Category: Open Source">
+
+**SPDX Identifier:** BSD-2-Clause
+
+**SPDX Page:** https://spdx.org/licenses/BSD-2-Clause.html
+
+## Quick Summary
+
+The BSD License is a permissive open source license that allows free use, modification, and distribution with minimal restrictions. Only requires preservation of copyright notice and disclaimer.
+
+## Permissions Overview
+
+### ✅ Allows For
+
+| Context | Permission | Notes |
+|---------|------------|-------|
+| Academic | ✅ Full |  |
+| Non-commercial | ✅ Full |  |
+| Commercial (Static) | ✅ Full | PDFs, images, printed materials |
+| Commercial (Server) | ✅ Full | CI/CD, document generation |
+| Web (Hosting) | ✅ Full |  |
+| Desktop | ✅ Full |  |
+| Server/CI | ✅ Full |  |
+| Redistribution | ✅ Full | Must include copyright notice |
+| Modification | ✅ Full |  |
+| Format Conversion | ✅ Full |  |
+| Proprietary use | ✅ Full | Can include in proprietary software |
+
+### ⚠️ Conditional
+
+| Permission | Condition |
+|------------|-----------|
+| Redistribution | Must include copyright notice and license |
+
+### ❌ Disallows For
+
+| Permission | Notes |
+|------------|-------|
+| Using author name for endorsement | Cannot use to promote derived products |
+
+
+
+## See Also
+
+- [BSD License](https://opensource.org/licenses/BSD-2-Clause)
+- [Open Source Initiative](https://opensource.org/licenses)
+

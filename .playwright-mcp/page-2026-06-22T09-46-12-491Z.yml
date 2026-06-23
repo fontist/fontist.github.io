@@ -1,0 +1,160 @@
+- generic [ref=e3]:
+  - link "Skip to content" [ref=e4] [cursor=pointer]:
+    - /url: "#VPContent"
+  - banner:
+    - generic:
+      - generic:
+        - generic:
+          - link [ref=e6] [cursor=pointer]:
+            - /url: /fontist/
+          - generic [ref=e7]:
+            - button "Search" [ref=e10] [cursor=pointer]:
+              - generic [ref=e13]: Search
+              - generic [ref=e14]:
+                - generic [ref=e15]: ⌘
+                - generic [ref=e16]: K
+            - navigation "Main Navigation" [ref=e17]:
+              - generic [ref=e18]: Main Navigation
+              - link "← Fontist.org" [ref=e19] [cursor=pointer]:
+                - /url: https://www.fontist.org
+                - generic [ref=e20]: ← Fontist.org
+              - link "Guide" [ref=e21] [cursor=pointer]:
+                - /url: /fontist/guide/
+                - generic [ref=e22]: Guide
+              - link "CLI" [ref=e23] [cursor=pointer]:
+                - /url: /fontist/cli/
+                - generic [ref=e24]: CLI
+              - link "API" [ref=e25] [cursor=pointer]:
+                - /url: /fontist/api/
+                - generic [ref=e26]: API
+              - link "Formulas" [ref=e27] [cursor=pointer]:
+                - /url: https://www.fontist.org/formulas/
+                - generic [ref=e28]: Formulas
+              - link "Fontisan" [ref=e29] [cursor=pointer]:
+                - /url: https://www.fontist.org/fontisan/
+                - generic [ref=e30]: Fontisan
+            - button "extra navigation" [ref=e32] [cursor=pointer]
+  - generic [ref=e35]:
+    - generic [ref=e37]:
+      - generic [ref=e38]:
+        - heading "Fontist Cross-platform font management" [level=1] [ref=e39]:
+          - generic [ref=e40]: Fontist
+          - generic [ref=e41]: Cross-platform font management
+        - paragraph [ref=e42]: Install, manage, and build fonts programmatically. Works identically on Windows, macOS, and Linux.
+        - generic [ref=e43]:
+          - link "Get Started" [ref=e45] [cursor=pointer]:
+            - /url: /fontist/guide/
+          - link "CLI Reference" [ref=e47] [cursor=pointer]:
+            - /url: /fontist/cli/
+          - link "Ruby API" [ref=e49] [cursor=pointer]:
+            - /url: /fontist/api/
+      - generic [ref=e51]:
+        - generic [ref=e56]: fontist
+        - generic [ref=e57]:
+          - generic [ref=e58]: "# 🚀 Install a font by name"
+          - generic [ref=e59]: $ fontist install "Open Sans"
+          - generic [ref=e60]: ✓ Open Sans installed to ~/.fontist/fonts
+          - generic [ref=e62]: "# 📜 Install from manifest"
+          - generic [ref=e63]: $ fontist manifest-install manifest.yml
+          - generic [ref=e64]: ✓ All fonts from manifest installed
+          - generic [ref=e66]: "# 🔍 Check font status"
+          - generic [ref=e67]: $ fontist status "Fira Code"
+          - generic [ref=e68]: ✓ Fira Code Regular, Bold installed
+    - generic [ref=e71]:
+      - article [ref=e74]:
+        - heading "🌐 Cross-Platform" [level=2] [ref=e75]
+        - paragraph [ref=e76]: Same commands work identically on Windows, macOS, and Linux. No platform-specific paths to remember.
+      - article [ref=e79]:
+        - heading "📦 Formula-Based" [level=2] [ref=e80]
+        - paragraph [ref=e81]: 3000+ fonts available through community-maintained formulas with automatic download and license handling.
+      - article [ref=e84]:
+        - heading "📋 Manifest Support" [level=2] [ref=e85]
+        - paragraph [ref=e86]: Define font requirements in YAML for reproducible installations across environments and CI/CD pipelines.
+      - article [ref=e89]:
+        - heading "🔄 CI/CD Ready" [level=2] [ref=e90]
+        - paragraph [ref=e91]: Perfect for automated environments with non-interactive installation. GitHub Action available.
+      - article [ref=e94]:
+        - heading "🔍 System Detection" [level=2] [ref=e95]
+        - paragraph [ref=e96]: Detects and indexes fonts already installed on your system. No redundant downloads.
+      - article [ref=e99]:
+        - heading "⚡ Fontconfig Integration" [level=2] [ref=e100]
+        - paragraph [ref=e101]: Optional fontconfig integration for seamless font discovery in Linux environments.
+    - generic [ref=e104]:
+      - heading "Quick Start Permalink to \"Quick Start\"" [level=2] [ref=e105]:
+        - text: Quick Start
+        - link "Permalink to \"Quick Start\"" [ref=e106] [cursor=pointer]:
+          - /url: "#quick-start"
+          - text: "#"
+      - generic [ref=e107]:
+        - button "Copy Code" [ref=e108] [cursor=pointer]
+        - generic [ref=e109]: bash
+        - code [ref=e111]:
+          - generic [ref=e112]: "# Install a font by name"
+          - generic [ref=e113]: fontist install "Open Sans"
+          - generic [ref=e114]: "# Install from a manifest file"
+          - generic [ref=e115]: fontist manifest-install manifest.yml
+          - generic [ref=e116]: "# Check font status"
+          - generic [ref=e117]: fontist status "Fira Code"
+      - heading "Use Cases Permalink to \"Use Cases\"" [level=2] [ref=e118]:
+        - text: Use Cases
+        - link "Permalink to \"Use Cases\"" [ref=e119] [cursor=pointer]:
+          - /url: "#use-cases"
+          - text: "#"
+      - paragraph [ref=e120]:
+        - strong [ref=e121]: CI/CD Pipelines
+        - text: — Automatically install fonts in GitHub Actions, GitLab CI, or any automation system. Non-interactive mode ensures reliable, reproducible builds.
+      - paragraph [ref=e122]:
+        - strong [ref=e123]: Document Publishing
+        - text: — Essential for Metanorma, Asciidoctor, and other document generation tools that require specific fonts for PDF rendering.
+      - paragraph [ref=e124]:
+        - strong [ref=e125]: Development Environments
+        - text: — Ensure consistent fonts across team machines without manual installation. One command sets up everything.
+      - heading "Why Fontist? Permalink to \"Why Fontist?\"" [level=2] [ref=e126]:
+        - text: Why Fontist?
+        - link "Permalink to \"Why Fontist?\"" [ref=e127] [cursor=pointer]:
+          - /url: "#why-fontist"
+          - text: "#"
+      - paragraph [ref=e128]: Most font management approaches are either manual (download, unzip, install) or platform-specific (apt-get, brew). Fontist provides a unified, scriptable interface that works the same everywhere.
+      - table [ref=e129]:
+        - rowgroup [ref=e130]:
+          - row "Feature Fontist Manual Install apt-get/brew" [ref=e131]:
+            - columnheader "Feature" [ref=e132]
+            - columnheader "Fontist" [ref=e133]
+            - columnheader "Manual Install" [ref=e134]
+            - columnheader "apt-get/brew" [ref=e135]
+        - rowgroup [ref=e136]:
+          - row "Cross-platform Same commands Platform-specific No" [ref=e137]:
+            - cell "Cross-platform" [ref=e138]
+            - cell "Same commands" [ref=e139]
+            - cell "Platform-specific" [ref=e140]
+            - cell "No" [ref=e141]
+          - row "Formula-based 3000+ fonts Manual download Limited selection" [ref=e142]:
+            - cell "Formula-based" [ref=e143]
+            - cell "3000+ fonts" [ref=e144]
+            - cell "Manual download" [ref=e145]
+            - cell "Limited selection" [ref=e146]
+          - row "Manifest support YAML-based Not available Not available" [ref=e147]:
+            - cell "Manifest support" [ref=e148]
+            - cell "YAML-based" [ref=e149]
+            - cell "Not available" [ref=e150]
+            - cell "Not available" [ref=e151]
+          - row "CI/CD Ready Non-interactive Complex setup Complex setup" [ref=e152]:
+            - cell "CI/CD Ready" [ref=e153]
+            - cell "Non-interactive" [ref=e154]
+            - cell "Complex setup" [ref=e155]
+            - cell "Complex setup" [ref=e156]
+          - row "System Detection Detects existing fonts May miss fonts May miss fonts" [ref=e157]:
+            - cell "System Detection" [ref=e158]
+            - cell "Detects existing fonts" [ref=e159]
+            - cell "May miss fonts" [ref=e160]
+            - cell "May miss fonts" [ref=e161]
+      - paragraph [ref=e162]:
+        - link "Learn more about why Fontist might be right for your project →" [ref=e163] [cursor=pointer]:
+          - /url: /fontist/guide/why
+  - contentinfo [ref=e164]:
+    - generic [ref=e165]:
+      - paragraph [ref=e166]:
+        - text: Fontist is
+        - link "riboseopen" [ref=e167] [cursor=pointer]:
+          - /url: https://open.ribose.com/
+      - paragraph [ref=e168]: Copyright © 2026 Ribose Group Inc. All rights reserved.
