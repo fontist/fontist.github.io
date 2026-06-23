@@ -78,19 +78,66 @@ export function blockDisplayName(name: string): string {
   return name
 }
 
+export type ScriptFamily =
+  | 'latin'
+  | 'cyrillic'
+  | 'greek'
+  | 'middle-eastern'
+  | 'south-se-asian'
+  | 'cjk'
+  | 'other-scripts'
+  | 'emoji'
+  | 'symbols-math'
+  | 'private-use'
+  | 'technical'
+  | 'other'
+
+const SCRIPT_FAMILY_PATTERNS: Array<[ScriptFamily, RegExp]> = [
+  ['latin', /Latin|IPA|Spacing Modifier|Combining Diacritic/i],
+  ['cyrillic', /Cyrillic/i],
+  ['greek', /Greek|Coptic/i],
+  ['middle-eastern', /Arabic|Hebrew|Syriac|Thaana|Samaritan|Mandaic/i],
+  ['south-se-asian', /Devanagari|Bengali|Gurmukhi|Gujarati|Oriya|Tamil|Telugu|Kannada|Malayalam|Sinhala|Thai|Lao|Tibetan|Myanmar/i],
+  ['cjk', /CJK|Hiragana|Katakana|Hangul|Bopomofo|Kangxi|Yi|Phags-pa/i],
+  ['other-scripts', /Ethiopic|Cherokee|Canadian Aboriginal|Ogham|Runic|Tagalog|Hanunoo|Buhid|Tagbanwa|Khmer|Mongolian|Limbu|Tai Le|New Tai Lue|Buginese|Tai Tham|Tai Viet|Avestan|Egyptian Hieroglyphs|Anatolian|Bamum|Modifier Tone|Latin Extended/i],
+  ['emoji', /Emoji|Pictograph|Emoticon|Transport|Alchemy/i],
+  ['symbols-math', /Math|Arrow|Geometric|Dingbat|Symbol|Currency|Number|Subscript|Superscript/i],
+  ['private-use', /Private Use/i],
+  ['technical', /Specials|Variation Selector|Tags|Control Pictures|Block Elements|Box Drawing/i],
+]
+
+const SCRIPT_FAMILY_LABELS: Record<ScriptFamily, string> = {
+  'latin': 'Latin',
+  'cyrillic': 'Cyrillic',
+  'greek': 'Greek',
+  'middle-eastern': 'Middle Eastern',
+  'south-se-asian': 'South & SE Asian',
+  'cjk': 'CJK',
+  'other-scripts': 'Other Scripts',
+  'emoji': 'Emoji',
+  'symbols-math': 'Symbols & Math',
+  'private-use': 'Private Use',
+  'technical': 'Technical',
+  'other': 'Other',
+}
+
+export function blockScriptFamily(blockName: string): ScriptFamily {
+  for (const [family, pattern] of SCRIPT_FAMILY_PATTERNS) {
+    if (pattern.test(blockName)) return family
+  }
+  return 'other'
+}
+
+export function isCjkBlock(blockName: string): boolean {
+  return blockScriptFamily(blockName) === 'cjk'
+}
+
+export function scriptFamilyLabel(family: ScriptFamily): string {
+  return SCRIPT_FAMILY_LABELS[family]
+}
+
 export function scriptGroup(blockName: string): string {
-  if (/Latin|IPA|Spacing Modifier|Combining Diacritic/i.test(blockName)) return 'Latin'
-  if (/Cyrillic/i.test(blockName)) return 'Cyrillic'
-  if (/Greek|Coptic/i.test(blockName)) return 'Greek'
-  if (/Arabic|Hebrew|Syriac|Thaana|Samaritan|Mandaic/i.test(blockName)) return 'Middle Eastern'
-  if (/Devanagari|Bengali|Gurmukhi|Gujarati|Oriya|Tamil|Telugu|Kannada|Malayalam|Sinhala|Thai|Lao|Tibetan|Myanmar/i.test(blockName)) return 'South & SE Asian'
-  if (/CJK|Hiragana|Katakana|Hangul|Bopomofo|Kangxi|Yi|Phags-pa/i.test(blockName)) return 'CJK'
-  if (/Ethiopic|Cherokee|Canadian Aboriginal|Ogham|Runic|Tagalog|Hanunoo|Buhid|Tagbanwa|Khmer|Mongolian|Limbu|Tai Le|New Tai Lue|Buginese|Tai Tham|Tai Viet|Avestan|Egyptian Hieroglyphs|Anatolian|Bamum|Modifier Tone|Latin Extended/i.test(blockName)) return 'Other Scripts'
-  if (/Emoji|Pictograph|Emoticon|Transport|Alchemy/i.test(blockName)) return 'Emoji'
-  if (/Math|Arrow|Geometric|Dingbat|Symbol|Currency|Number|Subscript|Superscript/i.test(blockName)) return 'Symbols & Math'
-  if (/Private Use/i.test(blockName)) return 'Private Use'
-  if (/Specials|Variation Selector|Tags|Control Pictures|Block Elements|Box Drawing/i.test(blockName)) return 'Technical'
-  return 'Other'
+  return scriptFamilyLabel(blockScriptFamily(blockName))
 }
 
 export function hexCp(cp: number): string {

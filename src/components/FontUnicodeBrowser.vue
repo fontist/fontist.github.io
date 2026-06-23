@@ -3,6 +3,22 @@ import { ref, computed, onMounted } from 'vue'
 import { injectFontFace } from '../composables/useFontFace'
 import { fetchCoverage } from '../composables/useCoverage'
 import { useUnicodeBlock } from '../composables/useUnicodeBlock'
+import { blockScriptFamily, hexCp, safeChar, type ScriptFamily } from '../lib/unicode/constants'
+
+const FONT_SCRIPT_LABELS: Partial<Record<ScriptFamily, string>> = {
+  'latin': 'Latin',
+  'cyrillic': 'Cyrillic',
+  'greek': 'Greek',
+  'middle-eastern': 'Arabic/Hebrew',
+  'south-se-asian': 'Indic/SE Asian',
+  'cjk': 'CJK',
+  'emoji': 'Emoji',
+  'symbols-math': 'Symbols',
+}
+
+function fontScriptLabel(family: ScriptFamily): string {
+  return FONT_SCRIPT_LABELS[family] ?? 'Other'
+}
 
 const props = defineProps({
   slug: { type: String, required: true },
@@ -27,24 +43,12 @@ const scripts = computed(() => {
   if (!blocks.value.length) return []
   const groups = {}
   for (const b of blocks.value) {
-    const cat = scriptCategory(b.name)
-    if (!groups[cat]) groups[cat] = 0
-    groups[cat]++
+    const label = fontScriptLabel(blockScriptFamily(b.name))
+    if (!groups[label]) groups[label] = 0
+    groups[label]++
   }
   return Object.entries(groups).sort((a, b) => b[1] - a[1]).map(([k]) => k)
 })
-
-function scriptCategory(blockName) {
-  if (/Latin|IPA|Spacing Modifier|Combining/i.test(blockName)) return 'Latin'
-  if (/Cyrillic/i.test(blockName)) return 'Cyrillic'
-  if (/Greek|Coptic/i.test(blockName)) return 'Greek'
-  if (/Arabic|Hebrew|Syriac/i.test(blockName)) return 'Arabic/Hebrew'
-  if (/Devanagari|Bengali|Tamil|Thai|Lao|Tibetan|Myanmar/i.test(blockName)) return 'Indic/SE Asian'
-  if (/CJK|Hiragana|Katakana|Hangul|Bopomofo/i.test(blockName)) return 'CJK'
-  if (/Emoji|Pictograph|Emoticon/i.test(blockName)) return 'Emoji'
-  if (/Math|Arrow|Geometric|Dingbat|Symbol/i.test(blockName)) return 'Symbols'
-  return 'Other'
-}
 
 const charsWithNames = computed(() => {
   if (!currentBlock.value || !unicodeBlock.value) return []
@@ -56,7 +60,7 @@ const charsWithNames = computed(() => {
     .filter(c => supportedCps.has(c.cp))
     .map(c => ({
       ...c,
-      hex: 'U+' + c.cp.toString(16).toUpperCase().padStart(4, '0'),
+      hex: hexCp(c.cp),
       char: safeChar(c.cp),
     }))
 })
@@ -70,7 +74,7 @@ const missingChars = computed(() => {
     .filter(c => !supportedCps.has(c.cp))
     .map(c => ({
       ...c,
-      hex: 'U+' + c.cp.toString(16).toUpperCase().padStart(4, '0'),
+      hex: hexCp(c.cp),
     }))
 })
 
@@ -81,15 +85,11 @@ const detail = computed(() => {
   return {
     ...ch,
     char: safeChar(ch.cp),
-    hex: 'U+' + ch.cp.toString(16).toUpperCase().padStart(4, '0'),
+    hex: hexCp(ch.cp),
     html: `&#${ch.cp};`,
     css: '\\' + ch.cp.toString(16).toUpperCase().padStart(4, '0'),
   }
 })
-
-function safeChar(cp) {
-  try { return String.fromCodePoint(cp) } catch { return '' }
-}
 
 function copy(text) {
   navigator.clipboard?.writeText(text)
@@ -163,7 +163,7 @@ onMounted(async () => {
     <div class="fub-block" v-if="currentBlock">
       <div class="fub-block-head">
         <h3 class="fub-block-title">{{ currentBlock.name }}</h3>
-        <span class="fub-block-range">U+{{ (currentBlock.start || 0).toString(16).toUpperCase().padStart(4,'0') }}–U+{{ (currentBlock.end || 0).toString(16).toUpperCase().padStart(4,'0') }}</span>
+        <span class="fub-block-range">{{ hexCp(currentBlock.start || 0) }}–{{ hexCp(currentBlock.end || 0) }}</span>
         <span class="fub-block-cov">{{ charsWithNames.length }}<span v-if="missingChars.length"> / {{ charsWithNames.length + missingChars.length }}</span> chars</span>
       </div>
 
