@@ -1,18 +1,7 @@
 import { fetchJson } from '../ssr-fetch'
+import type { FormulaData } from '../types/domain'
 
-export interface FormulaData {
-  name: string
-  formulaName: string
-  slug: string
-  familyCount: number
-  styleCount: number
-  familyNames: string[]
-  sourceType: string
-  platforms: string[]
-  licenseType: string
-  licenseCategory: string
-  licenseName: string
-}
+export type { FormulaData }
 
 let cache: FormulaData[] | null = null
 

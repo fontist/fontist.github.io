@@ -1,7 +1,9 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import { loadAllFormulas } from '../lib/formulas/loader'
+
+const route = useRoute()
 
 
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
@@ -113,25 +115,20 @@ function getLicenseIcon(icon) {
   return icons[icon] || icon
 }
 
-// Read URL params on mount
-function initFromUrl() {
-  const params = new URLSearchParams(window.location.search)
-
-  // Handle search query
-  const q = params.get('q')
-  if (q) {
+// Read query params from vue-router (not window.location)
+function initFromQuery() {
+  const q = route.query.q
+  if (typeof q === 'string' && q) {
     searchQuery.value = q
   }
 
-  // Handle license filter
-  const license = params.get('license')
-  if (license && licenseParamMap[license]) {
+  const license = route.query.license
+  if (typeof license === 'string' && licenseParamMap[license]) {
     selectedLicenses.value = licenseParamMap[license]
   }
 
-  // Handle source filter
-  const source = params.get('source')
-  if (source) {
+  const source = route.query.source
+  if (typeof source === 'string') {
     const srcOpt = sourceOptions.find(o => o.value === source)
     if (srcOpt) {
       selectedSources.value = [source]
@@ -141,8 +138,7 @@ function initFromUrl() {
 
 onMounted(async () => {
   try {
-    // Initialize from URL params first
-    initFromUrl()
+    initFromQuery()
 
     const data = await loadAllFormulas()
     formulasData.value = data

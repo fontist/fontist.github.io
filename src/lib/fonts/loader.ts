@@ -1,34 +1,12 @@
 import { fetchJson } from '../ssr-fetch'
+import type {
+  FontEntry,
+  FontMetadataEntry,
+  FontsRegistry,
+  FontMetadataFile,
+} from '../types/domain'
 
-export interface FontEntry {
-  canonical_name: string
-  slug: string
-  formulas: string[]
-  style_count: number
-}
-
-export interface FontMetadataEntry {
-  slug: string
-  formula_path: string
-  redistributable: boolean
-  primary_family: string | null
-  coverage_file: string
-  woff2_file: string
-}
-
-export interface FontsRegistry {
-  generated_at: string
-  total_fonts: number
-  total_formulas: number
-  fonts: FontEntry[]
-}
-
-export interface FontMetadataFile {
-  generated_at: string
-  total_fonts: number
-  redistributable: number
-  fonts: FontMetadataEntry[]
-}
+export type { FontEntry, FontMetadataEntry, FontsRegistry, FontMetadataFile }
 
 let fontsCache: FontsRegistry | null = null
 let metadataCache: FontMetadataFile | null = null

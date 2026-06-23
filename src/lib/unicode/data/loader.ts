@@ -1,5 +1,5 @@
 import type { UnicodeBlock, UnicodeCharacter, PlaneKey, UnicodePlane } from '../types'
-import { PLANES, planeForCodepoint, blockDisplayName, scriptGroup, hexCp, safeChar } from '../constants'
+import { PLANES, planeForCodepoint, blockDisplayName, scriptGroup, hexCp, safeChar, blockSlug } from '../constants'
 import { fetchJson } from '../../ssr-fetch'
 
 const blockCache = new Map<string, UnicodeBlock>()
@@ -27,7 +27,7 @@ export async function loadAllBlocks(): Promise<UnicodeBlock[]> {
 }
 
 export async function loadBlockCharacters(blockName: string): Promise<UnicodeCharacter[]> {
-  const slug = blockName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+  const slug = blockSlug(blockName)
 
   try {
     const data = await fetchJson<{ chars?: any[] }>(`unicode/blocks/${slug}.json`)
