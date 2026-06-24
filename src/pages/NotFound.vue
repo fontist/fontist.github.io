@@ -7,7 +7,7 @@
     <p>The page you're looking for doesn't exist.</p>
     <div class="actions">
       <RouterLink to="/" class="home-link">← Back to Home</RouterLink>
-      <RouterLink to="/browse" class="browse-link">Browse Fonts →</RouterLink>
+      <RouterLink to="/formulas" class="browse-link">Formulas →</RouterLink>
     </div>
   </div>
 </template>

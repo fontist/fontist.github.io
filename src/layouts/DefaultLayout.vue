@@ -16,7 +16,7 @@ const { theme, toggle } = useTheme()
         </RouterLink>
         <div class="nav-links">
           <NavDocsDropdown />
-          <RouterLink to="/browse" class="nav-link">Browse</RouterLink>
+          <RouterLink to="/formulas" class="nav-link">Formulas</RouterLink>
           <RouterLink to="/fonts" class="nav-link">Fonts</RouterLink>
           <RouterLink to="/licenses" class="nav-link">Licenses</RouterLink>
           <RouterLink to="/guide" class="nav-link">Guide</RouterLink>

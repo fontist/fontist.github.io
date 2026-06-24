@@ -40,7 +40,7 @@ useHead(() => ({
     },
   ],
   link: [
-    { rel: 'canonical', href: `https://www.fontist.org/formula/${slug.value}` },
+    { rel: 'canonical', href: `https://www.fontist.org/formulas/${slug.value}` },
   ],
 }))
 
@@ -61,7 +61,7 @@ function copyInstall() {
     <div v-else-if="!formula">
       <h1 class="page-title">Formula not found</h1>
       <p>No formula found for: <code>{{ slug }}</code></p>
-      <RouterLink to="/browse">← Back to Browse</RouterLink>
+      <RouterLink to="/formulas">← Back to Formulas</RouterLink>
     </div>
 
     <template v-else>
