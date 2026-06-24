@@ -69,6 +69,38 @@ describe('buildFamilyLookup', () => {
     assert.equal(lookup.byFile('nope'), null)
   })
 
+  it('resolves family by formula slug (provenance reverse lookup)', () => {
+    const index: FontFamilyIndex = {
+      generated_at: '',
+      total_families: 1,
+      families: [mkFamily('roboto', ['roboto'])],
+    }
+    const lookup = buildFamilyLookup(index)
+
+    assert.equal(lookup.byFormula('google/roboto')?.slug, 'roboto')
+  })
+
+  it('uses the first family when multiple families share a formula slug', () => {
+    const fam1 = mkFamily('first')
+    const fam2 = mkFamily('second')
+    const index: FontFamilyIndex = {
+      generated_at: '',
+      total_families: 2,
+      families: [
+        { ...fam1, formula_slugs: ['google/shared'] },
+        { ...fam2, formula_slugs: ['google/shared'] },
+      ],
+    }
+    const lookup = buildFamilyLookup(index)
+
+    assert.equal(lookup.byFormula('google/shared')?.slug, 'first')
+  })
+
+  it('returns null for unknown formula slug', () => {
+    const lookup = buildFamilyLookup({ generated_at: '', total_families: 0, families: [] })
+    assert.equal(lookup.byFormula('google/nope'), null)
+  })
+
   it('handles a family with zero files', () => {
     const index: FontFamilyIndex = {
       generated_at: '',

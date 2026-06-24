@@ -24,3 +24,8 @@ export async function findFamilyByFile(fileSlug: string): Promise<FontFamily | n
   await loadFontFamilies()
   return lookup!.byFile(fileSlug)
 }
+
+export async function findFamilyByFormula(formulaSlug: string): Promise<FontFamily | null> {
+  await loadFontFamilies()
+  return lookup!.byFormula(formulaSlug)
+}
