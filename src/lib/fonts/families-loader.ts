@@ -1,8 +1,8 @@
 import { fetchJson } from '../ssr-fetch'
-import type { FontFamily, FontFamilyIndex } from '../types/domain'
-import { buildFamilyLookup, type FamilyLookup } from './family-lookup'
+import type { FontFamily, FontFamilyFile, FontFamilyIndex } from '../types/domain'
+import { buildFamilyLookup, type FamilyFileEntry, type FamilyLookup } from './family-lookup'
 
-export type { FontFamily, FontFamilyIndex, FamilyLookup }
+export type { FontFamily, FontFamilyFile, FontFamilyIndex, FamilyFileEntry, FamilyLookup }
 export { buildFamilyLookup }
 
 let cache: FontFamilyIndex | null = null
@@ -28,4 +28,9 @@ export async function findFamilyByFile(fileSlug: string): Promise<FontFamily | n
 export async function findFamilyByFormula(formulaSlug: string): Promise<FontFamily | null> {
   await loadFontFamilies()
   return lookup!.byFormula(formulaSlug)
+}
+
+export async function findFilesBySlug(fileSlug: string): Promise<FamilyFileEntry[]> {
+  await loadFontFamilies()
+  return lookup!.filesBySlug(fileSlug)
 }

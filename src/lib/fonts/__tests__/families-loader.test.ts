@@ -112,4 +112,50 @@ describe('buildFamilyLookup', () => {
     assert.equal(lookup.bySlug('nofiles')?.slug, 'nofiles')
     assert.equal(lookup.byFile('nofiles'), null)
   })
+
+  it('filesBySlug returns every (family, file) pair matching the slug', () => {
+    const index: FontFamilyIndex = {
+      generated_at: '',
+      total_families: 1,
+      families: [mkFamily('roboto', ['roboto_bold'])],
+    }
+    const lookup = buildFamilyLookup(index)
+
+    const entries = lookup.filesBySlug('roboto_bold')
+    assert.equal(entries.length, 1)
+    assert.equal(entries[0].family.slug, 'roboto')
+    assert.equal(entries[0].file.slug, 'roboto_bold')
+  })
+
+  it('filesBySlug returns multiple entries when several formulas ship the same file slug', () => {
+    const fam1 = mkFamily('first', ['shared'])
+    const fam2 = mkFamily('second', ['shared'])
+    const index: FontFamilyIndex = {
+      generated_at: '',
+      total_families: 2,
+      families: [fam1, fam2],
+    }
+    const lookup = buildFamilyLookup(index)
+
+    const entries = lookup.filesBySlug('shared')
+    assert.equal(entries.length, 2)
+    assert.equal(entries[0].family.slug, 'first')
+    assert.equal(entries[1].family.slug, 'second')
+  })
+
+  it('filesBySlug returns [] for unknown file slug', () => {
+    const lookup = buildFamilyLookup({ generated_at: '', total_families: 0, families: [] })
+    assert.deepEqual(lookup.filesBySlug('nope'), [])
+  })
+
+  it('filesBySlug returns [] for a family that has no files', () => {
+    const index: FontFamilyIndex = {
+      generated_at: '',
+      total_families: 1,
+      families: [mkFamily('nofiles', [])],
+    }
+    const lookup = buildFamilyLookup(index)
+
+    assert.deepEqual(lookup.filesBySlug('nofiles'), [])
+  })
 })
