@@ -223,7 +223,7 @@ watch(slugsFromUrl, (newSlugs) => {
         class="cmp-col"
       >
         <div class="cmp-col-head">
-          <RouterLink :to="`/font/${col.slug}`" class="cmp-col-name">{{ col.name }}</RouterLink>
+          <RouterLink :to="`/fonts/${col.slug}`" class="cmp-col-name">{{ col.name }}</RouterLink>
           <button class="cmp-remove" @click="removeFont(col.slug)">×</button>
         </div>
         <code class="cmp-col-slug">{{ col.slug }}</code>
@@ -262,7 +262,7 @@ watch(slugsFromUrl, (newSlugs) => {
           </div>
         </div>
 
-        <RouterLink :to="`/font/${col.slug}/unicode`" class="cmp-cov-link">Unicode coverage →</RouterLink>
+        <RouterLink :to="`/fonts/${col.slug}/unicode`" class="cmp-cov-link">Unicode coverage →</RouterLink>
       </div>
     </div>
   </div>

@@ -251,7 +251,7 @@ function toggleSource(value) {
           <div v-for="letter in activeLetters" :key="letter" :id="'letter-' + letter" class="letter-group">
             <h3 class="letter-heading">{{ letter }}</h3>
             <div class="formula-items">
-              <RouterLink v-for="f in groupedFormulas[letter]" :key="f.slug" :to="`/font/${f.slug}`" class="formula-item">
+              <RouterLink v-for="f in groupedFormulas[letter]" :key="f.slug" :to="`/formulas/${f.slug}`" class="formula-item">
                 <div class="formula-main">
                   <span class="formula-name">{{ f.name }}</span>
                   <span class="formula-key">{{ f.formulaName }}</span>

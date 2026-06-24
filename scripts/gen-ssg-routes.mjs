@@ -125,6 +125,17 @@ for (const fam of familiesIndex.families || []) {
   routes.add(`/families/${fam.slug}/unicode`)
 }
 
+const emittedFileSlugs = new Set()
+for (const fam of familiesIndex.families || []) {
+  for (const file of fam.files || []) {
+    if (!file.slug || emittedFileSlugs.has(file.slug)) continue
+    emittedFileSlugs.add(file.slug)
+    routes.add(`/fonts/${file.slug}`)
+    routes.add(`/fonts/${file.slug}/unicode`)
+  }
+}
+console.log(`fonts: emitted ${emittedFileSlugs.size} unique file slugs`)
+
 const PLANE_KEYS = ['bmp', 'smp', 'sip', 'tip', 'ssp', 'pua-a', 'pua-b']
 for (const k of PLANE_KEYS) routes.add(`/unicode/plane/${k}`)
 
@@ -176,8 +187,9 @@ const urlset = routesArr
     const loc = `https://www.fontist.org${r === '/' ? '' : r}`
     const priority = r === '/' ? '1.0'
       : r.startsWith('/families/') && !r.endsWith('/unicode') ? '0.9'
-      : r.startsWith('/formulas/') ? '0.8'
-      : r.startsWith('/unicode/') ? '0.7'
+      : r.startsWith('/fonts/') && !r.endsWith('/unicode') ? '0.8'
+      : r.startsWith('/formulas/') ? '0.7'
+      : r.startsWith('/unicode/') ? '0.6'
       : '0.5'
     return `  <url><loc>${loc}</loc><lastmod>${today}</lastmod><priority>${priority}</priority></url>`
   })

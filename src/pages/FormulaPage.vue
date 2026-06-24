@@ -3,11 +3,13 @@ import { ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import { findFormula, type FormulaData } from '../lib/formulas/loader'
+import { findFamilyByFormula, type FontFamily } from '../lib/fonts/families-loader'
 
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 
 const formula = ref<FormulaData | null>(null)
+const family = ref<FontFamily | null>(null)
 const loading = ref(true)
 const copied = ref(false)
 
@@ -15,6 +17,7 @@ async function loadData() {
   loading.value = true
   try {
     formula.value = await findFormula(slug.value)
+    family.value = await findFamilyByFormula(slug.value)
   } catch (e) {
     console.error('Failed to load formula data:', e)
   } finally {
@@ -106,9 +109,9 @@ function copyInstall() {
         </div>
       </div>
 
-      <div class="font-link-section">
-        <RouterLink :to="`/font/${slug}`" class="view-font-btn">
-          View Font Specimen →
+      <div v-if="family" class="font-link-section">
+        <RouterLink :to="`/families/${family.slug}`" class="view-font-btn">
+          View Family →
         </RouterLink>
       </div>
     </template>
