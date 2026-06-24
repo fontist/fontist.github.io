@@ -1,18 +1,31 @@
 import type { RouteRecordRaw } from 'vue-router'
+import { findFamilyByFormula } from './lib/fonts/families-loader'
+
+async function fontRedirect(to: { params: Record<string, string | string[]> }): Promise<string> {
+  const slug = Array.isArray(to.params.slug) ? to.params.slug.join('/') : to.params.slug
+  const family = await findFamilyByFormula(slug)
+  return family ? `/fonts/${family.slug}` : '/formulas'
+}
+
+async function fontUnicodeRedirect(to: { params: Record<string, string | string[]> }): Promise<string> {
+  const slug = Array.isArray(to.params.slug) ? to.params.slug.join('/') : to.params.slug
+  const family = await findFamilyByFormula(slug)
+  return family ? `/fonts/${family.slug}/unicode` : '/formulas'
+}
 
 export const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', component: () => import('./pages/HomePage.vue') },
   { path: '/about', name: 'about', component: () => import('./pages/AboutPage.vue') },
   { path: '/blog', name: 'blog', component: () => import('./pages/BlogIndexPage.vue') },
   { path: '/blog/:slug', name: 'blog-post', component: () => import('./pages/BlogPostPage.vue') },
-  { path: '/font/:slug(.+)/unicode/:block', name: 'font-block', component: () => import('./pages/FontBlockPage.vue') },
-  { path: '/font/:slug(.+)/unicode', name: 'font-unicode', component: () => import('./pages/FontUnicodePage.vue') },
-  { path: '/font/:slug(.+)', name: 'font', component: () => import('./pages/FontPage.vue') },
+  { path: '/font/:slug(.+)/unicode/:block', redirect: fontUnicodeRedirect },
+  { path: '/font/:slug(.+)/unicode', redirect: fontUnicodeRedirect },
+  { path: '/font/:slug(.+)', name: 'font-redirect', redirect: fontRedirect },
   { path: '/fonts', name: 'fonts-index', component: () => import('./pages/FontsPage.vue') },
   { path: '/fonts/:familySlug(.+)', name: 'font-family', component: () => import('./pages/FontFamilyPage.vue') },
   { path: '/fonts/:familySlug(.+)/unicode', name: 'font-family-unicode', component: () => import('./pages/FontFamilyUnicodePage.vue') },
-  { path: '/formula/:slug(.+)', name: 'formula', component: () => import('./pages/FormulaPage.vue') },
-  { path: '/browse', name: 'browse', component: () => import('./pages/BrowsePage.vue') },
+  { path: '/formulas/:slug(.+)', name: 'formula', component: () => import('./pages/FormulaPage.vue') },
+  { path: '/formulas', name: 'formulas', component: () => import('./pages/BrowsePage.vue') },
   { path: '/compare', name: 'compare', component: () => import('./pages/ComparePage.vue') },
   { path: '/compare/:fonts', name: 'compare-fonts', component: () => import('./pages/ComparePage.vue') },
   { path: '/unicode', name: 'unicode', component: () => import('./pages/UnicodePage.vue') },

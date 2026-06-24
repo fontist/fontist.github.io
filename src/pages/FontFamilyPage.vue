@@ -99,7 +99,7 @@ function selectFile(slug: string) {
       <h2 class="ffp-section-title">Provided by</h2>
       <ul class="ffp-formula-list">
         <li v-for="slug in family.formula_slugs" :key="slug">
-          <RouterLink :to="`/formula/${slug}`" class="ffp-formula-link">{{ slug }}</RouterLink>
+          <RouterLink :to="`/formulas/${slug}`" class="ffp-formula-link">{{ slug }}</RouterLink>
         </li>
       </ul>
     </aside>
