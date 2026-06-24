@@ -86,24 +86,24 @@ function scrollToLetter(letter: string) {
 }
 
 useHead({
-  title: 'Fonts — Fontist',
+  title: 'Font Families — Fontist',
   meta: [
     {
       name: 'description',
       content:
         'Browse every font family indexed by Fontist. Search by name, filter by license, and see provenance across all providing formulas.',
     },
-    { property: 'og:title', content: 'Fonts — Fontist' },
+    { property: 'og:title', content: 'Font Families — Fontist' },
     { property: 'og:type', content: 'website' },
   ],
-  link: [{ rel: 'canonical', href: 'https://www.fontist.org/fonts' }],
+  link: [{ rel: 'canonical', href: 'https://www.fontist.org/families' }],
 })
 </script>
 
 <template>
   <div class="page-container">
     <header class="fp-hero">
-      <h1>Fonts</h1>
+      <h1>Font Families</h1>
       <p class="fp-lede">
         Every font family indexed by Fontist. One family may be shipped by multiple formulas — this
         view groups them into a single canonical entry.
@@ -170,7 +170,7 @@ useHead({
           <RouterLink
             v-for="f in groupedFamilies[letter]"
             :key="f.slug"
-            :to="`/fonts/${f.slug}`"
+            :to="`/families/${f.slug}`"
             class="family-item"
           >
             <div class="family-main">

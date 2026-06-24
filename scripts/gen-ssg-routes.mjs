@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url'
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const pub = resolve(root, 'public')
 
-const STATIC_ROUTES = ['/', '/about', '/blog', '/compare', '/fonts', '/formulas', '/unicode']
+const STATIC_ROUTES = ['/', '/about', '/blog', '/compare', '/families', '/formulas', '/unicode']
 
 const blockToSlug = (name) =>
   name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
@@ -121,8 +121,8 @@ for (const f of formulas) {
 
 for (const fam of familiesIndex.families || []) {
   if (!fam.slug) continue
-  routes.add(`/fonts/${fam.slug}`)
-  routes.add(`/fonts/${fam.slug}/unicode`)
+  routes.add(`/families/${fam.slug}`)
+  routes.add(`/families/${fam.slug}/unicode`)
 }
 
 const PLANE_KEYS = ['bmp', 'smp', 'sip', 'tip', 'ssp', 'pua-a', 'pua-b']
@@ -175,7 +175,7 @@ const urlset = routesArr
   .map((r) => {
     const loc = `https://www.fontist.org${r === '/' ? '' : r}`
     const priority = r === '/' ? '1.0'
-      : r.startsWith('/fonts/') && !r.endsWith('/unicode') ? '0.9'
+      : r.startsWith('/families/') && !r.endsWith('/unicode') ? '0.9'
       : r.startsWith('/formulas/') ? '0.8'
       : r.startsWith('/unicode/') ? '0.7'
       : '0.5'

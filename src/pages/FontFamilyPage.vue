@@ -56,7 +56,7 @@ useHead(() => ({
     },
   ],
   link: [
-    { rel: 'canonical', href: `https://www.fontist.org/fonts/${familySlug.value}` },
+    { rel: 'canonical', href: `https://www.fontist.org/families/${familySlug.value}` },
   ],
 }))
 
@@ -84,9 +84,9 @@ function selectFile(slug: string) {
         · {{ family.files.length }} {{ family.files.length === 1 ? 'file' : 'files' }}
       </p>
       <nav class="ffp-nav">
-        <RouterLink :to="{ path: `/fonts/${familySlug}`, query: { view: 'specimen' } }" class="ffp-nav-link" active-class="on">Specimen</RouterLink>
-        <RouterLink :to="{ path: `/fonts/${familySlug}`, query: { view: 'inspector' } }" class="ffp-nav-link" active-class="on">Inspector</RouterLink>
-        <RouterLink :to="`/fonts/${familySlug}/unicode`" class="ffp-nav-link">Unicode coverage →</RouterLink>
+        <RouterLink :to="{ path: `/families/${familySlug}`, query: { view: 'specimen' } }" class="ffp-nav-link" active-class="on">Specimen</RouterLink>
+        <RouterLink :to="{ path: `/families/${familySlug}`, query: { view: 'inspector' } }" class="ffp-nav-link" active-class="on">Inspector</RouterLink>
+        <RouterLink :to="`/families/${familySlug}/unicode`" class="ffp-nav-link">Unicode coverage →</RouterLink>
         <RouterLink
           v-if="selectableFiles.length > 0"
           :to="`/unicode/block/basic-latin?fonts=${selectableFiles.map(f => f.slug).join(',')}`"
@@ -154,7 +154,7 @@ function selectFile(slug: string) {
   <div v-else-if="loading" class="ffp-loading">Loading…</div>
   <div v-else class="ffp-loading">
     <p>Family not found.</p>
-    <RouterLink to="/fonts" class="ffp-nav-link">Browse all families →</RouterLink>
+    <RouterLink to="/families" class="ffp-nav-link">Browse all families →</RouterLink>
   </div>
 </template>
 
