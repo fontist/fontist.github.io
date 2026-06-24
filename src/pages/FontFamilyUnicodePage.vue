@@ -49,7 +49,7 @@ watch(familySlug, loadFamily)
 useHead(() => ({
   title: family.value ? `${family.value.name} — Unicode Coverage` : 'Unicode Coverage — Fontist',
   link: [
-    { rel: 'canonical', href: `https://www.fontist.org/fonts/${familySlug.value}/unicode` },
+    { rel: 'canonical', href: `https://www.fontist.org/families/${familySlug.value}/unicode` },
   ],
 }))
 
@@ -61,7 +61,7 @@ function selectFile(slug: string) {
 <template>
   <div class="ffup" v-if="!loading && family">
     <header class="ffup-head">
-      <RouterLink :to="`/fonts/${familySlug}`" class="ffup-back">← {{ family.name }}</RouterLink>
+      <RouterLink :to="`/families/${familySlug}`" class="ffup-back">← {{ family.name }}</RouterLink>
       <h1>Unicode Coverage</h1>
       <p class="ffup-meta">
         {{ family.style_count }} styles · {{ family.formula_slugs.length }} formulas
@@ -106,7 +106,7 @@ function selectFile(slug: string) {
   <div v-else-if="loading" class="ffup-loading">Loading…</div>
   <div v-else class="ffup-loading">
     <p>Family not found.</p>
-    <RouterLink to="/fonts" class="ffup-back">Browse all families →</RouterLink>
+    <RouterLink to="/families" class="ffup-back">Browse all families →</RouterLink>
   </div>
 </template>
 
