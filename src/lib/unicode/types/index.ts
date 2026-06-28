@@ -5,6 +5,15 @@ export interface UnicodeCharacter {
   category: string
   script: string
   char: string
+  c?: string
+  s?: string
+  cc?: number
+  bc?: string
+  mir?: boolean
+  up?: string
+  lo?: string
+  ti?: string
+  dm?: string
 }
 
 export interface UnicodeBlock {
