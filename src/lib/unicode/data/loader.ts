@@ -7,6 +7,13 @@ interface RawBlockCharacter {
   n?: string
   c?: string
   s?: string
+  cc?: number
+  bc?: string
+  mir?: boolean
+  up?: string
+  lo?: string
+  ti?: string
+  dm?: string
 }
 
 interface RawBlockFile {
@@ -56,6 +63,15 @@ export async function loadBlockCharacters(blockName: string): Promise<UnicodeCha
       name: c.n || '',
       category: c.c || '',
       script: c.s || '',
+      c: c.c,
+      s: c.s,
+      cc: c.cc,
+      bc: c.bc,
+      mir: c.mir,
+      up: c.up,
+      lo: c.lo,
+      ti: c.ti,
+      dm: c.dm,
     }))
   } catch {
     return []

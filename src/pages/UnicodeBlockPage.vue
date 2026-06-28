@@ -86,7 +86,7 @@ function goToChar(cp: number) {
       <span class="ubp-meta">{{ hexCp(block.start) }}–{{ hexCp(block.end) }} · {{ characters.length }} assigned characters</span>
     </header>
 
-    <div class="ubp-script">{{ scriptGroup(block.name) }}</div>
+    <div class="ubp-script" v-if="fontContexts.length > 0">{{ scriptGroup(block.name) }}</div>
 
     <div v-if="fontContexts.length > 0" class="ubp-compare">
       <div class="ubp-compare-title">Comparing {{ fontContexts.length }} fonts:</div>
