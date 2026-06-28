@@ -259,8 +259,10 @@ useHead(() => ({
 .ucp-crumb-current { color: var(--vp-c-text-1, #333); font-weight: 500; }
 
 .ucp-nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
-.ucp-nav-btn { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border: 1px solid var(--vp-c-divider, #e2e2e3); border-radius: 8px; background: var(--vp-c-bg, #fff); cursor: pointer; transition: all 0.15s; }
-.ucp-nav-btn:hover { border-color: var(--fontist-rose, #bf4e6a); background: var(--vp-c-bg-soft, #f8f7f4); }
+.ucp-nav-btn { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border: 1px solid var(--vp-c-divider, #e2e2e3); border-radius: 8px; background: var(--vp-c-bg, #fff); color: var(--vp-c-text-1, #1c1a18); cursor: pointer; transition: border-color 0.15s, background 0.15s, color 0.15s; }
+.ucp-nav-btn:hover { border-color: var(--spec-rose, #b8475f); background: var(--vp-c-bg-soft, #f8f7f4); color: var(--spec-rose, #b8475f); }
+html.dark .ucp-nav-btn { background: var(--vp-c-bg, #161513); color: var(--vp-c-text-1, #ecdfd0); }
+html.dark .ucp-nav-btn:hover { border-color: var(--spec-rose, #d4718a); background: var(--vp-c-bg-soft, #211f1c); color: var(--spec-rose, #d4718a); }
 .ucp-nav-glyph { font-size: 1.5rem; }
 .ucp-nav-hex { font-size: 0.7rem; font-family: monospace; color: var(--vp-c-text-3, #888); }
 .ucp-nav-current { font-size: 0.85rem; font-family: monospace; color: var(--vp-c-text-3, #888); }
