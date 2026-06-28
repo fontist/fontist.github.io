@@ -9,6 +9,9 @@
 #   - fontist/fontist-archive → coverage/, fonts/*.woff2, fonts.json,
 #                               font-metadata.json
 #   - fontist/formulas        → formulas-data.json, stats.json
+#   - fontist/ucode           → unicode-blocks.json, unicode-version.json,
+#                               unicode/blocks/<slug>.json (opt-in via
+#                               --with-ucode; replaces `npm run gen-unicode`)
 #
 # Options:
 #   --force       Re-fetch even if files are present
@@ -16,12 +19,18 @@
 #                 vendor/formulas/ for raw-formula access. Off by default
 #                 because the clone is ~50 MB and the site doesn't currently
 #                 read raw YAML.
+#   --with-ucode  Fetch ucode-emitted Unicode data (unicode-blocks.json,
+#                 unicode-version.json, unicode/blocks/*.json) from
+#                 $UCODE_RAW. Off by default until ucode's publishing
+#                 pipeline is live. Override the source with
+#                 UCODE_RAW=https://your-mirror/ucode/main/docs/public.
 
 set -euo pipefail
 
 ARCHIVE_REPO="https://github.com/fontist/fontist-archive.git"
 FORMULAS_RAW="https://raw.githubusercontent.com/fontist/formulas/main/docs/public"
 FORMULAS_REPO="https://github.com/fontist/formulas.git"
+UCODE_RAW="${UCODE_RAW:-https://raw.githubusercontent.com/fontist/ucode/main/docs/public}"
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PUBLIC="$ROOT/public"
@@ -29,12 +38,14 @@ VENDOR="$ROOT/vendor"
 
 FORCE=0
 WITH_YAML=0
+WITH_UCODE=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --force)    FORCE=1; shift ;;
     --with-yaml) WITH_YAML=1; shift ;;
+    --with-ucode) WITH_UCODE=1; shift ;;
     -h|--help)
-      sed -n '2,20p' "$0"
+      sed -n '2,25p' "$0"
       exit 0
       ;;
     *) echo "Unknown option: $1" >&2; exit 1 ;;
@@ -120,6 +131,65 @@ if [[ $WITH_YAML -eq 1 ]]; then
 fi
 
 # ---------------------------------------------------------------------------
+# 4. Optional: ucode-emitted Unicode data (replaces `npm run gen-unicode`)
+# ---------------------------------------------------------------------------
+# Shape contract (produced by `ucode fontist-consumer`):
+#   unicode-version.json       {version, blockCount, charCount, generatedAt}
+#   unicode-blocks.json        [{start, end, name, unicode_version}]
+#   unicode/blocks/<slug>.json {chars: [{cp, n, c, s}]}
+#
+# <slug> matches fontist.org's blockSlug():
+#   name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+if [[ $WITH_UCODE -eq 1 ]]; then
+  UCODE_DIR="$PUBLIC/unicode"
+  mkdir -p "$UCODE_DIR/blocks"
+
+  ucode_version_file="$PUBLIC/unicode-version.json"
+  ucode_blocks_file="$PUBLIC/unicode-blocks.json"
+
+  # Resolve upstream version; skip if local matches and not --force.
+  upstream_version="$(curl -fsSL "$UCODE_RAW/unicode-version.json" \
+    | python3 -c 'import json,sys; print(json.load(sys.stdin).get("version",""))' 2>/dev/null || echo '')"
+  local_version=""
+  if [[ -f "$ucode_version_file" ]]; then
+    local_version="$(python3 -c 'import json,sys; print(json.load(sys.stdin).get("version",""))' \
+      < "$ucode_version_file" 2>/dev/null || echo '')"
+  fi
+
+  if [[ -n "$local_version" && "$local_version" == "$upstream_version" && $FORCE -eq 0 ]]; then
+    log "ucode unicode data at v$local_version, skipping (use --force to refetch)"
+  else
+    log "fetching ucode unicode data from $UCODE_RAW (v${upstream_version:-unknown})"
+
+    # 4a. Index files (small, fetch first so we can derive block slugs).
+    curl -fsSL "$UCODE_RAW/unicode-version.json" -o "$ucode_version_file"
+    curl -fsSL "$UCODE_RAW/unicode-blocks.json"  -o "$ucode_blocks_file"
+
+    # 4b. Per-block char files. Derive slug from each block name using the
+    # same algorithm as src/lib/unicode/constants.ts blockSlug().
+    python3 -c '
+import json, re, sys
+with open(sys.argv[1]) as f:
+    blocks = json.load(f)
+for b in blocks:
+    name = b.get("name", "")
+    slug = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+    if slug:
+        print(slug)
+' "$ucode_blocks_file" | while IFS= read -r slug; do
+      # Skip if already present and not --force (per-file idempotency).
+      if [[ -f "$UCODE_DIR/blocks/$slug.json" && $FORCE -eq 0 ]]; then
+        continue
+      fi
+      curl -fsSL "$UCODE_RAW/unicode/blocks/$slug.json" -o "$UCODE_DIR/blocks/$slug.json" \
+        || printf '  (failed to fetch %s — site degrades gracefully)\n' "$slug"
+    done
+
+    log "ucode unicode data fetched"
+  fi
+fi
+
+# ---------------------------------------------------------------------------
 # Summary
 # ---------------------------------------------------------------------------
 log "done. Data present in public/:"
@@ -136,4 +206,13 @@ printf '  %-25s %s woff2 files\n' "fonts/" "$count_fonts"
 if [[ $WITH_YAML -eq 1 ]]; then
   count_yaml=$(find "$VENDOR/formulas/Formulas" -name '*.yaml' 2>/dev/null | wc -l | tr -d ' ')
   printf '  %-25s %s YAML formulas\n' "vendor/formulas/" "$count_yaml"
+fi
+if [[ $WITH_UCODE -eq 1 ]]; then
+  count_ucode_blocks=$(find "$PUBLIC/unicode/blocks" -name '*.json' 2>/dev/null | wc -l | tr -d ' ')
+  ucode_v=""
+  if [[ -f "$PUBLIC/unicode-version.json" ]]; then
+    ucode_v="$(python3 -c 'import json,sys; print(json.load(sys.stdin).get("version","?"))' \
+      < "$PUBLIC/unicode-version.json" 2>/dev/null || echo '?')"
+  fi
+  printf '  %-25s %s blocks (v%s)\n' "unicode/blocks/" "$count_ucode_blocks" "$ucode_v"
 fi
