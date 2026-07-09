@@ -1,4 +1,6 @@
 export * from './types'
 export * from './constants'
-export { loadAllBlocks, loadBlockCharacters, loadBlock, getPlanes, getBlocksByPlane, getBlocksByScriptGroup } from './data/loader'
+export { loadAllBlocks, loadBlockCharacters, loadBlock, getPlanes, getBlocksByPlane, getBlocksByScriptGroup, mapRawCharacter, loadCodepointDetail, clearCodepointDetailCache } from './data/loader'
+export type { CodepointDetailFetcher } from './data/loader'
 export { computeCoverage, buildCharacterGrid, findGaps, coverageSummary } from './data/coverage'
+export { isCodepointRef, parseCodepointRef, isSelfReference, glyphOf } from './unihan'

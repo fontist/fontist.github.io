@@ -2,7 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useHead } from '@unhead/vue'
-import { hexCp, safeChar, blockSlug } from '../lib/unicode'
+import { hexCp, safeChar, blockSlug, charRoute } from '../lib/unicode'
 import { fetchJson } from '../lib/ssr-fetch'
 import UnicodeBlockGrid from '../lib/unicode/components/UnicodeBlockGrid.vue'
 
@@ -62,8 +62,7 @@ useHead(() => ({
 }))
 
 function goToChar(cp: number) {
-  const hex = cp.toString(16).toUpperCase().padStart(4, '0')
-  router.push(`/unicode/char/${hex}`)
+  router.push(charRoute(cp))
 }
 </script>
 

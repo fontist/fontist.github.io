@@ -5,15 +5,13 @@ export interface UnicodeCharacter {
   category: string
   script: string
   char: string
-  c?: string
-  s?: string
-  cc?: number
-  bc?: string
-  mir?: boolean
-  up?: string
-  lo?: string
-  ti?: string
-  dm?: string
+  combiningClass: number
+  bidiClass: string | null
+  mirrored: boolean
+  simpleUppercase: string | null
+  simpleLowercase: string | null
+  simpleTitlecase: string | null
+  decomposition: string | null
 }
 
 export interface UnicodeBlock {

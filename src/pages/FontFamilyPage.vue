@@ -125,6 +125,7 @@ function selectFile(slug: string) {
           :key="currentFile.slug"
           :slug="currentFile.slug"
           :font-path="currentFile.path"
+          :coverage-file="currentFile.coverage_file"
           :redistributable="currentFile.redistributable"
         />
       </template>
@@ -134,6 +135,7 @@ function selectFile(slug: string) {
           :slug="currentFile.slug"
           :family-name="family.name"
           :font-path="currentFile.path"
+          :coverage-file="currentFile.coverage_file"
           :redistributable="currentFile.redistributable"
         />
         <h2 class="ffp-section-title">Unicode Coverage</h2>
@@ -141,6 +143,7 @@ function selectFile(slug: string) {
           :key="'fub-' + currentFile.slug"
           :slug="currentFile.slug"
           :font-path="currentFile.path"
+          :coverage-file="currentFile.coverage_file"
           :redistributable="currentFile.redistributable"
         />
       </template>
@@ -165,19 +168,27 @@ function selectFile(slug: string) {
   padding: 2.5rem 1.5rem 5rem;
 }
 
-.ffp-header { margin-bottom: 1.5rem; }
+.ffp-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+}
 .ffp-title-row {
   display: flex;
   align-items: baseline;
-  gap: 0.75rem;
+  gap: 0.85rem;
   flex-wrap: wrap;
+  margin-bottom: 0.5rem;
 }
 .ffp-title-row h1 {
+  font-family: var(--spec-font-display);
   font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 700;
+  font-weight: 400;
+  font-style: italic;
   margin: 0;
   letter-spacing: -0.02em;
-  line-height: 1.1;
+  line-height: 1.05;
+  color: var(--spec-ink);
 }
 .ffp-license {
   font-size: 0.72rem;
@@ -229,12 +240,12 @@ function selectFile(slug: string) {
   border-radius: 0 4px 4px 0;
 }
 .ffp-section-title {
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin: 0 0 0.5rem;
-  color: var(--vp-c-text-3, #888);
+  font-family: var(--spec-font-display);
+  font-size: 1.05rem;
+  font-style: italic;
+  font-weight: 400;
+  margin: 0 0 0.65rem;
+  color: var(--spec-ink);
 }
 .ffp-formula-list {
   list-style: none;

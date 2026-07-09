@@ -1,24 +1,21 @@
-import { fetchJson } from '../ssr-fetch'
-import type {
-  FontEntry,
-  FontMetadataEntry,
-  FontsRegistry,
-  FontMetadataFile,
-} from '../types/domain'
+import type { FontsRegistry, FontMetadataFile } from '../types/domain.ts'
+import { createLazyJsonLoader } from '../loader-factory.ts'
 
-export type { FontEntry, FontMetadataEntry, FontsRegistry, FontMetadataFile }
+const fontsRegistryLoader = createLazyJsonLoader<FontsRegistry>('fonts.json')
+const fontMetadataLoader = createLazyJsonLoader<FontMetadataFile>('font-metadata.json')
 
-let fontsCache: FontsRegistry | null = null
-let metadataCache: FontMetadataFile | null = null
-
-export async function loadFontsRegistry(): Promise<FontsRegistry> {
-  if (fontsCache) return fontsCache
-  fontsCache = await fetchJson<FontsRegistry>('fonts.json')
-  return fontsCache
+export function loadFontsRegistry(): Promise<FontsRegistry> {
+  return fontsRegistryLoader.load()
 }
 
-export async function loadFontMetadata(): Promise<FontMetadataFile> {
-  if (metadataCache) return metadataCache
-  metadataCache = await fetchJson<FontMetadataFile>('font-metadata.json')
-  return metadataCache
+export function loadFontMetadata(): Promise<FontMetadataFile> {
+  return fontMetadataLoader.load()
+}
+
+export function clearFontsRegistryCache(): void {
+  fontsRegistryLoader.clear()
+}
+
+export function clearFontMetadataCache(): void {
+  fontMetadataLoader.clear()
 }

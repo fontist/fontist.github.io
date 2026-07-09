@@ -1,7 +1,6 @@
-import type { FontContext } from '../types/domain'
-import { fetchJson } from '../ssr-fetch'
-import type { Coverage } from '../types/domain'
-import { findFamilyByFile } from './families-loader'
+import type { FontContext, Coverage } from '../types/domain.ts'
+import { findFamilyByFile } from './families-loader.ts'
+import { loadCoverage } from '../unicode/coverage.ts'
 
 const COMPARE_PALETTE = [
   '#bf4e6a',
@@ -9,24 +8,10 @@ const COMPARE_PALETTE = [
   '#10b981',
   '#f59e0b',
   '#8b5cf6',
-  '#06b6d4',
+  '#06b6c4',
   '#ec4899',
   '#84cc16',
 ]
-
-const coverageCache = new Map<string, Coverage | null>()
-
-async function fetchCoverageForSlug(slug: string): Promise<Coverage | null> {
-  if (coverageCache.has(slug)) return coverageCache.get(slug) ?? null
-  try {
-    const cov = await fetchJson<Coverage>(`coverage/${slug}.json`)
-    coverageCache.set(slug, cov)
-    return cov
-  } catch {
-    coverageCache.set(slug, null)
-    return null
-  }
-}
 
 export async function resolveFontContexts(fileSlugs: string[]): Promise<FontContext[]> {
   const out: FontContext[] = []
@@ -35,13 +20,22 @@ export async function resolveFontContexts(fileSlugs: string[]): Promise<FontCont
     if (!slug) continue
     const family = await findFamilyByFile(slug)
     const file = family?.files.find(f => f.slug === slug)
-    const coverage = await fetchCoverageForSlug(slug)
+
+    // Prefer the registry's coverage_file; fall back to deriving from the
+    // woff path (woff/google/abel/Abel-Regular.woff → coverage/google/abel/Abel-Regular.json).
+    // Last resort: the slug alone (legacy flat path).
+    const coverageSpec =
+      file?.coverage_file ??
+      file?.path?.replace(/^woff\//, 'coverage/').replace(/\.woff$/, '.json') ??
+      slug
+    const coverage: Coverage | null = await loadCoverage(coverageSpec)
     if (!coverage) continue
+
     out.push({
       slug,
       familyName: family?.name || slug,
       fontId: `ub-${slug.replace(/[^a-z0-9]/gi, '-')}`,
-      fontPath: file?.path || `fonts/${slug}.woff2`,
+      fontPath: file?.path || null,
       redistributable: file?.redistributable ?? false,
       coverage: new Set(coverage.codepoints || []),
       color: COMPARE_PALETTE[i % COMPARE_PALETTE.length],

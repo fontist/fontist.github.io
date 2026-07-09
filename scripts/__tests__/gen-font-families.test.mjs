@@ -16,7 +16,19 @@ function mkMeta(slug, formulaPath, redistributable = true) {
     slug,
     formula_path: formulaPath,
     redistributable,
-    woff2_file: `fonts/${slug}.woff2`,
+    woff_file: `fonts/${slug}.woff`,
+  }
+}
+
+// Produces metadata matching the new per-face archive shape — both
+// woff_file and coverage_file point at namespaced paths.
+function mkPerFaceMeta(slug, formulaPath, psName, namespace = 'google') {
+  return {
+    slug,
+    formula_path: formulaPath,
+    redistributable: true,
+    woff_file: `woff/${namespace}/${slug}/${psName}.woff`,
+    coverage_file: `coverage/${namespace}/${slug}/${psName}.json`,
   }
 }
 
@@ -43,7 +55,7 @@ describe('buildFamilyIndex', () => {
     assert.equal(fam.files[0].slug, 'abeezee')
     assert.equal(fam.files[0].formula_slug, 'google/abeezee')
     assert.equal(fam.files[0].style, 'Regular')
-    assert.equal(fam.files[0].path, 'fonts/abeezee.woff2')
+    assert.equal(fam.files[0].path, 'fonts/abeezee.woff')
     assert.equal(fam.files[0].redistributable, true)
   })
 
@@ -158,5 +170,34 @@ describe('buildFamilyIndex', () => {
     })
     assert.equal(typeof index.generated_at, 'string')
     assert.ok(!isNaN(Date.parse(index.generated_at)))
+  })
+
+  it('threads coverage_file through to FontFamilyFile when metadata provides it', () => {
+    const index = buildFamilyIndex({
+      fonts: { fonts: [mkFontEntry('abel', 'Abel', ['google/abel'])] },
+      metadata: {
+        fonts: [mkPerFaceMeta('abel', 'Formulas/google/abel.yml', 'Abel-Regular')],
+      },
+      formulas: [mkFormula('google/abel')],
+    })
+
+    const file = index.families[0].files[0]
+    assert.equal(file.coverage_file, 'coverage/google/abel/Abel-Regular.json')
+    assert.equal(file.path, 'woff/google/abel/Abel-Regular.woff')
+  })
+
+  it('emits null for path and coverage_file when metadata omits them', () => {
+    const index = buildFamilyIndex({
+      fonts: { fonts: [mkFontEntry('orphan', 'Orphan', ['google/orphan'])] },
+      metadata: {
+        fonts: [{ slug: 'orphan', formula_path: 'Formulas/google/orphan.yml', redistributable: false }],
+      },
+      formulas: [mkFormula('google/orphan')],
+    })
+
+    const file = index.families[0].files[0]
+    assert.equal(file.path, null)
+    assert.equal(file.coverage_file, null)
+    assert.equal(file.redistributable, false)
   })
 })

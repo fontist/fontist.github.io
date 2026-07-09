@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import type { UnicodeBlock, UnicodeCharacter, GridMode } from '..'
 import type { FontContext } from '../../types/domain'
 import { isControlChar, controlAbbrev, controlName, displayChar } from '..'
-import { fontFormatForPath } from '../../fonts/format'
+import { fontFormatForPath } from '../../fonts/format.ts'
 
 const props = withDefaults(defineProps<{
   block: UnicodeBlock
@@ -142,7 +142,7 @@ function displayName(char: UnicodeCharacter): string {
             </div>
             <span
               class="ub-glyph"
-              :style="{ fontFamily: cell.renders[0].supported ? fontFamily(fonts[0]) : 'sans-serif', opacity: cell.renders[0].supported ? 1 : 0.3 }"
+              :style="{ fontFamily: cell.renders[0].supported ? fontFamily(fonts[0]) : 'Essenfont, sans-serif', opacity: cell.renders[0].supported ? 1 : 0.4 }"
             >{{ displayChar(cell.char.cp, cell.char.category) }}</span>
           </div>
         </template>
@@ -308,9 +308,10 @@ function displayName(char: UnicodeCharacter): string {
 .ub-glyph {
   position: relative;
   z-index: 1;
+  font-family: 'Essenfont', 'IBM Plex Sans', sans-serif;
   font-size: 1.8rem;
   line-height: 1;
-  color: var(--vp-c-text-1, #333);
+  color: var(--spec-ink);
 }
 
 .ub-control-box {

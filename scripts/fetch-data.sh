@@ -6,8 +6,9 @@
 # data is missing or stale.
 #
 # Sources:
-#   - fontist/fontist-archive → coverage/, fonts/*.woff2, fonts.json,
-#                               font-metadata.json
+#   - fontist/fontist-archive-public → coverage/, woff/{slug}/{PSName}.woff,
+#                                      fonts.json, font-metadata.json,
+#                                      details/{slug}.json
 #   - fontist/formulas        → formulas-data.json, stats.json
 #
 # Options:
@@ -16,12 +17,18 @@
 #                 vendor/formulas/ for raw-formula access. Off by default
 #                 because the clone is ~50 MB and the site doesn't currently
 #                 read raw YAML.
+#   --with-unicode  Fetch unicode data (block-feed + codepoints + universal
+#                   glyph set) from fontist/fontist-archive-public. Off by
+#                   default; use when archive-public publishes the data and
+#                   you want to skip `npm run gen-unicode`.
 
 set -euo pipefail
 
-ARCHIVE_REPO="https://github.com/fontist/fontist-archive.git"
+ARCHIVE_REPO="https://github.com/fontist/fontist-archive-public.git"
 FORMULAS_RAW="https://raw.githubusercontent.com/fontist/formulas/main/docs/public"
 FORMULAS_REPO="https://github.com/fontist/formulas.git"
+UNICODE_REPO="${UNICODE_REPO:-https://github.com/fontist/fontist-archive-public.git}"
+UNICODE_REF="${UNICODE_REF:-main}"
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PUBLIC="$ROOT/public"
@@ -29,12 +36,14 @@ VENDOR="$ROOT/vendor"
 
 FORCE=0
 WITH_YAML=0
+WITH_UNICODE=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --force)    FORCE=1; shift ;;
-    --with-yaml) WITH_YAML=1; shift ;;
+    --force)        FORCE=1; shift ;;
+    --with-yaml)    WITH_YAML=1; shift ;;
+    --with-unicode) WITH_UNICODE=1; shift ;;
     -h|--help)
-      sed -n '2,20p' "$0"
+      sed -n '2,30p' "$0"
       exit 0
       ;;
     *) echo "Unknown option: $1" >&2; exit 1 ;;
@@ -66,13 +75,25 @@ else
     printf '  (no coverage/ on upstream archive — site degrades gracefully)\n'
   fi
 
-  log "copying fonts/*.woff2 (optional)"
-  mkdir -p "$PUBLIC/fonts/noto"
-  if [[ -d "$TMP/archive/fonts" ]]; then
-    # Copy woff2 specimens but DO NOT overwrite committed noto/ fallbacks
-    find "$TMP/archive/fonts" -maxdepth 1 -name '*.woff2' -exec cp {} "$PUBLIC/fonts/" \;
+  log "copying details/ (optional)"
+  mkdir -p "$PUBLIC/details"
+  if [[ -d "$TMP/archive/details" ]]; then
+    cp -r "$TMP/archive/details/." "$PUBLIC/details/"
   else
-    printf '  (no fonts/ on upstream archive — specimens will 404)\n'
+    printf '  (no details/ on upstream archive — formula pages degrade to summary)\n'
+  fi
+
+  log "copying woff/ (preserving woff/{slug}/{PSName}.woff structure)"
+  mkdir -p "$PUBLIC/fonts/noto"
+  if [[ -d "$TMP/archive/woff" ]]; then
+    # Nested woff/{slug}/{PSName}.woff preserved as-is so that
+    # font-metadata.json's woff_file URLs (e.g. "woff/google/abel/Abel-Regular.woff")
+    # resolve verbatim under public/. NOTO fallbacks under public/fonts/noto/
+    # are committed separately and not touched here.
+    mkdir -p "$PUBLIC/woff"
+    cp -r "$TMP/archive/woff/." "$PUBLIC/woff/"
+  else
+    printf '  (no woff/ on upstream archive — specimens will 404)\n'
   fi
 
   log "copying fonts.json, font-metadata.json"
@@ -120,6 +141,54 @@ if [[ $WITH_YAML -eq 1 ]]; then
 fi
 
 # ---------------------------------------------------------------------------
+# 4. Optional: unicode data from fontist-archive-public
+# ---------------------------------------------------------------------------
+# Replaces `npm run gen-unicode` for prod builds. The archive owns the
+# canonical UCD-derived data; we just copy it. See REQ R1.
+if [[ $WITH_UNICODE -eq 1 ]]; then
+  if [[ -z "${TMP:-}" ]]; then
+    TMP="$(mktemp -d)"
+    trap 'rm -rf "$TMP"' EXIT
+  fi
+
+  log "cloning fontist-archive-public (shallow, $UNICODE_REF) for unicode/"
+  rm -rf "$TMP/archive-public"
+  git clone --depth 1 --branch "$UNICODE_REF" "$UNICODE_REPO" "$TMP/archive-public" 2>/dev/null
+
+  SRC="$TMP/archive-public/unicode"
+
+  log "copying unicode/block-feed/ (optional)"
+  if [[ -d "$SRC/block-feed" ]]; then
+    mkdir -p "$PUBLIC/unicode/blocks"
+    [[ -f "$SRC/block-feed/unicode-blocks.json" ]] \
+      && cp "$SRC/block-feed/unicode-blocks.json" "$PUBLIC/unicode-blocks.json"
+    [[ -f "$SRC/block-feed/unicode-version.json" ]] \
+      && cp "$SRC/block-feed/unicode-version.json" "$PUBLIC/unicode-version.json"
+    if [[ -d "$SRC/block-feed/blocks" ]]; then
+      cp -r "$SRC/block-feed/blocks/." "$PUBLIC/unicode/blocks/"
+    fi
+  else
+    printf '  (no unicode/block-feed/ on archive-public — run npm run gen-unicode)\n'
+  fi
+
+  log "copying unicode/codepoints/ (sample only; full set via release tarball)"
+  if [[ -d "$SRC/codepoints" ]]; then
+    mkdir -p "$PUBLIC/codepoints"
+    cp -r "$SRC/codepoints/." "$PUBLIC/codepoints/"
+  fi
+
+  log "copying unicode/universal-glyph-set/ (optional)"
+  if [[ -d "$SRC/universal-glyph-set" ]]; then
+    mkdir -p "$PUBLIC/unicode/glyphs"
+    if [[ -d "$SRC/universal-glyph-set/glyphs" ]]; then
+      cp -r "$SRC/universal-glyph-set/glyphs/." "$PUBLIC/unicode/glyphs/"
+    fi
+    [[ -f "$SRC/universal-glyph-set/manifest.json" ]] \
+      && cp "$SRC/universal-glyph-set/manifest.json" "$PUBLIC/unicode/manifest.json"
+  fi
+fi
+
+# ---------------------------------------------------------------------------
 # Summary
 # ---------------------------------------------------------------------------
 log "done. Data present in public/:"
@@ -130,10 +199,18 @@ for f in formulas-data.json stats.json fonts.json font-metadata.json; do
   fi
 done
 count_cov=$(ls "$PUBLIC/coverage" 2>/dev/null | wc -l | tr -d ' ')
-count_fonts=$(find "$PUBLIC/fonts" -maxdepth 1 -name '*.woff2' 2>/dev/null | wc -l | tr -d ' ')
+count_details=$(find "$PUBLIC/details" -name '*.json' 2>/dev/null | wc -l | tr -d ' ')
+count_woff=$(find "$PUBLIC/woff" -name '*.woff' 2>/dev/null | wc -l | tr -d ' ')
 printf '  %-25s %s files\n' "coverage/" "$count_cov"
-printf '  %-25s %s woff2 files\n' "fonts/" "$count_fonts"
+printf '  %-25s %s files\n' "details/" "$count_details"
+printf '  %-25s %s woff files\n' "woff/" "$count_woff"
 if [[ $WITH_YAML -eq 1 ]]; then
   count_yaml=$(find "$VENDOR/formulas/Formulas" -name '*.yaml' 2>/dev/null | wc -l | tr -d ' ')
   printf '  %-25s %s YAML formulas\n' "vendor/formulas/" "$count_yaml"
+fi
+if [[ $WITH_UNICODE -eq 1 ]]; then
+  count_blocks=$(find "$PUBLIC/unicode/blocks" -name '*.json' 2>/dev/null | wc -l | tr -d ' ')
+  count_codepoints=$(find "$PUBLIC/codepoints" -name '*.json' 2>/dev/null | wc -l | tr -d ' ')
+  printf '  %-25s %s block files\n' "unicode/blocks/" "$count_blocks"
+  printf '  %-25s %s codepoint files\n' "codepoints/" "$count_codepoints"
 fi

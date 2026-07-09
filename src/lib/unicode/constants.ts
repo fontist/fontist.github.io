@@ -1,4 +1,5 @@
 import type { PlaneKey, UnicodeBlock } from '../types'
+import type { CodepointUnihan } from '../../types/domain'
 
 export const PLANES: { key: PlaneKey; name: string; shortName: string; range: string; start: number; end: number }[] = [
   { key: 'bmp', name: 'Basic Multilingual Plane', shortName: 'BMP', range: 'U+0000–U+FFFF', start: 0x0000, end: 0xFFFF },
@@ -144,6 +145,77 @@ export function hexCp(cp: number): string {
   return 'U+' + cp.toString(16).toUpperCase().padStart(4, '0')
 }
 
+/**
+ * Canonical codepoint hex: lowercase, zero-padded to 4 digits.
+ *
+ * Single source of truth for "what hex string identifies this codepoint
+ * on disk and in URLs". Used by `charRoute`
+ * (route segment), `loadCodepointDetail` (filename lookup), and any
+ * future consumer that needs to address a codepoint file.
+ *
+ * Accepts a number, a bare hex string, or a U+XXXX string. Does NOT
+ * validate the input — boundary validation lives at the call site
+ * (e.g. `charRoute` throws RangeError on out-of-range input).
+ */
+export function canonicalCodepointHex(input: number | string): string {
+  const stripped = typeof input === 'number'
+    ? input.toString(16)
+    : input.replace(/^U\+/i, '')
+  return stripped.toLowerCase().padStart(4, '0')
+}
+
+/**
+ * Build the /unicode/char/{hex} route for any reasonable codepoint reference.
+ *
+ * Accepts a number (the codepoint integer), a bare hex string ("20ac",
+ * "20AC", "0020"), or a U+XXXX string ("U+20AC"). The route segment is
+ * always lowercase, zero-padded to at least 4 hex digits — matching the
+ * canonical codepoint filename rule.
+ *
+ * Throws RangeError on invalid input rather than returning a fallback,
+ * so malformed upstream data (e.g. a Unihan field with a bad codepoint)
+ * surfaces loudly instead of silently producing a broken link.
+ */
+export function charRoute(input: number | string): string {
+  const cp = typeof input === 'number'
+    ? input
+    : parseInt(input.replace(/^U\+/i, ''), 16)
+  if (!Number.isFinite(cp) || cp < 0 || cp > 0x10FFFF) {
+    throw new RangeError(`Invalid codepoint reference: ${JSON.stringify(input)}`)
+  }
+  return `/unicode/char/${canonicalCodepointHex(cp)}`
+}
+
+const BIDI_CLASS_NAMES: Record<string, string> = {
+  L: 'Left-to-Right',
+  R: 'Right-to-Left',
+  AL: 'Right-to-Left Arabic',
+  EN: 'European Number',
+  ES: 'European Separator',
+  ET: 'European Terminator',
+  AN: 'Arabic Number',
+  CS: 'Common Separator',
+  NSM: 'Nonspacing Mark',
+  BN: 'Boundary Neutral',
+  B: 'Paragraph Separator',
+  S: 'Segment Separator',
+  WS: 'Whitespace',
+  ON: 'Other Neutral',
+  LRE: 'L-to-R Embedding',
+  LRO: 'L-to-R Override',
+  RLE: 'R-to-L Embedding',
+  RLO: 'R-to-L Override',
+  PDF: 'Pop Directional Format',
+  LRI: 'L-to-R Isolate',
+  RLI: 'R-to-L Isolate',
+  FSI: 'First Strong Isolate',
+  PDI: 'Pop Directional Isolate',
+}
+
+export function bidiClassName(code: string): string {
+  return BIDI_CLASS_NAMES[code] || code
+}
+
 export function safeChar(cp: number): string {
   try { return String.fromCodePoint(cp) } catch { return '' }
 }
@@ -177,6 +249,31 @@ export function featureInfo(tag: string) {
 export function blockSlug(blockName: string): string {
   return blockName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 }
+
+// ---------- Unihan category registry ----------
+// Single source of truth for which Unihan categories the char page renders
+// and how each one displays. The `key` is `keyof CodepointUnihan`, so adding
+// a new field to the type without adding a matching entry here is a
+// compile error.
+
+export type UnihanRenderMode = 'text' | 'variant'
+
+export interface UnihanCategorySpec {
+  key: keyof CodepointUnihan
+  heading: string
+  render: UnihanRenderMode
+}
+
+export const UNIHAN_CATEGORIES: readonly UnihanCategorySpec[] = [
+  { key: 'dictionary_indices',     heading: 'Unihan Dictionary Indices',     render: 'text' },
+  { key: 'readings',               heading: 'Unihan Readings',                render: 'text' },
+  { key: 'variants',               heading: 'Unihan Variants',                render: 'variant' },
+  { key: 'numeric_values',         heading: 'Unihan Numeric Values',          render: 'text' },
+  { key: 'radical_stroke_counts',  heading: 'Unihan Radical-Stroke Counts',   render: 'text' },
+  { key: 'dictionary_like_data',   heading: 'Unihan Dictionary-Like Data',    render: 'text' },
+  { key: 'irg_sources',            heading: 'Unihan IRG Sources',             render: 'text' },
+  { key: 'other_mappings',         heading: 'Unihan Other Mappings',          render: 'text' },
+]
 
 const CONTROL_ABBREVS: Record<number, string> = {
   0x00: 'NUL', 0x01: 'SOH', 0x02: 'STX', 0x03: 'ETX',
@@ -310,7 +407,7 @@ const SCRIPT_NAMES: Record<string, string> = {
   Phag: 'Phags-pa', Phnx: 'Phoenician', Nkoo: 'N\'Ko',
   Vaii: 'Vai', Sora: 'Sora Sompeng', Chrs: 'Chorasmian',
   Diak: 'Dives Akuru', Dogr: 'Dogra', Elym: 'Elymaic', Gong: 'Gunjala Gondi',
-  Gonm: 'Masaram Gondi', Gran: 'Grantha', Gujr: 'Gujarati',
+  Gonm: 'Masaram Gondi', Gran: 'Grantha',
   Hluw: 'Anatolian Hieroglyphs', Hmng: 'Pahawh Hmong', Hmnp: 'Nyiakeng Puachue Hmong',
   Hung: 'Old Hungarian', Kali: 'Kayah Li', Khoj: 'Khojki',
   Kits: 'Khitan Small Script', Kthi: 'Kaithi', Lana: 'Lanna',
@@ -320,15 +417,15 @@ const SCRIPT_NAMES: Record<string, string> = {
   Merc: 'Meroitic Cursive', Mero: 'Meroitic Hieroglyphs',
   Miao: 'Pollard', Modi: 'Modi', Mult: 'Multani', Mroo: 'Mro',
   Nand: 'Nandinagari', Newa: 'Newa', Nshu: 'Nushu',
-  Ogam: 'Ogham', Olck: 'Ol Chiki', Orkh: 'Old Turkic', Orya: 'Oriya',
+  Olck: 'Ol Chiki', Orkh: 'Old Turkic',
   Osge: 'Osage', Palm: 'Palmyrene', Pauc: 'Pau Cin Hau', Perm: 'Old Permic',
   Plrd: 'Pollard', Rjng: 'Rejang', Rohg: 'Hanifi Rohingya',
   Saur: 'Saurashtra', Sgnw: 'SignWriting', Shar: 'Sharada',
-  Sidd: 'Siddham', Sind: 'Khudawadi', Sinh: 'Sinhala', Sogd: 'Sogdian',
-  Sogo: 'Old Sogdian', Sora: 'Sora Sompeng', Sund: 'Sundanese',
-  Sylo: 'Syloti Nagri', Tagb: 'Tagbanwa', Takr: 'Takri', Talu: 'New Tai Lue',
-  Taml: 'Tamil', Tang: 'Tangut', Tavt: 'Tai Viet', Tglg: 'Tagalog',
-  Tfng: 'Tifinagh', Tglg: 'Tagalog', Tirh: 'Tirhuta',
+  Sidd: 'Siddham', Sind: 'Khudawadi', Sogd: 'Sogdian',
+  Sogo: 'Old Sogdian', Sund: 'Sundanese',
+  Sylo: 'Syloti Nagri', Takr: 'Takri', Talu: 'New Tai Lue',
+  Tang: 'Tangut', Tavt: 'Tai Viet',
+  Tfng: 'Tifinagh', Tirh: 'Tirhuta',
   Tnsa: 'Tangsa', Tutg: 'Tulu Tigalari', Vith: 'Vithkuqi',
   Wara: 'Warang Citi', Wcho: 'Wancho', Xpeo: 'Old Persian',
   Xsux: 'Cuneiform', Yezi: 'Yezidi', Zanb: 'Zanabazar Square',

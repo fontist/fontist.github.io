@@ -1,0 +1,2388 @@
+/* Essenfont webfont system — cross-origin @font-face rules.
+ * Essenfont covers every assigned Unicode 17 codepoint (131K+ glyphs).
+ * Served from www.essenfont.org with Access-Control-Allow-Origin: *.
+ * The browser downloads only the block(s) needed for the current page
+ * via unicode-range matching.
+ *
+ * Generated from public/unicode-blocks.json.
+ */
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/basic-latin.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0000-U+007F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/latin-1-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0080-U+00FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/latin-extended-a.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0100-U+017F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/latin-extended-b.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0180-U+024F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/ipa-extensions.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0250-U+02AF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/spacing-modifier-letters.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+02B0-U+02FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/combining-diacritical-marks.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0300-U+036F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/greek-and-coptic.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0370-U+03FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cyrillic.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0400-U+04FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cyrillic-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0500-U+052F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/armenian.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0530-U+058F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/hebrew.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0590-U+05FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/arabic.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0600-U+06FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/syriac.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0700-U+074F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/arabic-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0750-U+077F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/thaana.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0780-U+07BF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/nko.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+07C0-U+07FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/samaritan.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0800-U+083F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/mandaic.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0840-U+085F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/syriac-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0860-U+086F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/arabic-extended-b.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0870-U+089F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/arabic-extended-a.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+08A0-U+08FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/devanagari.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0900-U+097F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/bengali.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0980-U+09FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/gurmukhi.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0A00-U+0A7F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/gujarati.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0A80-U+0AFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/oriya.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0B00-U+0B7F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/tamil.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0B80-U+0BFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/telugu.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0C00-U+0C7F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/kannada.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0C80-U+0CFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/malayalam.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0D00-U+0D7F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/sinhala.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0D80-U+0DFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/thai.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0E00-U+0E7F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/lao.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0E80-U+0EFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/tibetan.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0F00-U+0FFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/myanmar.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1000-U+109F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/georgian.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10A0-U+10FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/hangul-jamo.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1100-U+11FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/ethiopic.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1200-U+137F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/ethiopic-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1380-U+139F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cherokee.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+13A0-U+13FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/unified-canadian-aboriginal-syllabics.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1400-U+167F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/ogham.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1680-U+169F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/runic.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+16A0-U+16FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/tagalog.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1700-U+171F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/hanunoo.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1720-U+173F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/buhid.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1740-U+175F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/tagbanwa.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1760-U+177F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/khmer.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1780-U+17FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/mongolian.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1800-U+18AF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/unified-canadian-aboriginal-syllabics-extended.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+18B0-U+18FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/limbu.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1900-U+194F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/tai-le.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1950-U+197F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/new-tai-lue.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1980-U+19DF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/khmer-symbols.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+19E0-U+19FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/buginese.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1A00-U+1A1F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/tai-tham.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1A20-U+1AAF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/combining-diacritical-marks-extended.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1AB0-U+1AFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/balinese.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1B00-U+1B7F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/sundanese.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1B80-U+1BBF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/batak.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1BC0-U+1BFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/lepcha.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1C00-U+1C4F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/ol-chiki.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1C50-U+1C7F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cyrillic-extended-c.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1C80-U+1C8F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/georgian-extended.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1C90-U+1CBF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/sundanese-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1CC0-U+1CCF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/vedic-extensions.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1CD0-U+1CFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/phonetic-extensions.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1D00-U+1D7F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/phonetic-extensions-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1D80-U+1DBF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/combining-diacritical-marks-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1DC0-U+1DFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/latin-extended-additional.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1E00-U+1EFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/greek-extended.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1F00-U+1FFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/general-punctuation.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2000-U+206F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/superscripts-and-subscripts.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2070-U+209F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/currency-symbols.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+20A0-U+20CF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/combining-diacritical-marks-for-symbols.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+20D0-U+20FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/letterlike-symbols.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2100-U+214F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/number-forms.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2150-U+218F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/arrows.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2190-U+21FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/mathematical-operators.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2200-U+22FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/miscellaneous-technical.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2300-U+23FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/control-pictures.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2400-U+243F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/optical-character-recognition.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2440-U+245F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/enclosed-alphanumerics.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2460-U+24FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/box-drawing.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2500-U+257F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/block-elements.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2580-U+259F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/geometric-shapes.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+25A0-U+25FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/miscellaneous-symbols.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2600-U+26FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/dingbats.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2700-U+27BF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/miscellaneous-mathematical-symbols-a.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+27C0-U+27EF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/supplemental-arrows-a.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+27F0-U+27FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/braille-patterns.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2800-U+28FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/supplemental-arrows-b.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2900-U+297F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/miscellaneous-mathematical-symbols-b.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2980-U+29FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/supplemental-mathematical-operators.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2A00-U+2AFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/miscellaneous-symbols-and-arrows.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2B00-U+2BFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/glagolitic.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2C00-U+2C5F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/latin-extended-c.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2C60-U+2C7F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/coptic.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2C80-U+2CFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/georgian-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2D00-U+2D2F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/tifinagh.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2D30-U+2D7F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/ethiopic-extended.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2D80-U+2DDF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cyrillic-extended-a.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2DE0-U+2DFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/supplemental-punctuation.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2E00-U+2E7F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cjk-radicals-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2E80-U+2EFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/kangxi-radicals.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2F00-U+2FDF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/ideographic-description-characters.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2FF0-U+2FFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cjk-symbols-and-punctuation.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+3000-U+303F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/hiragana.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+3040-U+309F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/katakana.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+30A0-U+30FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/bopomofo.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+3100-U+312F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/hangul-compatibility-jamo.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+3130-U+318F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/kanbun.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+3190-U+319F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/bopomofo-extended.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+31A0-U+31BF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cjk-strokes.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+31C0-U+31EF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/katakana-phonetic-extensions.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+31F0-U+31FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/enclosed-cjk-letters-and-months.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+3200-U+32FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cjk-compatibility.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+3300-U+33FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cjk-unified-ideographs-extension-a.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+3400-U+4DBF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/yijing-hexagram-symbols.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+4DC0-U+4DFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cjk-unified-ideographs.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+4E00-U+9FFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/yi-syllables.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+A000-U+A48F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/yi-radicals.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+A490-U+A4CF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/lisu.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+A4D0-U+A4FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/vai.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+A500-U+A63F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cyrillic-extended-b.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+A640-U+A69F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/bamum.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+A6A0-U+A6FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/modifier-tone-letters.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+A700-U+A71F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/latin-extended-d.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+A720-U+A7FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/syloti-nagri.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+A800-U+A82F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/common-indic-number-forms.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+A830-U+A83F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/phags-pa.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+A840-U+A87F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/saurashtra.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+A880-U+A8DF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/devanagari-extended.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+A8E0-U+A8FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/kayah-li.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+A900-U+A92F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/rejang.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+A930-U+A95F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/hangul-jamo-extended-a.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+A960-U+A97F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/javanese.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+A980-U+A9DF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/myanmar-extended-b.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+A9E0-U+A9FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cham.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+AA00-U+AA5F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/myanmar-extended-a.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+AA60-U+AA7F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/tai-viet.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+AA80-U+AADF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/meetei-mayek-extensions.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+AAE0-U+AAFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/ethiopic-extended-a.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+AB00-U+AB2F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/latin-extended-e.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+AB30-U+AB6F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cherokee-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+AB70-U+ABBF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/meetei-mayek.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+ABC0-U+ABFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/hangul-syllables.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+AC00-U+D7AF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/hangul-jamo-extended-b.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+D7B0-U+D7FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cjk-compatibility-ideographs.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+F900-U+FAFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/alphabetic-presentation-forms.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+FB00-U+FB4F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/arabic-presentation-forms-a.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+FB50-U+FDFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/variation-selectors.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+FE00-U+FE0F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/vertical-forms.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+FE10-U+FE1F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/combining-half-marks.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+FE20-U+FE2F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cjk-compatibility-forms.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+FE30-U+FE4F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/small-form-variants.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+FE50-U+FE6F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/arabic-presentation-forms-b.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+FE70-U+FEFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/halfwidth-and-fullwidth-forms.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+FF00-U+FFEF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/specials.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+FFF0-U+FFFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/linear-b-syllabary.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10000-U+1007F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/linear-b-ideograms.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10080-U+100FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/aegean-numbers.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10100-U+1013F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/ancient-greek-numbers.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10140-U+1018F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/ancient-symbols.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10190-U+101CF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/phaistos-disc.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+101D0-U+101FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/lycian.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10280-U+1029F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/carian.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+102A0-U+102DF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/coptic-epact-numbers.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+102E0-U+102FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/old-italic.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10300-U+1032F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/gothic.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10330-U+1034F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/old-permic.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10350-U+1037F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/ugaritic.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10380-U+1039F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/old-persian.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+103A0-U+103DF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/deseret.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10400-U+1044F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/shavian.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10450-U+1047F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/osmanya.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10480-U+104AF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/osage.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+104B0-U+104FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/elbasan.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10500-U+1052F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/caucasian-albanian.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10530-U+1056F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/vithkuqi.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10570-U+105BF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/todhri.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+105C0-U+105FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/linear-a.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10600-U+1077F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/latin-extended-f.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10780-U+107BF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cypriot-syllabary.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10800-U+1083F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/imperial-aramaic.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10840-U+1085F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/palmyrene.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10860-U+1087F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/nabataean.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10880-U+108AF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/hatran.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+108E0-U+108FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/phoenician.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10900-U+1091F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/lydian.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10920-U+1093F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/sidetic.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10940-U+1095F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/meroitic-hieroglyphs.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10980-U+1099F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/meroitic-cursive.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+109A0-U+109FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/kharoshthi.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10A00-U+10A5F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/old-south-arabian.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10A60-U+10A7F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/old-north-arabian.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10A80-U+10A9F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/manichaean.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10AC0-U+10AFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/avestan.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10B00-U+10B3F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/inscriptional-parthian.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10B40-U+10B5F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/inscriptional-pahlavi.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10B60-U+10B7F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/psalter-pahlavi.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10B80-U+10BAF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/old-turkic.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10C00-U+10C4F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/old-hungarian.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10C80-U+10CFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/hanifi-rohingya.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10D00-U+10D3F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/garay.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10D40-U+10D8F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/rumi-numeral-symbols.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10E60-U+10E7F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/yezidi.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10E80-U+10EBF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/arabic-extended-c.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10EC0-U+10EFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/old-sogdian.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10F00-U+10F2F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/sogdian.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10F30-U+10F6F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/old-uyghur.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10F70-U+10FAF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/chorasmian.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10FB0-U+10FDF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/elymaic.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+10FE0-U+10FFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/brahmi.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11000-U+1107F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/kaithi.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11080-U+110CF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/sora-sompeng.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+110D0-U+110FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/chakma.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11100-U+1114F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/mahajani.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11150-U+1117F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/sharada.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11180-U+111DF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/sinhala-archaic-numbers.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+111E0-U+111FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/khojki.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11200-U+1124F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/multani.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11280-U+112AF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/khudawadi.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+112B0-U+112FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/grantha.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11300-U+1137F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/tulu-tigalari.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11380-U+113FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/newa.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11400-U+1147F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/tirhuta.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11480-U+114DF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/siddham.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11580-U+115FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/modi.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11600-U+1165F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/mongolian-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11660-U+1167F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/takri.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11680-U+116CF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/myanmar-extended-c.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+116D0-U+116FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/ahom.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11700-U+1174F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/dogra.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11800-U+1184F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/warang-citi.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+118A0-U+118FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/dives-akuru.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11900-U+1195F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/nandinagari.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+119A0-U+119FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/zanabazar-square.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11A00-U+11A4F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/soyombo.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11A50-U+11AAF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/unified-canadian-aboriginal-syllabics-extended-a.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11AB0-U+11ABF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/pau-cin-hau.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11AC0-U+11AFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/devanagari-extended-a.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11B00-U+11B5F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/sharada-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11B60-U+11B7F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/sunuwar.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11BC0-U+11BFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/bhaiksuki.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11C00-U+11C6F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/marchen.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11C70-U+11CBF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/masaram-gondi.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11D00-U+11D5F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/gunjala-gondi.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11D60-U+11DAF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/tolong-siki.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11DB0-U+11DEF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/makasar.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11EE0-U+11EFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/kawi.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11F00-U+11F5F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/lisu-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11FB0-U+11FBF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/tamil-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+11FC0-U+11FFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cuneiform.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+12000-U+123FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cuneiform-numbers-and-punctuation.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+12400-U+1247F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/early-dynastic-cuneiform.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+12480-U+1254F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cypro-minoan.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+12F90-U+12FFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/egyptian-hieroglyphs.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+13000-U+1342F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/egyptian-hieroglyph-format-controls.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+13430-U+1345F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/egyptian-hieroglyphs-extended-a.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+13460-U+143FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/anatolian-hieroglyphs.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+14400-U+1467F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/gurung-khema.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+16100-U+1613F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/bamum-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+16800-U+16A3F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/mro.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+16A40-U+16A6F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/tangsa.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+16A70-U+16ACF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/bassa-vah.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+16AD0-U+16AFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/pahawh-hmong.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+16B00-U+16B8F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/kirat-rai.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+16D40-U+16D7F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/medefaidrin.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+16E40-U+16E9F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/beria-erfe.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+16EA0-U+16EDF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/miao.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+16F00-U+16F9F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/ideographic-symbols-and-punctuation.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+16FE0-U+16FFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/tangut.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+17000-U+187FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/tangut-components.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+18800-U+18AFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/khitan-small-script.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+18B00-U+18CFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/tangut-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+18D00-U+18D7F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/tangut-components-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+18D80-U+18DFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/kana-extended-b.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1AFF0-U+1AFFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/kana-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1B000-U+1B0FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/kana-extended-a.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1B100-U+1B12F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/small-kana-extension.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1B130-U+1B16F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/nushu.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1B170-U+1B2FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/duployan.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1BC00-U+1BC9F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/shorthand-format-controls.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1BCA0-U+1BCAF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/symbols-for-legacy-computing-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1CC00-U+1CEBF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/miscellaneous-symbols-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1CEC0-U+1CEFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/znamenny-musical-notation.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1CF00-U+1CFCF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/byzantine-musical-symbols.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1D000-U+1D0FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/musical-symbols.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1D100-U+1D1FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/ancient-greek-musical-notation.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1D200-U+1D24F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/kaktovik-numerals.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1D2C0-U+1D2DF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/mayan-numerals.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1D2E0-U+1D2FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/tai-xuan-jing-symbols.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1D300-U+1D35F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/counting-rod-numerals.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1D360-U+1D37F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/mathematical-alphanumeric-symbols.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1D400-U+1D7FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/sutton-signwriting.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1D800-U+1DAAF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/latin-extended-g.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1DF00-U+1DFFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/glagolitic-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1E000-U+1E02F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cyrillic-extended-d.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1E030-U+1E08F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/nyiakeng-puachue-hmong.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1E100-U+1E14F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/toto.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1E290-U+1E2BF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/wancho.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1E2C0-U+1E2FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/nag-mundari.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1E4D0-U+1E4FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/ol-onal.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1E5D0-U+1E5FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/tai-yo.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1E6C0-U+1E6FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/ethiopic-extended-b.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1E7E0-U+1E7FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/mende-kikakui.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1E800-U+1E8DF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/adlam.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1E900-U+1E95F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/indic-siyaq-numbers.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1EC70-U+1ECBF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/ottoman-siyaq-numbers.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1ED00-U+1ED4F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/arabic-mathematical-alphabetic-symbols.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1EE00-U+1EEFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/mahjong-tiles.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1F000-U+1F02F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/domino-tiles.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1F030-U+1F09F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/playing-cards.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1F0A0-U+1F0FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/enclosed-alphanumeric-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1F100-U+1F1FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/enclosed-ideographic-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1F200-U+1F2FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/miscellaneous-symbols-and-pictographs.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1F300-U+1F5FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/emoticons.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1F600-U+1F64F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/ornamental-dingbats.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1F650-U+1F67F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/transport-and-map-symbols.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1F680-U+1F6FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/alchemical-symbols.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1F700-U+1F77F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/geometric-shapes-extended.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1F780-U+1F7FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/supplemental-arrows-c.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1F800-U+1F8FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/supplemental-symbols-and-pictographs.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1F900-U+1F9FF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/chess-symbols.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1FA00-U+1FA6F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/symbols-and-pictographs-extended-a.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1FA70-U+1FAFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/symbols-for-legacy-computing.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+1FB00-U+1FBFF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cjk-unified-ideographs-extension-b.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+20000-U+2A6DF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cjk-unified-ideographs-extension-c.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2A700-U+2B73F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cjk-unified-ideographs-extension-d.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2B740-U+2B81F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cjk-unified-ideographs-extension-e.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2B820-U+2CEAF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cjk-unified-ideographs-extension-f.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2CEB0-U+2EBEF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cjk-unified-ideographs-extension-i.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2EBF0-U+2EE5F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cjk-compatibility-ideographs-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+2F800-U+2FA1F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cjk-unified-ideographs-extension-g.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+30000-U+3134F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cjk-unified-ideographs-extension-h.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+31350-U+323AF;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/cjk-unified-ideographs-extension-j.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+323B0-U+3347F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/tags.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+E0000-U+E007F;
+}
+
+@font-face {
+  font-family: 'Essenfont';
+  src: url('https://www.essenfont.org/fonts/variation-selectors-supplement.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+E0100-U+E01EF;
+}

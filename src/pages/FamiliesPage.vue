@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import { loadFontFamilies, type FontFamily } from '../lib/fonts/families-loader'
@@ -15,37 +15,38 @@ const licenseOptions = ref<{ value: string; label: string; count: number }[]>([
   { value: 'all', label: 'All Licenses', count: 0 },
 ])
 
-onMounted(async () => {
-  const index = await loadFontFamilies()
-  allFamilies.value = index.families
+// Top-level await: runs during SSG so the page ships with the family
+// list and license facets already populated. Query-param reads stay
+// here too — they pick up `?q=…&redist=…` from the route at render time.
+const index = await loadFontFamilies()
+allFamilies.value = index.families
 
-  const counts = new Map<string, number>()
-  for (const f of index.families) {
-    const key = f.license_name || 'Unknown'
-    counts.set(key, (counts.get(key) ?? 0) + 1)
-  }
-  licenseOptions.value = [
-    { value: 'all', label: 'All Licenses', count: index.families.length },
-    ...[...counts.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .map(([value, count]) => ({ value, label: value, count })),
-  ]
+const counts = new Map<string, number>()
+for (const f of index.families) {
+  const key = f.license_name || 'Unknown'
+  counts.set(key, (counts.get(key) ?? 0) + 1)
+}
+licenseOptions.value = [
+  { value: 'all', label: 'All Licenses', count: index.families.length },
+  ...[...counts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([value, count]) => ({ value, label: value, count })),
+]
 
-  const q = route.query.q
-  if (typeof q === 'string' && q) searchQuery.value = q
+const q = route.query.q
+if (typeof q === 'string' && q) searchQuery.value = q
 
-  const redist = route.query.redist
-  if (redist === 'redist' || redist === 'proprietary') selectedRedist.value = redist
+const redist = route.query.redist
+if (redist === 'redist' || redist === 'proprietary') selectedRedist.value = redist
 
-  const license = route.query.license
-  if (
-    typeof license === 'string' &&
-    license &&
-    licenseOptions.value.some(o => o.value === license)
-  ) {
-    selectedLicense.value = license
-  }
-})
+const license = route.query.license
+if (
+  typeof license === 'string' &&
+  license &&
+  licenseOptions.value.some(o => o.value === license)
+) {
+  selectedLicense.value = license
+}
 
 const filteredFamilies = computed(() => {
   let result = allFamilies.value

@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useHead } from '@unhead/vue'
+import { RouterLink } from 'vue-router'
 import { loadAllFormulas } from '../lib/formulas/loader'
+import { fetchJson } from '../lib/ssr-fetch'
 
 // Type Specimen homepage.
 // Two distinct ideas, kept distinct:
@@ -14,12 +16,36 @@ import { loadAllFormulas } from '../lib/formulas/loader'
 
 const formulaCount = ref(0)
 const openSourceCount = ref(0)
+const licenseBuckets = ref<{ label: string; count: number; pct: number }[]>([])
+const recentPosts = ref<{ slug: string; title: string; date: string; description?: string }[]>([])
 
-try {
-  const all = await loadAllFormulas()
-  formulaCount.value = all.length
-  openSourceCount.value = all.filter((f) => f.licenseCategory === 'open_source').length
-} catch {}
+async function loadStats() {
+  try {
+    const all = await loadAllFormulas()
+    formulaCount.value = all.length
+    openSourceCount.value = all.filter((f) => f.licenseCategory === 'open_source').length
+
+    // Build license distribution — group by license name, take top 6.
+    const counts = new Map<string, number>()
+    for (const f of all) {
+      const name = (f.licenseName || 'Unknown').replace(/^LICENSEREF-/, '').replace(/-/g, ' ')
+      counts.set(name, (counts.get(name) ?? 0) + 1)
+    }
+    const sorted = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6)
+    const total = all.length
+    licenseBuckets.value = sorted.map(([label, count]) => ({
+      label,
+      count,
+      pct: total > 0 ? Math.round((count / total) * 1000) / 10 : 0,
+    }))
+  } catch {}
+
+  try {
+    recentPosts.value = await fetchJson<typeof recentPosts.value>('content/blog/index.json')
+  } catch {}
+}
+
+await loadStats()
 
 const specimens = [
   {
@@ -93,6 +119,9 @@ const motds = [
 const motdText = ref('')
 const motdIndex = ref(0)
 let typeTimer: ReturnType<typeof setTimeout> | null = null
+
+const essenfontSample = 'Aαあ字€→😀⟁'
+const essenfontDemoText = ref('')
 
 function typeMotd() {
   const msg = motds[motdIndex.value]
@@ -249,6 +278,129 @@ useHead({
           Indexed in <span class="n">{{ formulaCount.toLocaleString() }}</span> formulae —
           <span class="n">{{ openSourceCount.toLocaleString() }}</span> openly licensed — since <span class="n">MMXX.</span>
         </p>
+      </div>
+    </section>
+
+    <!-- License landscape: visual distribution of the archive -->
+    <section v-if="licenseBuckets.length > 0" class="section licenses-landscape divider">
+      <div class="wrap">
+        <header class="head">
+          <div>
+            <p class="eyebrow">§ The Landscape</p>
+            <h2>What's in the<br /><em>archive.</em></h2>
+          </div>
+          <p class="lede">
+            A breakdown by license — the rough shape of the openly-licensed type universe as Fontist sees it.
+          </p>
+        </header>
+
+        <ul class="ll-list">
+          <li v-for="(b, i) in licenseBuckets" :key="b.label" class="ll-row">
+            <span class="ll-rank">{{ String(i + 1).padStart(2, '0') }}</span>
+            <span class="ll-label">{{ b.label }}</span>
+            <span class="ll-bar-track" aria-hidden="true">
+              <span class="ll-bar-fill" :style="{ width: Math.max(2, b.pct) + '%' }"></span>
+            </span>
+            <span class="ll-count">{{ b.count.toLocaleString() }}</span>
+            <span class="ll-pct">{{ b.pct }}%</span>
+          </li>
+        </ul>
+
+        <p class="ll-foot">
+          → <RouterLink to="/licenses">Read the license reference</RouterLink>
+        </p>
+      </div>
+    </section>
+
+    <!-- From the blog -->
+    <section v-if="recentPosts.length > 0" class="section from-the-blog divider">
+      <div class="wrap">
+        <header class="head">
+          <div>
+            <p class="eyebrow">§ From the Journal</p>
+            <h2>Recent<br /><em>dispatches.</em></h2>
+          </div>
+          <p class="lede">
+            Notes on fonts, tooling, and the occasional specimen book review.
+          </p>
+        </header>
+
+        <ul class="fb-list">
+          <li v-for="post in recentPosts.slice(0, 3)" :key="post.slug" class="fb-item">
+            <RouterLink :to="`/blog/${post.slug}`" class="fb-link">
+              <span class="fb-date">{{ post.date }}</span>
+              <span class="fb-title">{{ post.title }}</span>
+              <span v-if="post.description" class="fb-desc">{{ post.description }}</span>
+              <span class="fb-arrow" aria-hidden="true">→</span>
+            </RouterLink>
+          </li>
+        </ul>
+
+        <p class="fb-foot">
+          → <RouterLink to="/blog">Browse the full journal</RouterLink>
+        </p>
+      </div>
+    </section>
+
+    <!-- Essenfont spotlight -->
+    <section class="section essenfont-spotlight divider">
+      <div class="wrap">
+        <header class="head">
+          <div>
+            <p class="eyebrow">§ Universal Font</p>
+            <h2>Every glyph.<br /><em>One font.</em></h2>
+          </div>
+          <p class="lede">
+            <strong>essenfont</strong> — a single OFL-licensed font covering every assigned
+            Unicode 17 codepoint. 131,000+ glyphs, 346 blocks, 5 planes. No more tofu.
+          </p>
+        </header>
+
+        <div class="esf-demo">
+          <div class="esf-demo-stage">
+            <span class="esf-demo-glyph">{{ essenfontDemoText || essenfontSample }}</span>
+          </div>
+          <div class="esf-demo-input-wrap">
+            <input
+              v-model="essenfontDemoText"
+              type="text"
+              class="esf-demo-input"
+              :placeholder="essenfontSample"
+              maxlength="60"
+              aria-label="Type any text to render in essenfont"
+            />
+            <span class="esf-demo-hint">↑ type anything — every character renders</span>
+          </div>
+        </div>
+
+        <div class="esf-stats">
+          <div class="esf-stat">
+            <span class="esf-stat-num">131K+</span>
+            <span class="esf-stat-label">glyphs</span>
+          </div>
+          <span class="esf-stat-divider"></span>
+          <div class="esf-stat">
+            <span class="esf-stat-num">346</span>
+            <span class="esf-stat-label">blocks</span>
+          </div>
+          <span class="esf-stat-divider"></span>
+          <div class="esf-stat">
+            <span class="esf-stat-num">5</span>
+            <span class="esf-stat-label">planes</span>
+          </div>
+          <span class="esf-stat-divider"></span>
+          <div class="esf-stat">
+            <span class="esf-stat-num">OFL</span>
+            <span class="esf-stat-label">licensed</span>
+          </div>
+        </div>
+
+        <div class="esf-actions">
+          <a href="https://www.essenfont.org" class="btn-ink" rel="noreferrer">
+            Download essenfont →
+          </a>
+          <code class="esf-install">fontist install "essenfont"</code>
+        </div>
       </div>
     </section>
 
@@ -538,5 +690,292 @@ useHead({
   .hero .below { grid-template-columns: 1fr; }
   .inst-grid { grid-template-columns: 1fr; }
   .story-grid { grid-template-columns: 1fr; }
+  .ll-row { grid-template-columns: 28px 1fr; gap: 0.3rem 0.6rem; }
+  .ll-bar-track { grid-column: 2; }
+  .ll-count, .ll-pct { grid-column: 2; }
+  .fb-link { padding: 1rem 1.1rem; }
+}
+
+/* ── License landscape: editorial bar chart ─────────────────── */
+.licenses-landscape .head h2 em { color: var(--fontist-rose); font-style: italic; }
+
+.ll-list {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.ll-row {
+  display: grid;
+  grid-template-columns: 32px minmax(180px, 1fr) minmax(120px, 2fr) 64px 56px;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--spec-rule);
+}
+
+.ll-row:last-child { border-bottom: none; }
+
+.ll-rank {
+  font-family: var(--spec-font-mono);
+  font-size: 0.66rem;
+  color: var(--spec-mute);
+  text-align: right;
+  letter-spacing: 0.05em;
+}
+
+.ll-label {
+  font-family: var(--spec-font-body);
+  font-size: 0.88rem;
+  color: var(--spec-ink);
+}
+
+.ll-bar-track {
+  display: block;
+  height: 6px;
+  background: var(--spec-paper-deep);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.ll-bar-fill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--coverage-25), var(--coverage-75));
+  border-radius: 1px;
+  transition: width 0.4s cubic-bezier(.2,.7,.3,1);
+}
+
+.ll-count {
+  font-family: var(--spec-font-display);
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  color: var(--spec-ink);
+  text-align: right;
+}
+
+.ll-pct {
+  font-family: var(--spec-font-mono);
+  font-size: 0.7rem;
+  color: var(--spec-mute);
+  text-align: right;
+  letter-spacing: 0.02em;
+}
+
+.ll-foot {
+  font-family: var(--spec-font-mono);
+  font-size: 0.78rem;
+  color: var(--spec-ink-soft);
+  margin: 1.5rem 0 0;
+}
+.ll-foot a { color: var(--fontist-rose); border-bottom: 1px solid currentColor; padding-bottom: 1px; }
+
+/* ── From the blog: editorial recent-posts grid ─────────────── */
+.from-the-blog .head h2 em { color: var(--fontist-rose); font-style: italic; }
+
+.fb-list {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.85rem;
+}
+
+.fb-item { margin: 0; padding: 0; }
+
+.fb-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.1rem 1.25rem;
+  background: var(--spec-paper);
+  border: 1px solid var(--spec-rule);
+  border-left: 3px solid var(--fontist-rose);
+  border-radius: 2px;
+  text-decoration: none;
+  color: var(--spec-ink);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  height: 100%;
+}
+
+.fb-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(28,26,24,0.08);
+}
+
+.fb-date {
+  font-family: var(--spec-font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--spec-mute);
+}
+
+.fb-title {
+  font-family: var(--spec-font-display);
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--spec-ink);
+  letter-spacing: -0.005em;
+  line-height: 1.2;
+}
+
+.fb-desc {
+  font-family: var(--spec-font-body);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--spec-ink-soft);
+}
+
+.fb-arrow {
+  position: absolute;
+  right: 0.85rem;
+  top: 1.1rem;
+  font-size: 1rem;
+  color: var(--spec-mute);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.fb-link:hover .fb-arrow {
+  color: var(--fontist-rose);
+  transform: translateX(3px);
+}
+
+.fb-foot {
+  font-family: var(--spec-font-mono);
+  font-size: 0.78rem;
+  color: var(--spec-ink-soft);
+  margin: 1.5rem 0 0;
+}
+.fb-foot a { color: var(--fontist-rose); border-bottom: 1px solid currentColor; padding-bottom: 1px; }
+
+/* ── Essenfont spotlight ───────────────────────────────────── */
+.essenfont-spotlight {
+  background: var(--spec-paper-deep);
+  padding-top: clamp(48px, 8vw, 96px) !important;
+  padding-bottom: clamp(48px, 8vw, 96px) !important;
+}
+.essenfont-spotlight .head h2 em { color: var(--fontist-rose); font-style: italic; }
+.essenfont-spotlight .head .lede strong { color: var(--fontist-rose); }
+
+.esf-demo {
+  margin: 2.5rem 0;
+  background: var(--spec-paper);
+  border: 1px solid var(--spec-rule);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.esf-demo-stage {
+  padding: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem);
+  text-align: center;
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.esf-demo-glyph {
+  font-family: 'Essenfont', 'IBM Plex Sans', sans-serif;
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  line-height: 1.2;
+  color: var(--spec-ink);
+  letter-spacing: 0.05em;
+  word-break: break-all;
+}
+
+.esf-demo-input-wrap {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--spec-rule);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.esf-demo-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 0.5rem 0;
+  border: none;
+  background: transparent;
+  font-family: var(--spec-font-mono);
+  font-size: 0.85rem;
+  color: var(--spec-ink);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+.esf-demo-input:focus {
+  outline: none;
+  border-bottom-color: var(--fontist-rose);
+}
+.esf-demo-input::placeholder { color: var(--spec-mute); font-style: italic; }
+
+.esf-demo-hint {
+  font-family: var(--spec-font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--spec-mute);
+  white-space: nowrap;
+}
+
+.esf-stats {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--spec-rule);
+  border-bottom: 1px solid var(--spec-rule);
+  flex-wrap: wrap;
+}
+
+.esf-stat { display: flex; flex-direction: column; gap: 0.15rem; }
+
+.esf-stat-num {
+  font-family: var(--spec-font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--fontist-rose);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.esf-stat-label {
+  font-family: var(--spec-font-mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--spec-mute);
+}
+
+.esf-stat-divider {
+  width: 1px;
+  align-self: stretch;
+  background: var(--spec-rule);
+}
+
+.esf-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.esf-install {
+  font-family: var(--spec-font-mono);
+  font-size: 0.82rem;
+  background: var(--spec-paper);
+  padding: 0.4rem 0.75rem;
+  border-radius: 3px;
+  border: 1px solid var(--spec-rule);
+  color: var(--spec-ink-soft);
 }
 </style>

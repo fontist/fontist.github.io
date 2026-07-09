@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { loadAllFormulas } from '../lib/formulas/loader'
 
@@ -136,27 +136,27 @@ function initFromQuery() {
   }
 }
 
-onMounted(async () => {
-  try {
-    initFromQuery()
+// Top-level await: runs during SSG so the formulas index ships with
+// the full list + license/source facets already populated.
+try {
+  initFromQuery()
 
-    const data = await loadAllFormulas()
-    formulasData.value = data
+  const data = await loadAllFormulas()
+  formulasData.value = data
 
-    // Set 'all' counts to total
-    licenseOptions[0].count = data.length
-    sourceOptions[0].count = data.length
+  // Set 'all' counts to total
+  licenseOptions[0].count = data.length
+  sourceOptions[0].count = data.length
 
-    data.forEach(f => {
-      const licOpt = licenseOptions.find(o => o.value === getLicenseGroup(f))
-      if (licOpt) licOpt.count++
-      const srcOpt = sourceOptions.find(o => o.value === f.sourceType)
-      if (srcOpt) srcOpt.count++
-    })
-  } catch (e) {
-    console.error('Failed to load formulas data:', e)
-  }
-})
+  data.forEach(f => {
+    const licOpt = licenseOptions.find(o => o.value === getLicenseGroup(f))
+    if (licOpt) licOpt.count++
+    const srcOpt = sourceOptions.find(o => o.value === f.sourceType)
+    if (srcOpt) srcOpt.count++
+  })
+} catch (e) {
+  console.error('Failed to load formulas data:', e)
+}
 
 const filteredFormulas = computed(() => {
   let result = formulasData.value
@@ -277,33 +277,43 @@ function toggleSource(value) {
 
 .search-container {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  align-items: baseline;
+  gap: 1.25rem;
   margin-bottom: 1.5rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
 }
 
 .search-input {
   flex: 1;
-  padding: 0.75rem 1rem;
-  font-size: 1.1rem;
-  border: 2px solid var(--vp-c-divider);
-  border-radius: 8px;
-  background: var(--vp-c-bg-alt);
-  color: var(--vp-c-text-1);
+  padding: 0.5rem 0;
+  font-family: var(--spec-font-display);
+  font-style: italic;
+  font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+  border: none;
+  border-bottom: 1px solid transparent;
+  background: transparent;
+  color: var(--spec-ink);
+  letter-spacing: -0.005em;
+  transition: border-color 0.2s ease;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: var(--vp-c-brand-1);
+  border-bottom-color: var(--fontist-rose);
 }
 
 .search-input::placeholder {
-  color: var(--vp-c-text-3);
+  color: var(--spec-mute);
+  font-style: italic;
 }
 
 .result-count {
-  font-size: 0.9rem;
-  color: var(--vp-c-text-2);
+  font-family: var(--spec-font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--spec-mute);
   white-space: nowrap;
 }
 
@@ -410,52 +420,76 @@ function toggleSource(value) {
 .alpha-nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.25rem;
+  gap: 0.2rem;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--vp-c-divider);
+  border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  position: sticky;
+  top: calc(var(--vp-nav-height, 56px) + 0.5rem);
+  z-index: 10;
+  background: var(--spec-paper);
+  padding-top: 0.5rem;
 }
 
 .alpha-nav button {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   padding: 0;
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 4px;
-  background: var(--vp-c-bg-alt);
-  color: var(--vp-c-text-3);
-  font-size: 0.85rem;
+  border: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border-radius: 2px;
+  background: transparent;
+  color: var(--spec-mute);
+  font-family: var(--spec-font-mono);
+  font-size: 0.72rem;
   font-weight: 500;
   cursor: pointer;
+  transition: all 0.15s ease;
+  letter-spacing: 0;
 }
 
 .alpha-nav button:hover:not(:disabled) {
-  background: var(--vp-c-brand-soft);
-  border-color: var(--vp-c-brand-1);
-  color: var(--vp-c-brand-1);
+  background: var(--spec-paper-deep);
+  border-color: var(--fontist-rose);
+  color: var(--fontist-rose);
 }
 
 .alpha-nav button.has-content {
-  color: var(--vp-c-text-1);
-  background: var(--vp-c-bg);
+  color: var(--spec-ink);
+  background: var(--spec-paper);
 }
 
 .alpha-nav button:disabled {
-  opacity: 0.4;
+  opacity: 0.3;
   cursor: default;
 }
 
 .letter-group {
   margin-bottom: 2rem;
+  /* Skip rendering cost for off-screen letter groups. Massive perf win
+     on a 4,283-formula list. The browser still ships the HTML for SEO. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
 }
 
 .letter-heading {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--vp-c-brand-1);
+  font-family: var(--spec-font-display);
+  font-size: 2rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--spec-ink);
   margin: 0 0 1rem 0;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--vp-c-brand-1);
+  border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  letter-spacing: -0.02em;
+  position: relative;
+}
+.letter-heading::before {
+  content: '';
+  display: block;
+  width: 1.5rem;
+  height: 1px;
+  background: var(--fontist-rose);
+  margin-bottom: 0.6rem;
 }
 
 .formula-items {
@@ -468,40 +502,43 @@ function toggleSource(value) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 6px;
-  background: var(--vp-c-bg);
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border-radius: 3px;
+  background: var(--spec-paper);
   text-decoration: none;
-  transition: all 0.2s;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 .formula-item:hover {
-  border-color: var(--vp-c-brand-1);
-  background: var(--vp-c-bg-alt);
-  transform: translateX(4px);
+  border-color: var(--fontist-rose);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(28,26,24,0.06);
 }
 
 .formula-main {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.15rem;
   min-width: 0;
   flex: 1;
 }
 
 .formula-name {
-  font-weight: 600;
-  color: var(--vp-c-text-1);
+  font-family: var(--spec-font-display);
+  font-weight: 500;
+  font-size: 0.98rem;
+  color: var(--spec-ink);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -0.005em;
 }
 
 .formula-key {
-  font-family: var(--vp-font-family-mono);
-  font-size: 0.85rem;
-  color: var(--vp-c-text-2);
+  font-family: var(--spec-font-mono);
+  font-size: 0.72rem;
+  color: var(--spec-mute);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

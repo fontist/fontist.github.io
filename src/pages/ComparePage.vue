@@ -30,6 +30,7 @@ interface FontColumn {
 
 const allFonts = ref<FontEntry[]>([])
 const availableSlugs = ref<Set<string>>(new Set())
+const slugToMetadata = ref<Map<string, { woff_file?: string; coverage_file?: string }>>(new Map())
 const columns = ref<FontColumn[]>([])
 const searchText = ref('')
 const loadingRegistry = ref(true)
@@ -58,6 +59,20 @@ async function loadRegistry() {
 
     const meta = await loadFontMetadata()
     availableSlugs.value = new Set(meta.fonts.map((f) => f.slug))
+    const bySlug = new Map<string, { woff_file?: string; coverage_file?: string }>()
+    for (const f of meta.fonts) {
+      // First write wins: families with multiple styles all map back to
+      // the canonical family slug here, and ComparePage indexes at the
+      // family level. The metadata entry's woff_file/coverage_file paths
+      // are good enough for specimen rendering.
+      if (!bySlug.has(f.slug)) {
+        bySlug.set(f.slug, {
+          woff_file: f.woff_file,
+          coverage_file: f.coverage_file,
+        })
+      }
+    }
+    slugToMetadata.value = bySlug
   } catch (e) {
     console.error('Failed to load font registry', e)
   } finally {
@@ -71,8 +86,16 @@ async function addFont(slug: string) {
   if (!availableSlugs.value.has(slug)) return
 
   const entry = allFonts.value.find(f => f.slug === slug)
-  const { fontId, ensureInjected } = injectFontFace(slug, `fonts/${slug}.woff2`, true)
-  ensureInjected()
+  const meta = slugToMetadata.value.get(slug) || {}
+  const fontPath = meta.woff_file || null
+  const coveragePath = meta.coverage_file || slug
+
+  let fontId = `ff-${slug.replace(/[^a-z0-9]/gi, '-')}`
+  if (fontPath) {
+    const r = injectFontFace(slug, fontPath, true)
+    r.ensureInjected()
+    fontId = r.fontId
+  }
 
   const col: FontColumn = {
     slug,
@@ -86,7 +109,7 @@ async function addFont(slug: string) {
   }
   columns.value.push(col)
 
-  col.coverage = await fetchCoverage(slug)
+  col.coverage = await fetchCoverage(coveragePath)
   if (col.coverage?.variable_axes) {
     const wght = col.coverage.variable_axes.find(a => a.tag === 'wght')
     if (wght) {
@@ -275,18 +298,28 @@ watch(slugsFromUrl, (newSlugs) => {
   padding: 2rem 1.5rem 4rem;
 }
 
-.cmp-header { margin-bottom: 1.5rem; }
+.cmp-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+}
 .cmp-title {
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin: 0 0 0.25rem;
-  color: var(--vp-c-text-1, #1a1a1a);
+  font-family: var(--spec-font-display);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 400;
+  font-style: italic;
   letter-spacing: -0.02em;
+  line-height: 1.05;
+  margin: 0 0 0.5rem;
+  color: var(--spec-ink);
 }
 .cmp-subtitle {
-  font-size: 0.85rem;
-  color: var(--vp-c-text-3, #888);
+  font-family: var(--spec-font-body);
+  font-size: 1.0rem;
+  color: var(--spec-ink-soft);
   margin: 0;
+  max-width: 50ch;
+  line-height: 1.5;
 }
 
 /* Selector */
@@ -412,17 +445,23 @@ watch(slugsFromUrl, (newSlugs) => {
 
 .cmp-col-head {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: 0.5rem;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
 }
 .cmp-col-name {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--vp-c-text-1, #1a1a1a);
+  font-family: var(--spec-font-display);
+  font-size: 1.15rem;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--spec-ink);
   text-decoration: none;
+  letter-spacing: -0.005em;
 }
-.cmp-col-name:hover { color: var(--fontist-rose, #bf4e6a); }
+.cmp-col-name:hover { color: var(--fontist-rose); }
 .cmp-remove {
   width: 24px;
   height: 24px;

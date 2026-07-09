@@ -3,8 +3,10 @@ import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import { findFilesBySlug, type FamilyFileEntry } from '../lib/fonts/families-loader'
-import type { FontFamily, FontFamilyFile } from '../lib/types/domain'
-import FontUnicodeBrowser from '../components/FontUnicodeBrowser.vue'
+import type { FontFamily, FontFamilyFile, Coverage } from '../lib/types/domain'
+import BlockCoverageHeatmap from '../components/BlockCoverageHeatmap.vue'
+import { fetchCoverage } from '../composables/useCoverage'
+import { fetchJson } from '../lib/ssr-fetch'
 import NotFound from './NotFound.vue'
 
 const route = useRoute()
@@ -13,6 +15,8 @@ const fontSlug = computed(() => route.params.fontSlug as string)
 const requestedFormula = computed(() => (route.query.formula as string) || '')
 
 const entries = ref<FamilyFileEntry[]>([])
+const coverage = ref<Coverage | null>(null)
+const unicodeBlocks = ref<{ name: string; start: number; end: number }[]>([])
 const loading = ref(true)
 
 const redistributableEntries = computed(() => entries.value.filter(e => e.file.redistributable))
@@ -43,6 +47,16 @@ async function load() {
   loading.value = true
   try {
     entries.value = await findFilesBySlug(fontSlug.value)
+    // Load coverage + unicode block registry in parallel so the heatmap
+    // has everything it needs on first paint.
+    const file = activeEntry.value?.file
+    const coveragePath = file?.coverage_file || file?.slug
+    const [cov, blocks] = await Promise.all([
+      coveragePath ? fetchCoverage(coveragePath) : Promise.resolve(null),
+      fetchJson<{ name: string; start: number; end: number }[]>('unicode-blocks.json'),
+    ])
+    coverage.value = cov
+    unicodeBlocks.value = blocks
   } finally {
     loading.value = false
   }
@@ -93,11 +107,11 @@ function switchFormula(formulaSlug: string) {
     </section>
 
     <main v-if="activeFile">
-      <FontUnicodeBrowser
-        :key="'fsup-' + activeFile.slug + '|' + activeFile.formula_slug"
-        :slug="activeFile.slug"
-        :font-path="activeFile.path"
-        :redistributable="activeFile.redistributable"
+      <BlockCoverageHeatmap
+        :font-slug="fontSlug"
+        :coverage="coverage"
+        :formula-slug="activeFile.formula_slug"
+        :unicode-blocks="unicodeBlocks"
       />
     </main>
 

@@ -5,7 +5,7 @@ import { useHead } from '@unhead/vue'
 import { injectFontFace } from '../composables/useFontFace'
 import { fetchCoverage } from '../composables/useCoverage'
 import type { UnicodeBlock } from '../lib/unicode'
-import { loadAllBlocks, loadBlockCharacters, blockDisplayName, blockSlug, hexCp } from '../lib/unicode'
+import { loadAllBlocks, loadBlockCharacters, blockDisplayName, blockSlug, hexCp, charRoute } from '../lib/unicode'
 import UnicodeBlockGrid from '../lib/unicode/components/UnicodeBlockGrid.vue'
 import type { FontContext, Coverage } from '../lib/types/domain'
 
@@ -70,8 +70,7 @@ useHead(() => ({
 }))
 
 function goToChar(cp: number) {
-  const hex = cp.toString(16).toUpperCase().padStart(4, '0')
-  router.push(`/unicode/char/${hex}`)
+  router.push(charRoute(cp))
 }
 </script>
 

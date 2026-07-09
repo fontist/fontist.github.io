@@ -13,6 +13,7 @@ import {
   blockScriptFamily,
   isCjkBlock,
   scriptFamilyLabel,
+  canonicalCodepointHex,
 } from '../constants.ts'
 
 describe('blockDisplayName', () => {
@@ -144,6 +145,33 @@ describe('hexCp', () => {
   })
   it('formats zero', () => {
     assert.equal(hexCp(0), 'U+0000')
+  })
+})
+
+describe('canonicalCodepointHex', () => {
+  it('lowercases and zero-pads bare hex to 4 digits', () => {
+    assert.equal(canonicalCodepointHex('20ac'), '20ac')
+    assert.equal(canonicalCodepointHex('20AC'), '20ac')
+    assert.equal(canonicalCodepointHex('20'), '0020')
+    assert.equal(canonicalCodepointHex('1f600'), '1f600')
+  })
+  it('strips the U+ prefix (case-insensitive)', () => {
+    assert.equal(canonicalCodepointHex('U+20AC'), '20ac')
+    assert.equal(canonicalCodepointHex('u+20ac'), '20ac')
+    assert.equal(canonicalCodepointHex('U+41'), '0041')
+  })
+  it('accepts a numeric codepoint', () => {
+    assert.equal(canonicalCodepointHex(0x20), '0020')
+    assert.equal(canonicalCodepointHex(0x1F600), '1f600')
+    assert.equal(canonicalCodepointHex(0), '0000')
+  })
+  it('does not truncate supplementary-plane hex (5+ digits)', () => {
+    assert.equal(canonicalCodepointHex(0x20000), '20000')
+    assert.equal(canonicalCodepointHex('U+20000'), '20000')
+  })
+  it('does not validate input — out-of-range and non-hex pass through with zero-padding only', () => {
+    assert.equal(canonicalCodepointHex(0x110000), '110000')
+    assert.equal(canonicalCodepointHex('zzz'), '0zzz')
   })
 })
 

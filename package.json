@@ -9,8 +9,8 @@
     "build:no-fetch": "node scripts/gen-font-families.mjs && node scripts/gen-ssg-routes.mjs && vite-ssg build",
     "preview": "vite preview",
     "format": "prettier -w .",
-    "test": "node --test tests/*.test.mjs src/lib/markdown/__tests__/*.test.ts src/lib/unicode/__tests__/*.test.ts src/lib/fonts/__tests__/*.test.ts src/lib/__tests__/*.test.ts scripts/__tests__/*.test.ts",
-    "test:watch": "node --test --watch tests/*.test.mjs src/lib/markdown/__tests__/*.test.ts src/lib/unicode/__tests__/*.test.ts src/lib/fonts/__tests__/*.test.ts src/lib/__tests__/*.test.ts scripts/__tests__/*.test.ts"
+    "test": "node --test tests/*.test.mjs src/lib/markdown/__tests__/*.test.ts src/lib/unicode/__tests__/*.test.ts src/lib/fonts/__tests__/*.test.ts src/lib/formulas/__tests__/*.test.ts src/lib/__tests__/*.test.ts scripts/__tests__/*.test.ts scripts/__tests__/*.test.mjs",
+    "test:watch": "node --test --watch tests/*.test.mjs src/lib/markdown/__tests__/*.test.ts src/lib/unicode/__tests__/*.test.ts src/lib/fonts/__tests__/*.test.ts src/lib/formulas/__tests__/*.test.ts src/lib/__tests__/*.test.ts scripts/__tests__/*.test.ts scripts/__tests__/*.test.mjs"
   },
   "type": "module",
   "dependencies": {

@@ -2,7 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useHead } from '@unhead/vue'
-import { loadAllBlocks, loadBlockCharacters, blockDisplayName, hexCp, scriptGroup } from '../lib/unicode'
+import { loadAllBlocks, loadBlockCharacters, blockDisplayName, hexCp, scriptGroup, charRoute } from '../lib/unicode'
 import type { UnicodeBlock } from '../lib/unicode'
 import UnicodeBlockGrid from '../lib/unicode/components/UnicodeBlockGrid.vue'
 import type { FontContext } from '../lib/types/domain'
@@ -73,8 +73,7 @@ useHead(() => ({
 }))
 
 function goToChar(cp: number) {
-  const hex = cp.toString(16).toUpperCase().padStart(4, '0')
-  router.push(`/unicode/char/${hex}`)
+  router.push(charRoute(cp))
 }
 </script>
 
@@ -186,46 +185,6 @@ function goToChar(cp: number) {
   font-size: 0.72rem;
   color: var(--vp-c-text-3, #888);
 }
-
-.ubp-pua-notice {
-  padding: 2rem;
-  background: var(--vp-c-bg-soft, #f8f7f4);
-  border-left: 4px solid var(--fontist-rose, #bf4e6a);
-  border-radius: 8px;
-  margin-bottom: 2rem;
-}
-.ubp-pua-notice h2 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin: 0 0 0.75rem;
-  color: var(--vp-c-text-1, #333);
-}
-.ubp-pua-notice p {
-  font-size: 0.88rem;
-  line-height: 1.6;
-  color: var(--vp-c-text-2, #555);
-  margin: 0 0 0.5rem;
-}
-.ubp-pua-link { margin-top: 1rem !important; }
-.ubp-pua-link a {
-  color: var(--fontist-rose, #bf4e6a);
-  text-decoration: none;
-  font-size: 0.82rem;
-}
-.ubp-pua-link a:hover { text-decoration: underline; }
-</style>
-
-<style scoped>
-.ubp { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
-.ubp-head { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--fontist-rose, #bf4e6a); }
-.ubp-back { font-size: 0.85rem; color: var(--fontist-rose, #bf4e6a); text-decoration: none; }
-.ubp-head h1 { font-size: 1.4rem; font-weight: 600; margin: 0; color: var(--vp-c-text-1, #333); }
-.ubp-meta { font-size: 0.75rem; font-family: monospace; color: var(--vp-c-text-3, #888); margin-left: auto; }
-.ubp-script {
-  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em;
-  color: var(--fontist-rose, #bf4e6a); margin-bottom: 1rem;
-}
-.ubp-loading { display: flex; align-items: center; justify-content: center; height: 60vh; color: var(--vp-c-text-3, #888); }
 
 .ubp-pua-notice {
   padding: 2rem;

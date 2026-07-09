@@ -1,15 +1,18 @@
-import { fetchJson } from '../lib/ssr-fetch'
+// Backwards-compatible shim. The real logic now lives in
+// src/lib/unicode/coverage.ts. New callers should import from there
+// directly; this composable is kept for the existing FontSpecimen /
+// FontViewer / FontUnicodeBrowser call sites that import `fetchCoverage`.
+//
+// Prefer: `import { loadCoverage } from '../lib/unicode/coverage'`
+
+import { loadCoverage, type CoverageSpec } from '../lib/unicode/coverage'
 import type { Coverage } from '../lib/types/domain'
 
-const cache = new Map<string, Coverage>()
+export async function fetchCoverage(spec: CoverageSpec): Promise<Coverage | null> {
+  return loadCoverage(spec)
+}
 
-export async function fetchCoverage(slug: string): Promise<Coverage | null> {
-  if (cache.has(slug)) return cache.get(slug)!
-  try {
-    const data = await fetchJson<Coverage>(`coverage/${slug}.json`)
-    cache.set(slug, data)
-    return data
-  } catch {
-    return null
-  }
+export function clearCoverageCache(): void {
+  // Delegate; the cache lives in the coverage module now.
+  import('../lib/unicode/coverage').then(m => m.clearCoverageCache())
 }

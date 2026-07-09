@@ -136,6 +136,7 @@ function switchFormula(formulaSlug: string) {
           :key="activeFile.slug + '|' + activeFile.formula_slug"
           :slug="activeFile.slug"
           :font-path="activeFile.path"
+          :coverage-file="activeFile.coverage_file"
           :redistributable="activeFile.redistributable"
         />
       </template>
@@ -145,6 +146,7 @@ function switchFormula(formulaSlug: string) {
           :slug="activeFile.slug"
           :family-name="activeFamily?.name || ''"
           :font-path="activeFile.path"
+          :coverage-file="activeFile.coverage_file"
           :redistributable="activeFile.redistributable"
         />
       </template>
@@ -165,24 +167,40 @@ function switchFormula(formulaSlug: string) {
   padding: 2.5rem 1.5rem 5rem;
 }
 
-.fsp-header { margin-bottom: 1.5rem; }
-.fsp-family-link { margin: 0 0 0.4rem; font-size: 0.85rem; }
+.fsp-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+}
+.fsp-family-link {
+  margin: 0 0 0.6rem;
+  font-family: var(--spec-font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
 .fsp-back {
-  color: var(--fontist-rose, #bf4e6a);
+  color: var(--fontist-rose);
   text-decoration: none;
 }
+.fsp-back:hover { text-decoration: underline; }
+
 .fsp-title-row {
   display: flex;
   align-items: baseline;
-  gap: 0.75rem;
+  gap: 0.85rem;
   flex-wrap: wrap;
+  margin-bottom: 0.5rem;
 }
 .fsp-title-row h1 {
+  font-family: var(--spec-font-display);
   font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 700;
-  margin: 0;
+  font-weight: 400;
+  font-style: italic;
   letter-spacing: -0.02em;
-  line-height: 1.1;
+  line-height: 1.05;
+  margin: 0;
+  color: var(--spec-ink);
 }
 .fsp-license {
   font-size: 0.72rem;
@@ -250,12 +268,23 @@ function switchFormula(formulaSlug: string) {
   border-radius: 0 4px 4px 0;
 }
 .fsp-section-title {
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin: 0 0 0.5rem;
-  color: var(--vp-c-text-3, #888);
+  font-family: var(--spec-font-display);
+  font-size: 1.05rem;
+  font-style: italic;
+  font-weight: 400;
+  margin: 0 0 0.65rem;
+  color: var(--spec-ink);
+  position: relative;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+}
+.fsp-section-title::before {
+  content: '';
+  display: block;
+  width: 1.25rem;
+  height: 1px;
+  background: var(--fontist-rose);
+  margin-bottom: 0.5rem;
 }
 .fsp-formula-list {
   list-style: none;
