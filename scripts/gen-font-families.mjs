@@ -5,7 +5,7 @@
 //
 // Reads (all produced upstream by scripts/fetch-data.sh):
 //   public/fonts.json           — family-level registry (canonical_name → formulas[])
-//   public/font-metadata.json   — per-file metadata (slug, formula_path, woff2_file, ...)
+//   public/font-metadata.json   — per-file metadata (slug, formula_path, woff_file, ...)
 //   public/formulas-data.json   — per-formula records (license info etc.)
 //
 // Writes:
@@ -43,8 +43,15 @@ export function buildFamilyIndex({ fonts, metadata, formulas }) {
         out.push({
           slug: m.slug,
           formula_slug: formulaSlug,
-          style: styleSuffix ? styleSuffix.replace(/_/g, ' ') : 'Regular',
-          path: m.woff2_file || `fonts/${m.slug}.woff2`,
+          style:
+            styleSuffix === ''
+              ? 'Regular'
+              : styleSuffix
+                  .split('_')
+                  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(' '),
+          path: m.woff_file || null,
+          coverage_file: m.coverage_file || null,
           redistributable: !!m.redistributable,
         })
         matched = true
@@ -54,7 +61,8 @@ export function buildFamilyIndex({ fonts, metadata, formulas }) {
           slug: entry.slug,
           formula_slug: formulaSlug,
           style: 'Regular',
-          path: `fonts/${entry.slug}.woff2`,
+          path: null,
+          coverage_file: null,
           redistributable: false,
         })
       }

@@ -1,14 +1,16 @@
-import { fetchJson } from '../ssr-fetch'
 import type { FormulaData } from '../types/domain'
+import { createLazyJsonLoader } from '../loader-factory.ts'
 
 export type { FormulaData }
 
-let cache: FormulaData[] | null = null
+const allFormulasLoader = createLazyJsonLoader<FormulaData[]>('formulas-data.json')
 
-export async function loadAllFormulas(): Promise<FormulaData[]> {
-  if (cache) return cache
-  cache = await fetchJson<FormulaData[]>('formulas-data.json')
-  return cache
+export function loadAllFormulas(): Promise<FormulaData[]> {
+  return allFormulasLoader.load()
+}
+
+export function clearAllFormulasCache(): void {
+  allFormulasLoader.clear()
 }
 
 export async function findFormula(slug: string): Promise<FormulaData | null> {

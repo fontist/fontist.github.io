@@ -54,10 +54,14 @@ useHead({
       <ul class="post-list">
         <li v-for="post in posts" :key="post.slug" class="post-item">
           <RouterLink :to="`/blog/${post.slug}`" class="post-link">
-            <span class="post-title">{{ post.title }}</span>
             <span class="post-date">
               <time :datetime="post.date">{{ post.date }}</time>
             </span>
+            <span class="post-main">
+              <span class="post-title">{{ post.title }}</span>
+              <span v-if="post.description" class="post-desc">{{ post.description }}</span>
+            </span>
+            <span class="post-arrow" aria-hidden="true">→</span>
           </RouterLink>
         </li>
       </ul>
@@ -67,35 +71,35 @@ useHead({
 
 <style scoped>
 .page-wrap {
-  max-width: 1320px;
+  max-width: 880px;
   margin: 0 auto;
-  padding: clamp(64px, 11vw, 140px) clamp(20px, 4vw, 56px);
+  padding: 3rem 1.5rem 5rem;
 }
-.blog-head { margin-bottom: clamp(48px, 8vw, 96px); }
+.blog-head { margin-bottom: 2.5rem; }
 .eyebrow {
   font-family: var(--spec-font-mono);
-  font-size: 11px;
-  letter-spacing: 0.22em;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--spec-rose);
-  margin: 0 0 18px;
+  color: var(--fontist-rose);
+  font-weight: 600;
+  margin: 0 0 0.7rem;
 }
 .blog-head h1 {
   font-family: var(--spec-font-display);
-  font-weight: 360;
-  font-variation-settings: "opsz" 120;
-  font-size: clamp(40px, 6vw, 72px);
-  line-height: 1.02;
+  font-weight: 400;
+  font-style: italic;
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  line-height: 1.05;
   letter-spacing: -0.022em;
   color: var(--spec-ink);
-  margin: 0 0 18px;
+  margin: 0 0 1rem;
   max-width: 18ch;
 }
 .blog-head .lede {
-  font-family: var(--spec-font-display);
-  font-weight: 350;
-  font-size: clamp(19px, 2vw, 25px);
-  line-height: 1.4;
+  font-family: var(--spec-font-body);
+  font-size: 1.05rem;
+  line-height: 1.55;
   color: var(--spec-ink-soft);
   max-width: 50ch;
   margin: 0;
@@ -104,34 +108,75 @@ useHead({
 .post-list { list-style: none; padding: 0; margin: 0; }
 .post-item { border-top: 1px solid var(--spec-rule); }
 .post-item:last-child { border-bottom: 1px solid var(--spec-rule); }
+
 .post-link {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 120px 1fr 24px;
   gap: 1.5rem;
   align-items: baseline;
-  padding: clamp(18px, 2vw, 26px) 0;
+  padding: 1.25rem 0;
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: padding 0.2s ease, color 0.2s ease;
 }
-.post-link:hover .post-title { color: var(--spec-rose); }
+
+.post-link:hover {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.post-date {
+  font-family: var(--spec-font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--spec-mute);
+  text-transform: uppercase;
+}
+
+.post-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
 .post-title {
   font-family: var(--spec-font-display);
-  font-weight: 380;
-  font-size: clamp(20px, 2vw, 26px);
+  font-weight: 400;
+  font-size: clamp(1.1rem, 1.6vw, 1.4rem);
   line-height: 1.2;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.005em;
   color: var(--spec-ink);
   transition: color 0.2s ease;
 }
-.post-date {
+
+.post-link:hover .post-title { color: var(--fontist-rose); }
+
+.post-desc {
+  font-family: var(--spec-font-body);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--spec-ink-soft);
+  max-width: 60ch;
+}
+
+.post-arrow {
   font-family: var(--spec-font-mono);
-  font-size: 12px;
-  letter-spacing: 0.08em;
+  font-size: 0.9rem;
   color: var(--spec-mute);
-  white-space: nowrap;
+  transition: color 0.2s ease, transform 0.2s ease;
+  align-self: center;
+}
+
+.post-link:hover .post-arrow {
+  color: var(--fontist-rose);
+  transform: translateX(3px);
 }
 
 @media (max-width: 600px) {
-  .post-link { grid-template-columns: 1fr; gap: 0.25rem; }
+  .post-link {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+    padding: 1rem 0;
+  }
+  .post-arrow { display: none; }
 }
 </style>

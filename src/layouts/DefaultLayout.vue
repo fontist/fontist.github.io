@@ -1,9 +1,23 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router'
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
+import { useRoute, RouterLink } from 'vue-router'
 import { useTheme } from '../composables/useTheme'
 import NavDocsDropdown from '../components/NavDocsDropdown.vue'
+import SiteFooter from '../components/SiteFooter.vue'
 
 const { theme, toggle } = useTheme()
+const route = useRoute()
+const menuOpen = ref(false)
+
+// Close the mobile menu whenever the route changes — covers both
+// link clicks and programmatic navigations.
+watch(() => route.fullPath, () => { menuOpen.value = false })
+
+function onKey(e: KeyboardEvent) {
+  if (e.key === 'Escape' && menuOpen.value) menuOpen.value = false
+}
+onMounted(() => { document.addEventListener('keydown', onKey) })
+onBeforeUnmount(() => { document.removeEventListener('keydown', onKey) })
 </script>
 
 <template>
@@ -14,15 +28,7 @@ const { theme, toggle } = useTheme()
           <img src="/favicon.svg" alt="Fontist" class="nav-logo-img" />
           Fontist
         </RouterLink>
-        <div class="nav-links">
-          <NavDocsDropdown />
-          <RouterLink to="/formulas" class="nav-link">Formulas</RouterLink>
-          <RouterLink to="/families" class="nav-link">Families</RouterLink>
-          <RouterLink to="/licenses" class="nav-link">Licenses</RouterLink>
-          <RouterLink to="/guide" class="nav-link">Guide</RouterLink>
-          <RouterLink to="/unicode" class="nav-link">Unicode</RouterLink>
-          <RouterLink to="/blog" class="nav-link">Blog</RouterLink>
-          <RouterLink to="/about" class="nav-link">About</RouterLink>
+        <div class="nav-utility">
           <button
             type="button"
             class="nav-icon-btn theme-toggle"
@@ -58,21 +64,46 @@ const { theme, toggle } = useTheme()
               />
             </svg>
           </a>
+          <button
+            type="button"
+            class="nav-icon-btn nav-burger"
+            :aria-label="menuOpen ? 'Close menu' : 'Open menu'"
+            :aria-expanded="menuOpen"
+            aria-controls="nav-menu"
+            @click="menuOpen = !menuOpen"
+          >
+            <svg v-if="!menuOpen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+              <line x1="4" y1="7" x2="20" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              <line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              <line x1="4" y1="17" x2="20" y2="17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+              <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div
+          id="nav-menu"
+          :class="['nav-links', { 'nav-links--open': menuOpen }]"
+          role="navigation"
+          aria-label="Main"
+        >
+          <NavDocsDropdown />
+          <RouterLink to="/formulas" class="nav-link">Formulas</RouterLink>
+          <RouterLink to="/families" class="nav-link">Families</RouterLink>
+          <RouterLink to="/licenses" class="nav-link">Licenses</RouterLink>
+          <RouterLink to="/guide" class="nav-link">Guide</RouterLink>
+          <RouterLink to="/unicode" class="nav-link">Unicode</RouterLink>
+          <RouterLink to="/blog" class="nav-link">Blog</RouterLink>
+          <RouterLink to="/about" class="nav-link">About</RouterLink>
         </div>
       </div>
     </nav>
     <main class="main">
       <slot />
     </main>
-    <footer class="footer">
-      <div class="footer-inner">
-        <a href="https://github.com/fontist">GitHub</a>
-        <span>·</span>
-        <RouterLink to="/about">About</RouterLink>
-        <span>·</span>
-        <a href="https://www.rubydoc.info/gems/fontist">RubyDocs</a>
-      </div>
-    </footer>
+    <SiteFooter />
   </div>
 </template>
 
@@ -86,6 +117,7 @@ const { theme, toggle } = useTheme()
 .nav-inner {
   max-width: 1320px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 56px);
   display: flex; align-items: center; justify-content: space-between;
+  gap: 1.5rem;
   height: var(--vp-nav-height);
 }
 .nav-logo {
@@ -98,7 +130,15 @@ const { theme, toggle } = useTheme()
   flex-shrink: 0;
 }
 .nav-logo-img { width: 32px; height: 32px; }
-.nav-links { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
+
+/* Utility icons (theme toggle, GitHub) + burger — always visible */
+.nav-utility {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
 .nav-link {
   font-family: var(--spec-font-mono);
   font-size: 12px; font-weight: 500;
@@ -140,6 +180,9 @@ const { theme, toggle } = useTheme()
   outline-offset: 2px;
 }
 
+/* Hamburger button — hidden on desktop, only shown on narrow screens */
+.nav-burger { display: none; }
+
 .nav-icon-link {
   display: inline-flex;
   align-items: center;
@@ -151,6 +194,13 @@ const { theme, toggle } = useTheme()
   transition: color 0.2s ease;
 }
 .nav-icon-link:hover { color: var(--spec-rose); }
+
+/* Default (desktop): horizontal inline nav */
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
 
 .main { flex: 1; }
 
@@ -179,8 +229,65 @@ const { theme, toggle } = useTheme()
 }
 .footer a:hover { color: var(--spec-rose); border-color: var(--spec-rose); }
 
+/* ── Narrow screens: collapse nav into a slide-down panel ───── */
 @media (max-width: 768px) {
-  .nav-inner { padding: 0 1rem; }
-  .nav-links { gap: 1rem; overflow-x: auto; }
+  .nav-inner {
+    padding: 0 1rem;
+    gap: 0.75rem;
+  }
+
+  /* Show the burger button only on narrow screens */
+  .nav-burger { display: inline-flex; }
+
+  /* Hide the nav links by default; reveal as a dropdown panel when open */
+  .nav-links {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0.75rem 1rem 1rem;
+    background: var(--spec-paper);
+    border-bottom: 1px solid var(--spec-rule);
+    box-shadow: 0 6px 16px rgba(28, 26, 24, 0.08);
+
+    /* closed state: collapsed */
+    max-height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-bottom-color: transparent;
+    box-shadow: none;
+    transition: max-height 0.28s ease, padding 0.28s ease, visibility 0s linear 0.28s, border-color 0s linear 0.28s;
+  }
+
+  .nav-links--open {
+    max-height: calc(100vh - var(--vp-nav-height));
+    overflow-y: auto;
+    visibility: visible;
+    padding-top: 0.75rem;
+    padding-bottom: 1rem;
+    border-bottom-color: var(--spec-rule);
+    box-shadow: 0 6px 16px rgba(28, 26, 24, 0.08);
+    transition: max-height 0.28s ease, padding 0.28s ease, visibility 0s, border-color 0s;
+  }
+
+  /* Stack the links vertically with their own row + dividers */
+  .nav-links :deep(.nav-link),
+  .nav-links :deep(.docs-dropdown) {
+    width: 100%;
+    padding: 0.7rem 0.5rem;
+    border-bottom: 1px solid var(--spec-rule);
+  }
+  .nav-links :deep(.nav-link:last-of-type) {
+    border-bottom: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-links { transition: none; }
 }
 </style>

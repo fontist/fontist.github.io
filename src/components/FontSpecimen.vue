@@ -9,11 +9,11 @@ const props = defineProps({
   familyName: { type: String, default: '' },
   description: { type: String, default: '' },
   fontPath: { type: String, default: null },
+  coverageFile: { type: String, default: null },
   redistributable: { type: Boolean, default: false },
 })
 
-const fontId = ref('')
-const fontReady = ref(false)
+const fontId = ref(`ff-${props.slug.replace(/[^a-z0-9]/gi, '-')}`)
 const axes = ref([])
 const features = ref([])
 const heroText = ref('Whereas recognition of the inherent dignity')
@@ -32,11 +32,10 @@ const weightAxis = computed(() => axes.value.find(a => a.tag === 'wght'))
 
 onMounted(async () => {
   if (props.redistributable && props.fontPath) {
-    const { fontId: fid, ensureInjected } = injectFontFace(props.slug, props.fontPath, props.redistributable)
+    const { fontId: fid } = injectFontFace(props.slug, props.fontPath, props.redistributable)
     fontId.value = fid
-    fontReady.value = ensureInjected()
   }
-  const cov = await fetchCoverage(props.slug)
+  const cov = await fetchCoverage(props.coverageFile || props.slug)
   if (cov) {
     axes.value = cov.variable_axes || []
     features.value = cov.opentype_features || []
@@ -47,7 +46,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section class="specimen" v-if="redistributable && fontReady">
+  <section class="specimen" v-if="redistributable">
     <!-- Full-bleed editable specimen -->
     <div
       class="specimen-hero"

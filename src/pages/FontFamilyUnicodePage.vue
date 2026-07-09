@@ -3,13 +3,17 @@ import { computed, ref, watch } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import { loadFontFamily } from '../lib/fonts/families-loader'
-import type { FontFamily, FontFamilyFile } from '../lib/types/domain'
-import FontUnicodeBrowser from '../components/FontUnicodeBrowser.vue'
+import type { FontFamily, FontFamilyFile, Coverage } from '../lib/types/domain'
+import BlockCoverageHeatmap from '../components/BlockCoverageHeatmap.vue'
+import { fetchCoverage } from '../composables/useCoverage'
+import { fetchJson } from '../lib/ssr-fetch'
 
 const route = useRoute()
 const familySlug = computed(() => route.params.familySlug as string)
 
 const family = ref<FontFamily | null>(null)
+const coverage = ref<Coverage | null>(null)
+const unicodeBlocks = ref<{ name: string; start: number; end: number }[]>([])
 const loading = ref(true)
 const selectedFileSlug = ref<string | null>(null)
 
@@ -38,6 +42,15 @@ async function loadFamily() {
       const initial = family.value?.files.find(f => f.redistributable) || family.value?.files?.[0]
       selectedFileSlug.value = initial?.slug || null
     }
+
+    // Pre-fetch coverage + block registry so the heatmap paints on first paint.
+    const path = currentFile.value?.coverage_file || currentFile.value?.slug
+    const [cov, blocks] = await Promise.all([
+      path ? fetchCoverage(path) : Promise.resolve(null),
+      fetchJson<{ name: string; start: number; end: number }[]>('unicode-blocks.json'),
+    ])
+    coverage.value = cov
+    unicodeBlocks.value = blocks
   } finally {
     loading.value = false
   }
@@ -84,11 +97,11 @@ function selectFile(slug: string) {
     </section>
 
     <main v-if="currentFile">
-      <FontUnicodeBrowser
-        :key="'ffup-' + currentFile.slug"
-        :slug="currentFile.slug"
-        :font-path="currentFile.path"
-        :redistributable="currentFile.redistributable"
+      <BlockCoverageHeatmap
+        :font-slug="currentFile.slug"
+        :coverage="coverage"
+        :formula-slug="currentFile.formula_slug"
+        :unicode-blocks="unicodeBlocks"
       />
     </main>
 

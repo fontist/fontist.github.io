@@ -12,6 +12,9 @@ dist-ssr
 /public/coverage/
 /public/fonts/*.woff2
 !/public/fonts/noto/
+/public/woff/
+/public/details/
+/public/codepoints/
 /public/fonts.json
 /public/font-metadata.json
 /public/formulas-data.json

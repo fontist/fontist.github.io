@@ -1,0 +1,185 @@
+/* ===================================================================
+   Editorial prose — shared markdown body styling.
+   Used by BlogPostPage, AboutPage, GuideTopicPage, LicenseDetailPage,
+   FormulaPage. Add the `.editorial-body` class to any v-html container
+   that renders marked() output.
+
+   Previously duplicated as scoped :deep() blocks across 4+ pages (~320
+   lines). See architecture review candidate 04.
+   =================================================================== */
+
+.editorial-body {
+  font-family: var(--spec-font-body, "IBM Plex Sans", system-ui, sans-serif);
+  font-size: 1.0rem;
+  line-height: 1.7;
+  color: var(--spec-ink, #1c1a18);
+}
+
+.editorial-body > h1:first-child {
+  font-family: var(--spec-font-display, "Spectral", Georgia, serif);
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  margin: 0 0 1rem;
+  color: var(--spec-ink);
+}
+
+.editorial-body h2 {
+  font-family: var(--spec-font-display, "Spectral", Georgia, serif);
+  font-size: 1.6rem;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.015em;
+  margin: 2.5rem 0 0.75rem;
+  color: var(--spec-ink);
+  position: relative;
+}
+
+.editorial-body h2::before {
+  content: '';
+  display: block;
+  width: 1.5rem;
+  height: 1px;
+  background: var(--fontist-rose, #bf4e6a);
+  margin-bottom: 0.75rem;
+}
+
+.editorial-body h3 {
+  font-family: var(--spec-font-display, "Spectral", Georgia, serif);
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin: 1.75rem 0 0.5rem;
+  color: var(--spec-ink);
+}
+
+.editorial-body h4 {
+  font-family: var(--spec-font-display, "Spectral", Georgia, serif);
+  font-size: 1.0rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.4rem;
+  color: var(--spec-ink);
+}
+
+.editorial-body p { margin: 0 0 1rem; }
+
+.editorial-body ul,
+.editorial-body ol {
+  margin: 0 0 1.25rem;
+  padding-left: 1.25rem;
+}
+
+.editorial-body li { margin-bottom: 0.35rem; }
+.editorial-body li::marker { color: var(--fontist-rose, #bf4e6a); }
+
+.editorial-body a {
+  color: var(--fontist-rose, #bf4e6a);
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 1px;
+  transition: color 0.15s ease;
+}
+
+.editorial-body a:hover { color: var(--spec-ink, #1c1a18); }
+
+.editorial-body code {
+  font-family: var(--spec-font-mono, "IBM Plex Mono", monospace);
+  font-size: 0.85em;
+  background: var(--spec-paper-deep, #e7e0d1);
+  padding: 0.1em 0.4em;
+  border-radius: 2px;
+}
+
+.editorial-body pre {
+  background: var(--spec-paper-deep, #e7e0d1);
+  padding: 1.25rem 1.5rem;
+  border-radius: 3px;
+  border-left: 3px solid var(--fontist-rose, #bf4e6a);
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  font-family: var(--spec-font-mono, "IBM Plex Mono", monospace);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--spec-ink, #1c1a18);
+}
+
+.editorial-body pre code { background: transparent; padding: 0; }
+
+.editorial-body blockquote {
+  margin: 1.5rem 0;
+  padding: 0.5rem 0 0.5rem 1.25rem;
+  border-left: 3px solid var(--fontist-rose, #bf4e6a);
+  font-family: var(--spec-font-display, "Spectral", Georgia, serif);
+  font-style: italic;
+  font-size: 1.15rem;
+  line-height: 1.5;
+  color: var(--spec-ink-soft, #4a4744);
+}
+
+.editorial-body img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.5rem auto;
+  border-radius: 3px;
+}
+
+.editorial-body hr {
+  border: none;
+  border-top: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  margin: 2.5rem 0;
+}
+
+.editorial-body strong { font-weight: 600; color: var(--spec-ink, #1c1a18); }
+.editorial-body em { font-style: italic; }
+
+.editorial-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+}
+
+.editorial-body th,
+.editorial-body td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.1));
+  text-align: left;
+  vertical-align: top;
+}
+
+.editorial-body th {
+  font-family: var(--spec-font-mono, "IBM Plex Mono", monospace);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--spec-mute, #75716c);
+  font-weight: 600;
+}
+
+.editorial-body figure { margin: 1.5rem 0; }
+
+.editorial-body figcaption {
+  font-family: var(--spec-font-mono, "IBM Plex Mono", monospace);
+  font-size: 0.75rem;
+  color: var(--spec-mute, #75716c);
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.editorial-body details {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  background: var(--spec-paper-deep, #e7e0d1);
+  border-radius: 3px;
+}
+
+.editorial-body summary {
+  cursor: pointer;
+  font-family: var(--spec-font-mono, "IBM Plex Mono", monospace);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--fontist-rose, #bf4e6a);
+}

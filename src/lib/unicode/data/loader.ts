@@ -1,6 +1,8 @@
 import type { UnicodeBlock, UnicodeCharacter, PlaneKey, UnicodePlane } from '../types.ts'
-import { PLANES, planeForCodepoint, blockDisplayName, scriptGroup, hexCp, safeChar, blockSlug } from '../constants.ts'
-import { fetchJson } from '../../ssr-fetch'
+import type { CodepointDetail } from '../../types/domain.ts'
+import { PLANES, planeForCodepoint, blockDisplayName, scriptGroup, hexCp, safeChar, blockSlug, canonicalCodepointHex } from '../constants.ts'
+import { fetchJson } from '../../ssr-fetch.ts'
+import { createLazyJsonLoader, createKeyedJsonLoader, type JsonFetcher } from '../../loader-factory.ts'
 
 interface RawBlockCharacter {
   cp: number
@@ -20,8 +22,27 @@ interface RawBlockFile {
   chars?: RawBlockCharacter[]
 }
 
-const blockCache = new Map<string, UnicodeBlock>()
-let allBlocks: UnicodeBlock[] | null = null
+// Map a raw block-feed character (UCD wire shape) to the semantic
+// UnicodeCharacter shape exposed to consumers. Defaults follow the UCD
+// conventions: combining class 0, no bidi override, not mirrored, no
+// case mapping, no decomposition.
+export function mapRawCharacter(raw: RawBlockCharacter): UnicodeCharacter {
+  return {
+    cp: raw.cp,
+    hex: hexCp(raw.cp),
+    char: safeChar(raw.cp),
+    name: raw.n || '',
+    category: raw.c || '',
+    script: raw.s || '',
+    combiningClass: raw.cc ?? 0,
+    bidiClass: raw.bc ?? null,
+    mirrored: raw.mir ?? false,
+    simpleUppercase: raw.up ?? null,
+    simpleLowercase: raw.lo ?? null,
+    simpleTitlecase: raw.ti ?? null,
+    decomposition: raw.dm ?? null,
+  }
+}
 
 interface RawBlockIndexEntry {
   start: number
@@ -30,52 +51,44 @@ interface RawBlockIndexEntry {
   unicode_version?: string
 }
 
-export async function loadAllBlocks(): Promise<UnicodeBlock[]> {
-  if (allBlocks) return allBlocks
+const allBlocksLoader = createLazyJsonLoader<UnicodeBlock[]>(
+  'unicode-blocks.json',
+  async (path) => {
+    const raw = await fetchJson<RawBlockIndexEntry[]>(path)
+    return raw.map(b => ({
+      name: b.name,
+      start: b.start,
+      end: b.end,
+      range: hexCp(b.start) + '–' + hexCp(b.end),
+      plane: planeForCodepoint(b.start),
+      displayName: blockDisplayName(b.name),
+      scriptGroup: scriptGroup(b.name),
+      unicodeVersion: b.unicode_version || '1.1',
+      characters: [],
+      assignedCount: 0,
+    }))
+  },
+)
 
-  const raw = await fetchJson<RawBlockIndexEntry[]>('unicode-blocks.json')
-
-  allBlocks = raw.map(b => ({
-    name: b.name,
-    start: b.start,
-    end: b.end,
-    range: hexCp(b.start) + '–' + hexCp(b.end),
-    plane: planeForCodepoint(b.start),
-    displayName: blockDisplayName(b.name),
-    scriptGroup: scriptGroup(b.name),
-    unicodeVersion: b.unicode_version || '1.1',
-    characters: [],
-    assignedCount: 0,
-  }))
-
-  return allBlocks
+export function loadAllBlocks(): Promise<UnicodeBlock[]> {
+  return allBlocksLoader.load()
 }
 
-export async function loadBlockCharacters(blockName: string): Promise<UnicodeCharacter[]> {
-  const slug = blockSlug(blockName)
+export function clearAllBlocksCache(): void {
+  allBlocksLoader.clear()
+}
 
-  try {
-    const data = await fetchJson<RawBlockFile>(`unicode/blocks/${slug}.json`)
-    return (data.chars || []).map(c => ({
-      cp: c.cp,
-      hex: hexCp(c.cp),
-      char: safeChar(c.cp),
-      name: c.n || '',
-      category: c.c || '',
-      script: c.s || '',
-      c: c.c,
-      s: c.s,
-      cc: c.cc,
-      bc: c.bc,
-      mir: c.mir,
-      up: c.up,
-      lo: c.lo,
-      ti: c.ti,
-      dm: c.dm,
-    }))
-  } catch {
-    return []
-  }
+const blockCache = new Map<string, UnicodeBlock>()
+
+// Keyed cache for raw per-block JSON files (unicode/blocks/{slug}.json).
+// Previously fetchJson was called on every loadBlockCharacters invocation.
+const rawBlockLoader = createKeyedJsonLoader<RawBlockFile>(
+  (blockName: string) => `unicode/blocks/${blockSlug(blockName)}.json`,
+)
+
+export async function loadBlockCharacters(blockName: string): Promise<UnicodeCharacter[]> {
+  const data = await rawBlockLoader.load(blockName)
+  return (data?.chars || []).map(mapRawCharacter)
 }
 
 export async function loadBlock(blockName: string): Promise<UnicodeBlock | null> {
@@ -110,4 +123,27 @@ export function getBlocksByScriptGroup(blocks: UnicodeBlock[]): { group: string;
     groups[g].push(b)
   }
   return Object.entries(groups).map(([group, blks]) => ({ group, blocks: blks }))
+}
+
+// ---------- Per-codepoint detail loader ----------
+// Returns the typed CodepointDetail JSON for a codepoint reference in any
+// reasonable form (number, bare hex, U+XXXX). The canonical hex helper
+// (`canonicalCodepointHex` in constants.ts) is the single source of truth
+// for "what file does this codepoint live in".
+
+const codepointDetailLoader = createKeyedJsonLoader<CodepointDetail>(
+  (key) => `codepoints/${canonicalCodepointHex(key)}.json`,
+)
+
+export type CodepointDetailFetcher = JsonFetcher<CodepointDetail>
+
+export function loadCodepointDetail(
+  hex: number | string,
+  fetcher?: CodepointDetailFetcher,
+): Promise<CodepointDetail | null> {
+  return codepointDetailLoader.load(canonicalCodepointHex(hex), fetcher)
+}
+
+export function clearCodepointDetailCache(): void {
+  codepointDetailLoader.clear()
 }

@@ -3,7 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { injectFontFace } from '../composables/useFontFace'
 import { fetchCoverage } from '../composables/useCoverage'
 import { useUnicodeBlock } from '../composables/useUnicodeBlock'
-import { blockScriptFamily, hexCp, safeChar, type ScriptFamily } from '../lib/unicode/constants'
+import { blockScriptFamily, hexCp, safeChar, blockSlug, type ScriptFamily } from '../lib/unicode/constants'
 import type { Coverage, CoverageBlock } from '../lib/types/domain'
 
 const FONT_SCRIPT_LABELS: Partial<Record<ScriptFamily, string>> = {
@@ -25,6 +25,10 @@ const props = defineProps({
   slug: { type: String, required: true },
   redistributable: { type: Boolean, default: false },
   fontPath: { type: String, default: null },
+  coverageFile: { type: String, default: null },
+  // When set, auto-select the block with this slug on mount (used by
+  // FontBlockCoveragePage to deep-link into a specific block).
+  initialBlockSlug: { type: String, default: null },
 })
 
 const coverage = ref(null)
@@ -113,20 +117,30 @@ async function selectBlock(idx) {
   }
 }
 
+// Top-level await: runs during SSG so the rendered HTML contains real
+// coverage data, not a perpetual "Loading…" placeholder. Font CSS
+// injection stays in onMounted because it touches `document` (client-only).
+coverage.value = await fetchCoverage(props.coverageFile || props.slug)
+if (coverage.value && blocks.value.length > 0) {
+  // Deep-link to initialBlockSlug when provided; else default to first block.
+  let startIdx = 0
+  if (props.initialBlockSlug) {
+    const found = blocks.value.findIndex(b => blockSlug(b.name) === props.initialBlockSlug)
+    if (found >= 0) startIdx = found
+  }
+  selectedBlockIdx.value = startIdx
+  unicodeBlock.value = await fetchBlock(blocks.value[startIdx].name)
+}
+loading.value = false
+
 onMounted(async () => {
-  if (props.redistributable) {
-    const path = props.fontPath || `fonts/${props.slug}.woff2`
+  if (props.redistributable && props.fontPath) {
     const { fontId: fid, ensureInjected } = injectFontFace(
-      props.slug, path, props.redistributable
+      props.slug, props.fontPath, props.redistributable
     )
     fontId.value = fid
     fontReady.value = ensureInjected()
   }
-  coverage.value = await fetchCoverage(props.slug)
-  if (coverage.value && blocks.value.length > 0) {
-    unicodeBlock.value = await fetchBlock(blocks.value[0].name)
-  }
-  loading.value = false
 })
 </script>
 

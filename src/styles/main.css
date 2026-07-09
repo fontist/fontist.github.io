@@ -48,6 +48,23 @@
   --spec-font-body: "IBM Plex Sans", -apple-system, system-ui, sans-serif;
   --spec-font-mono: "IBM Plex Mono", ui-monospace, "JetBrains Mono", monospace;
 
+  /* ── Coverage heatmap palette ───────────────────────────────
+     Five-step pastel scale for Unicode block completeness.
+     Aims for an even luminance curve so the heatmap stays
+     scannable in grayscale and for deuteranopic viewers
+     (the rose→peach→sand→sage progression avoids the
+     red-green dichotomy).
+     All stops share ~85–95% lightness, ~5–20% saturation. */
+  --coverage-0:   #f0e0e6;   /* none        */
+  --coverage-25:  #f0e4d6;   /* sparse      */
+  --coverage-50:  #edeed5;   /* partial     */
+  --coverage-75:  #dde9d6;   /* mostly      */
+  --coverage-100: #c9dcc8;   /* complete    */
+  --coverage-none: #f3e8ed;  /* softer rose for 0%-and-unknown tile */
+  --coverage-unknown: #ecebe3; /* "no coverage data yet" — neutral */
+  --coverage-tile-border: rgba(28, 26, 24, 0.08);
+  --coverage-tile-border-strong: rgba(28, 26, 24, 0.22);
+
   --vp-font-family-base: var(--spec-font-body);
   --vp-font-family-mono: var(--spec-font-mono);
 
@@ -103,6 +120,17 @@ html.dark {
   --vp-button-brand-hover-border: var(--fontist-rose);
   --vp-button-brand-hover-text: #161513;
   --vp-button-brand-hover-bg: var(--fontist-rose);
+
+  /* Heatmap palette — dark mode (deeper pastels, same hue progression) */
+  --coverage-0:   #3a2832;   /* none        */
+  --coverage-25:  #3a3128;   /* sparse      */
+  --coverage-50:  #34352a;   /* partial     */
+  --coverage-75:  #2a3a30;   /* mostly      */
+  --coverage-100: #243328;   /* complete    */
+  --coverage-none: #3a2832;
+  --coverage-unknown: #25201a;
+  --coverage-tile-border: rgba(236, 223, 208, 0.08);
+  --coverage-tile-border-strong: rgba(236, 223, 208, 0.28);
 }
 
 /* ===================================================================
@@ -157,6 +185,105 @@ a:hover {
 img {
   max-width: 100%;
   height: auto;
+}
+
+/* ── Site-wide loading + empty state ─────────────────────────
+   Editorial treatment: centered, mono caps, a thin rule above.
+   Replace bare "Loading…" text wherever it appears. */
+.site-loading,
+.site-empty {
+  padding: 4rem 1.5rem;
+  text-align: center;
+  font-family: var(--spec-font-mono);
+  color: var(--spec-mute);
+}
+.site-loading::before {
+  content: '';
+  display: block;
+  width: 1.5rem;
+  height: 1px;
+  background: var(--vp-c-divider, rgba(28,26,24,0.16));
+  margin: 0 auto 1.25rem;
+}
+.site-loading-text {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--fontist-rose);
+  font-weight: 600;
+  margin: 0;
+}
+.site-loading-sub {
+  font-family: var(--spec-font-body);
+  font-style: italic;
+  font-size: 0.88rem;
+  color: var(--spec-mute);
+  margin: 0.5rem 0 0;
+}
+
+/* ── Selection ──────────────────────────────────────────────────
+   Rose-tinted selection. Subtle but unmistakably brand-aligned.
+   Reads as "you marked this" without screaming. */
+::selection {
+  background: rgba(191, 78, 106, 0.18);
+  color: var(--spec-ink);
+  text-shadow: none;
+}
+html.dark ::selection {
+  background: rgba(212, 113, 138, 0.28);
+  color: var(--spec-paper);
+}
+
+/* ── Focus-visible ──────────────────────────────────────────────
+   Keyboard-only focus ring. Rose, 2px, offset 2px. Mouse clicks
+   don't trigger it (uses :focus-visible). */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--fontist-rose);
+  outline-offset: 2px;
+  border-radius: 1px;
+}
+/* Inputs and textareas get a softer treatment */
+input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: 1px solid var(--fontist-rose);
+  outline-offset: 1px;
+}
+
+/* ── Reduced motion ──────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Print ──────────────────────────────────────────────────────
+   Designers print specimen pages. Hide nav, footer, theme toggle;
+   force paper background to white; expand the specimen to full width. */
+@media print {
+  body::before { display: none !important; }              /* no grain */
+  .nav, .footer, .nav-burger, .theme-toggle, .nav-icon-link { display: none !important; }
+  .layout, .main { display: block !important; }
+  body, .layout, .main {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .specimen, .specimen-hero, .specimen-line {
+    color: #000 !important;
+    page-break-inside: avoid;
+  }
+  a { color: #000 !important; text-decoration: underline; }
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.7em;
+    color: #555;
+  }
+  .fsp-nav, .fsup-head, .fbcp-head { display: none !important; }
+  /* pages should not break inside font cards */
+  .fsp, .fub, .cov { page-break-inside: avoid; }
+  @page { margin: 1.5cm; }
 }
 
 /* ===================================================================

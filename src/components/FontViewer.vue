@@ -10,6 +10,7 @@ const props = defineProps({
   familyName: { type: String, default: '' },
   description: { type: String, default: '' },
   fontPath: { type: String, default: null },
+  coverageFile: { type: String, default: null },
   redistributable: { type: Boolean, default: false },
   licenseName: { type: String, default: '' },
 })
@@ -171,34 +172,35 @@ function togglePlane(key) {
 }
 
 // --- Lifecycle ---
+// Top-level await: runs during SSG so coverage data renders into the
+// shipped HTML. Font CSS injection stays in onMounted (touches `document`).
+const cov = await fetchCoverage(props.coverageFile || props.slug)
+coverage.value = cov
+
+if (cov?.variable_axes) {
+  initAxes(cov.variable_axes.map(a => ({ tag: a.tag, default: a.default })))
+}
+if (cov?.opentype_features) {
+  initFeatures(cov.opentype_features.map(f => ({ tag: f.tag })))
+}
+if (cov?.blocks?.length) {
+  await selectBlock(cov.blocks[0])
+}
+
+loading.value = false
+
 onMounted(async () => {
   if (specimenEl.value) {
     specimenEl.value.textContent = specimenText.value
   }
 
-  if (props.redistributable) {
-    const path = props.fontPath || `fonts/${props.slug}.woff2`
+  if (props.redistributable && props.fontPath) {
     const { fontId: fid, ensureInjected } = injectFontFace(
-      props.slug, path, props.redistributable
+      props.slug, props.fontPath, props.redistributable
     )
     fontId.value = fid
     fontReady.value = ensureInjected()
   }
-
-  const cov = await fetchCoverage(props.slug)
-  coverage.value = cov
-
-  if (cov?.variable_axes) {
-    initAxes(cov.variable_axes.map(a => ({ tag: a.tag, default: a.default })))
-  }
-  if (cov?.opentype_features) {
-    initFeatures(cov.opentype_features.map(f => ({ tag: f.tag })))
-  }
-  if (cov?.blocks?.length) {
-    await selectBlock(cov.blocks[0])
-  }
-
-  loading.value = false
 })
 </script>
 

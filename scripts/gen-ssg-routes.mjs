@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url'
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const pub = resolve(root, 'public')
 
-const STATIC_ROUTES = ['/', '/about', '/blog', '/compare', '/families', '/formulas', '/unicode']
+const STATIC_ROUTES = ['/', '/about', '/blog', '/compare', '/families', '/formulas', '/unicode', '/licenses', '/guide']
 
 const blockToSlug = (name) =>
   name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
