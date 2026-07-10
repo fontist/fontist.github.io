@@ -1,7 +1,5 @@
 /**
  * Canonical home for domain entity types.
- *
- * Loaders re-export these for back-compat. New code imports from here.
  * See TODO.unify/08-domain-model.md for the target entity model.
  */
 

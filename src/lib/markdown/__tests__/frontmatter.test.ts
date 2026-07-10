@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { parseFrontmatter } from '../frontmatter.ts'
+import { parseFrontmatter } from '../frontmatter.mjs'
 
 test('parses well-formed frontmatter and body', () => {
   const text = `---

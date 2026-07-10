@@ -1,6 +1,6 @@
 import { fetchText } from '../ssr-fetch.ts'
 import type { Frontmatter, ParsedMarkdown } from '../types/domain'
-import { parseFrontmatter } from './frontmatter.ts'
+import { parseFrontmatter } from './frontmatter.mjs'
 import { createKeyedJsonLoader, type JsonFetcher } from '../loader-factory.ts'
 
 export type { Frontmatter, ParsedMarkdown }
