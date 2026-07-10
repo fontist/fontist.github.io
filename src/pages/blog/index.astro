@@ -1,0 +1,111 @@
+---
+// blog/index.astro — Astro version of BlogIndexPage.vue. Lists every
+// post in content/blog/ sorted newest-first.
+import DefaultLayout from '../../layouts/DefaultLayout.astro'
+import { fetchJson } from '../../lib/ssr-fetch'
+
+interface BlogPost {
+  slug: string
+  title: string
+  date: string
+  description?: string
+}
+
+let posts: BlogPost[] = []
+try {
+  posts = await fetchJson<BlogPost[]>('content/blog/index.json')
+} catch {}
+---
+
+<DefaultLayout
+  title="Journal — Fontist"
+  description="Field notes from the Fontist project — releases, type discoveries, and engineering notes."
+  canonical="https://www.fontist.org/blog"
+>
+  <div class="specimen">
+    <div class="page-wrap" style="max-width: 920px;">
+      <header class="blog-head">
+        <h1>Field Notes from the Pressroom</h1>
+        <p class="lede">Releases, type discoveries, and engineering notes from the Fontist project.</p>
+      </header>
+
+      <ul class="blog-list">
+        {posts.map((post) => (
+          <li class="blog-item">
+            <a href={`/blog/${post.slug}`} class="blog-link">
+              <span class="blog-date">{post.date}</span>
+              <span class="blog-title">{post.title}</span>
+              {post.description && <span class="blog-desc">{post.description}</span>}
+              <span class="blog-arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</DefaultLayout>
+
+<style>
+  @reference "../../styles/main.css"
+
+  .page-wrap { @apply max-w-[920px] mx-auto px-6 py-12; }
+  .blog-head { @apply mb-10; }
+  .blog-head h1 {
+    @apply font-display italic text-ink;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+  .blog-head .lede {
+    @apply font-display italic text-ink-soft;
+    font-size: 1.1rem;
+    margin: 0.5rem 0 0;
+  }
+  .blog-list { @apply list-none m-0 p-0 flex flex-col gap-4; }
+  .blog-item { @apply m-0 p-0; }
+  .blog-link {
+    @apply flex flex-col text-ink;
+    gap: 0.35rem;
+    padding: 1.1rem 1.25rem;
+    @apply bg-paper;
+    border: 1px solid var(--color-rule);
+    border-left: 3px solid var(--color-rose);
+    border-radius: 2px;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+  }
+  .blog-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(28, 26, 24, 0.08);
+  }
+  .blog-date {
+    @apply font-mono uppercase text-mute;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+  }
+  .blog-title {
+    @apply font-display italic text-ink;
+    font-size: 1.15rem;
+    line-height: 1.2;
+    letter-spacing: -0.005em;
+  }
+  .blog-desc {
+    @apply font-body text-ink-soft;
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+  .blog-arrow {
+    @apply absolute text-mute;
+    top: 1.1rem;
+    right: 0.85rem;
+    font-size: 1rem;
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+  .blog-link:hover .blog-arrow {
+    @apply text-rose;
+    transform: translateX(3px);
+  }
+</style>

@@ -1,0 +1,26 @@
+---
+// about.astro — Astro version of AboutPage.vue. Reads the markdown body
+// from content/about.md and renders it via marked. Frontmatter (title,
+// description) becomes the page metadata.
+import DefaultLayout from '../layouts/DefaultLayout.astro'
+import { marked } from 'marked'
+import { fetchText } from '../lib/ssr-fetch'
+import { parseFrontmatter } from '../lib/markdown/frontmatter.mjs'
+
+const raw = await fetchText('content/about.md')
+const parsed = parseFrontmatter(raw || '')
+const html = await marked(parsed.body)
+const title = (parsed.frontmatter.title as string) || 'About Fontist'
+const description = parsed.frontmatter.description as string | undefined
+---
+
+<DefaultLayout title={`${title} — Fontist`} description={description} canonical="https://www.fontist.org/about">
+  <article class="about page-container">
+    <header class="about-head">
+      <h1 class="about-title">{title}</h1>
+      {description && <p class="about-lede">{description}</p>}
+      <hr class="about-rule" />
+    </header>
+    <div class="about-body md-doc" set:html={html} />
+  </article>
+</DefaultLayout>
