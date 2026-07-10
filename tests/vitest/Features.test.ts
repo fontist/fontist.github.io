@@ -223,14 +223,14 @@ describe('Theme state', () => {
 
 describe('Frontmatter parser', () => {
   it('parses title from frontmatter', async () => {
-    const { parseFrontmatter } = await import('../../src/lib/markdown/frontmatter')
+    const { parseFrontmatter } = await import('../../src/lib/markdown/frontmatter.mjs')
     const result = parseFrontmatter('---\ntitle: "Test Title"\n---\n# Body')
     expect(result.frontmatter.title).toBe('Test Title')
     expect(result.body).toContain('# Body')
   })
 
   it('handles markdown without frontmatter', async () => {
-    const { parseFrontmatter } = await import('../../src/lib/markdown/frontmatter')
+    const { parseFrontmatter } = await import('../../src/lib/markdown/frontmatter.mjs')
     const result = parseFrontmatter('# Just a heading')
     expect(result.frontmatter).toEqual({})
     expect(result.body).toContain('# Just a heading')

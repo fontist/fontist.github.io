@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 // Pure logic — format, frontmatter parser
 import { fontFormatForPath } from '../../src/lib/fonts/format'
-import { parseFrontmatter } from '../../src/lib/markdown/frontmatter'
+import { parseFrontmatter } from '../../src/lib/markdown/frontmatter.mjs'
 
 // Loader factory with injected fetchers (no disk I/O)
 import {
