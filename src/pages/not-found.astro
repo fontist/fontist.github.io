@@ -1,0 +1,201 @@
+---
+// NotFound.astro — canonical Astro page pattern with scoped styles.
+//
+// This page demonstrates the migration target shape for every page:
+//   1. Co-located scoped <style> block (no global CSS for page-specific rules)
+//   2. Scoped styles use @apply with Tailwind tokens — same idiom as
+//      main.css, but scoped to this page only
+//   3. <head> + <body> managed by the page itself (no DefaultLayout needed
+//      until the layout migrates — see TODO.astro/02)
+//   4. Markdown-rendered routes use Astro's content collections instead of
+//      useMarkdownPage composable (see TODO.astro/03)
+//
+// Astro auto-applies a unique data attribute to every element so the scoped
+// rules can't leak. Inline utility classes handle the one-off layout bits.
+import '../styles/main.css'
+
+const suggestions: { label: string; to: string; hint: string }[] = [
+  { label: 'Formulas', to: '/formulas', hint: 'Browse the registry' },
+  { label: 'Families', to: '/families', hint: 'Type families in the archive' },
+  { label: 'Unicode',  to: '/unicode',  hint: 'Unicode planes & blocks' },
+  { label: 'Licenses', to: '/licenses', hint: 'Font license reference' },
+  { label: 'Guide',    to: '/guide',    hint: 'Practical typography guide' },
+  { label: 'About',    to: '/about',    hint: 'About the project' },
+]
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>404 — Not Found — Fontist</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <main class="nf">
+      <div class="nf-rule" aria-hidden="true">
+        <span class="nf-rule-line"></span>
+        <span class="nf-rule-diamond">◆</span>
+        <span class="nf-rule-line"></span>
+      </div>
+
+      <header class="nf-head">
+        <h1 class="nf-title">
+          <span class="nf-title-num">404</span>
+          <span class="nf-title-em">page not found</span>
+        </h1>
+        <p class="nf-lede">
+          The page you're looking for doesn't exist — maybe it was renamed, removed,
+          or the URL is mistyped.
+        </p>
+      </header>
+
+      <section class="nf-suggestions">
+        <p class="nf-suggestions-label">Looking for one of these?</p>
+        <ul class="nf-suggestions-list">
+          {suggestions.map((s) => (
+            <li class="nf-suggestion">
+              <a href={s.to} class="nf-suggestion-link">
+                <span class="nf-suggestion-label">{s.label}</span>
+                <span class="nf-suggestion-hint">{s.hint}</span>
+                <span class="nf-suggestion-arrow" aria-hidden="true">→</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <footer class="nf-foot">
+        <a href="/" class="nf-back">← Back to Home</a>
+      </footer>
+    </main>
+  </body>
+</html>
+
+<style>
+  /* Page-specific styles — scoped to this .astro file by Astro's compiler.
+     `@reference` tells Tailwind "main.css is already loaded by the page,
+     don't re-include its CSS but DO make its @theme tokens available to
+     @apply." Without this, Tailwind 4 can't resolve token-derived utility
+     classes (text-ink, font-body, etc.) inside Astro scoped <style> blocks. */
+  @reference "../styles/main.css"
+
+  /* Token colors/fonts come from @theme in main.css. @apply works the same
+     way it does in main.css; the only difference is the rules don't leak
+     to other pages. */
+  .nf {
+    @apply max-w-[720px] mx-auto;
+    padding: 3rem 1.5rem 5rem;
+    @apply font-body;
+  }
+
+  /* Decorative top rule with rose diamond */
+  .nf-rule {
+    @apply flex items-center;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+  }
+  .nf-rule-line { @apply flex-1 h-px; background: var(--spec-rule); }
+  .nf-rule-diamond { @apply text-rose; font-size: 0.65rem; opacity: 0.7; }
+
+  /* Header */
+  .nf-head { margin-bottom: 3rem; }
+  .nf-title {
+    @apply font-display font-normal flex flex-col;
+    margin: 0 0 1rem;
+    @apply text-ink;
+    gap: 0.2rem;
+    line-height: 1.05;
+  }
+  .nf-title-num {
+    font-size: clamp(4rem, 12vw, 7rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    line-height: 0.9;
+  }
+  .nf-title-em {
+    @apply italic;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    @apply text-ink-soft;
+    letter-spacing: -0.01em;
+  }
+  .nf-lede {
+    @apply font-body;
+    font-size: 1rem;
+    line-height: 1.55;
+    @apply text-ink-soft;
+    margin: 0;
+    max-width: 50ch;
+  }
+
+  /* Suggestions grid */
+  .nf-suggestions { margin-bottom: 2.5rem; }
+  .nf-suggestions-label {
+    @apply font-mono;
+    font-size: 0.65rem;
+    @apply uppercase;
+    letter-spacing: 0.14em;
+    @apply text-mute;
+    margin: 0 0 1rem;
+  }
+  .nf-suggestions-list {
+    @apply list-none grid;
+    margin: 0; padding: 0;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.6rem;
+  }
+  .nf-suggestion { margin: 0; padding: 0; }
+  .nf-suggestion-link {
+    @apply flex flex-col no-underline text-ink;
+    gap: 0.15rem;
+    padding: 0.85rem 1rem;
+    @apply bg-paper;
+    border: 1px solid var(--spec-rule);
+    border-radius: 3px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    position: relative;
+  }
+  .nf-suggestion-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(28,26,24,0.08);
+    border-color: var(--color-rose);
+  }
+  .nf-suggestion-label {
+    @apply font-display italic text-ink;
+    font-size: 1.05rem;
+  }
+  .nf-suggestion-hint {
+    @apply font-mono text-mute;
+    font-size: 0.7rem;
+    letter-spacing: 0.02em;
+  }
+  .nf-suggestion-arrow {
+    @apply absolute;
+    top: 0.85rem;
+    right: 0.85rem;
+    font-size: 0.9rem;
+    @apply text-mute;
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+  .nf-suggestion-link:hover .nf-suggestion-arrow {
+    @apply text-rose;
+    transform: translateX(3px);
+  }
+
+  /* Footer link */
+  .nf-foot {
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--spec-rule);
+  }
+  .nf-back {
+    @apply font-mono no-underline text-rose;
+    font-size: 0.78rem;
+    @apply uppercase;
+    letter-spacing: 0.12em;
+  }
+  .nf-back:hover { text-decoration: underline; }
+
+  @media (max-width: 540px) {
+    .nf-suggestions-list { grid-template-columns: 1fr; }
+  }
+</style>
