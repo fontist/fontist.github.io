@@ -1,38 +1,33 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-// Mirror of the HomePage matchers — kept in sync via this test.
-// If the page-side matchers change, update both copies together.
-const OPEN_MATCHERS = [
-  { label: 'SIL Open Font License',         test: (n: string) => n.includes('open font license') || n === 'ofl' || n.startsWith('ofl-1') },
-  { label: 'Apache License 2.0',            test: (n: string) => n.includes('apache') },
-  { label: 'IPA Font License',              test: (n: string) => n.includes('ipa font') },
-  { label: 'CC0 / Public Domain',           test: (n: string) => n.includes('creative commons zero') || n.includes('cc0') || n.includes('public domain') || n.includes('publicdomain') },
-  { label: 'Ubuntu Font Licence',           test: (n: string) => n.includes('ubuntu font') },
-  { label: 'GNU GPL (with Font Exception)', test: (n: string) => n.includes('gnu gpl') || n.includes('lppl') },
-]
-const PROP_MATCHERS = [
-  { label: 'Apple-only', test: (n: string) => n.includes('apple') },
-  { label: 'Microsoft',  test: (n: string) => n.includes('microsoft') },
-  { label: 'Adobe',      test: (n: string) => n.includes('adobe') },
+// Mock the license index loader so the classifier has deterministic data.
+const mockIndex = [
+  { slug: 'ofl', name: 'SIL Open Font License 1.1', category: 'permissive' as const, blurb: '', matchers: ['sil open font', 'ofl'] },
+  { slug: 'apache', name: 'Apache License 2.0', category: 'permissive' as const, blurb: '', matchers: ['apache'] },
+  { slug: 'ipa', name: 'IPA Font License', category: 'permissive' as const, blurb: '', matchers: ['ipa font'] },
+  { slug: 'cc0', name: 'Creative Commons Zero', category: 'public-domain' as const, blurb: '', matchers: ['cc0', 'creative commons zero', 'public domain'] },
+  { slug: 'ufl', name: 'Ubuntu Font Licence 1.0', category: 'permissive' as const, blurb: '', matchers: ['ubuntu font', 'ufl'] },
+  { slug: 'gpl', name: 'GNU GPL', category: 'copyleft' as const, blurb: '', matchers: ['gpl'], exclude_matchers: ['lgpl'] },
 ]
 
-function norm(raw: string | undefined): string {
-  return (raw || 'Unknown').replace(/^LICENSEREF-/i, '').toLowerCase()
-}
+vi.mock('@/lib/ssr-fetch', () => ({
+  fetchJson: vi.fn(async () => mockIndex),
+}))
 
-function bucketFormula(f: { licenseName?: string; licenseCategory: string }) {
-  const name = norm(f.licenseName)
-  const isOpen = f.licenseCategory === 'open_source'
-  if (isOpen) {
-    const hit = OPEN_MATCHERS.find(m => m.test(name))
-    return hit ? { kind: 'open' as const, label: hit.label } : { kind: 'open' as const, label: 'Other open source' }
-  }
-  const hit = PROP_MATCHERS.find(m => m.test(name))
-  return hit ? { kind: 'prop' as const, label: hit.label } : { kind: 'prop' as const, label: 'Other proprietary' }
-}
+import {
+  classifyFormula,
+  bucketFormulas,
+  formulaMatchesLicenseSync,
+  loadLicenseIndex,
+  clearLicenseIndexCache,
+} from '@/lib/licenses/classifier'
 
-describe('homepage license-bucket logic', () => {
-  it('SIL OFL variants all collapse into one bucket', () => {
+type Formula = { licenseName?: string; licenseCategory: string }
+
+describe('license classifier — YAML matchers', () => {
+  beforeEach(() => clearLicenseIndexCache())
+
+  it('SIL OFL variants all collapse into one bucket', async () => {
     const names = [
       'SIL Open Font License 1.1',
       'SIL Open Font License 1.1 (with RFN)',
@@ -41,13 +36,40 @@ describe('homepage license-bucket logic', () => {
       'ofl',
     ]
     for (const n of names) {
-      const r = bucketFormula({ licenseName: n, licenseCategory: 'open_source' })
-      expect(r.label).toBe('SIL Open Font License')
-      expect(r.kind).toBe('open')
+      const r = await classifyFormula({ licenseName: n, licenseCategory: 'open_source' } as Formula)
+      expect(r.bucket).toBe('SIL Open Font License 1.1')
+      expect(r.category).toBe('open')
+      expect(r.slug).toBe('ofl')
     }
   })
 
-  it('Microsoft licenses consolidate into one bucket', () => {
+  it('uses canonical YAML name even when fallback would also match', async () => {
+    // "Apache License 2.0" matches both the YAML matcher and the fallback matcher.
+    // The YAML entry wins; bucket should be the YAML name.
+    const r = await classifyFormula({ licenseName: 'Apache License 2.0', licenseCategory: 'open_source' } as Formula)
+    expect(r.bucket).toBe('Apache License 2.0')
+    expect(r.slug).toBe('apache')
+  })
+
+  it('routes well-known open licenses to their YAML buckets', async () => {
+    expect((await classifyFormula({ licenseName: 'IPA Font License', licenseCategory: 'open_source' } as Formula)).bucket).toBe('IPA Font License')
+    expect((await classifyFormula({ licenseName: 'Creative Commons Zero (Public Domain)', licenseCategory: 'open_source' } as Formula)).bucket).toBe('Creative Commons Zero')
+    expect((await classifyFormula({ licenseName: 'Ubuntu Font Licence 1.0', licenseCategory: 'open_source' } as Formula)).bucket).toBe('Ubuntu Font Licence 1.0')
+  })
+
+  it('exclude_matchers narrow the match — GNU GPL excludes LGPL', async () => {
+    const gpl = await classifyFormula({ licenseName: 'GNU GPL (with Font Exception)', licenseCategory: 'open_source' } as Formula)
+    expect(gpl.bucket).toBe('GNU GPL')
+    const lgpl = await classifyFormula({ licenseName: 'GNU LGPL', licenseCategory: 'open_source' } as Formula)
+    // Should NOT match the GPL entry (exclude_matchers: lgpl); falls through to fallback
+    expect(lgpl.bucket).not.toBe('GNU GPL')
+  })
+})
+
+describe('license classifier — fallback matchers', () => {
+  beforeEach(() => clearLicenseIndexCache())
+
+  it('Microsoft licenses consolidate into one bucket', async () => {
     const ms = [
       'LICENSEREF-MICROSOFT-FONTPACK-19980728',
       'LICENSEREF-MICROSOFT-OFFICE2013-1',
@@ -56,41 +78,70 @@ describe('homepage license-bucket logic', () => {
       'LICENSEREF-MICROSOFT-WEBCORE-BUNDLE',
     ]
     for (const n of ms) {
-      const r = bucketFormula({ licenseName: n, licenseCategory: 'bundled_software' })
-      expect(r.label).toBe('Microsoft')
-      expect(r.kind).toBe('prop')
+      const r = await classifyFormula({ licenseName: n, licenseCategory: 'bundled_software' } as Formula)
+      expect(r.bucket).toBe('Microsoft')
+      expect(r.category).toBe('proprietary')
+      expect(r.slug).toBeNull()
     }
   })
 
-  it('routes well-known open licenses to their canonical buckets', () => {
-    expect(bucketFormula({ licenseName: 'Apache License 2.0', licenseCategory: 'open_source' }).label).toBe('Apache License 2.0')
-    expect(bucketFormula({ licenseName: 'IPA Font License', licenseCategory: 'open_source' }).label).toBe('IPA Font License')
-    expect(bucketFormula({ licenseName: 'Creative Commons Zero (Public Domain)', licenseCategory: 'open_source' }).label).toBe('CC0 / Public Domain')
-    expect(bucketFormula({ licenseName: 'Ubuntu Font Licence 1.0', licenseCategory: 'open_source' }).label).toBe('Ubuntu Font Licence')
-    expect(bucketFormula({ licenseName: 'GNU GPL (with Font Exception)', licenseCategory: 'open_source' }).label).toBe('GNU GPL (with Font Exception)')
+  it('routes Apple-only and Adobe to their proprietary buckets', async () => {
+    expect((await classifyFormula({ licenseName: 'Apple-only License', licenseCategory: 'platform_restricted' } as Formula)).bucket).toBe('Apple-only')
+    expect((await classifyFormula({ licenseName: 'LICENSEREF-ADOBE-EULA', licenseCategory: 'platform_restricted' } as Formula)).bucket).toBe('Adobe')
   })
 
-  it('routes Apple-only and Adobe to their proprietary buckets', () => {
-    expect(bucketFormula({ licenseName: 'Apple-only License', licenseCategory: 'platform_restricted' }).label).toBe('Apple-only')
-    expect(bucketFormula({ licenseName: 'LICENSEREF-ADOBE-EULA', licenseCategory: 'platform_restricted' }).label).toBe('Adobe')
+  it('unknown open-source licenses land in "Other open source"', async () => {
+    const r = await classifyFormula({ licenseName: 'LICENSEREF-FONTOPO-FREE', licenseCategory: 'open_source' } as Formula)
+    expect(r.bucket).toBe('Other open source')
+    expect(r.category).toBe('open')
   })
 
-  it('unknown open-source licenses land in "Other open source"', () => {
-    const r = bucketFormula({ licenseName: 'LICENSEREF-FONTOPO-FREE', licenseCategory: 'open_source' })
-    expect(r.label).toBe('Other open source')
-    expect(r.kind).toBe('open')
+  it('non-open categories never produce an open bucket', async () => {
+    const r = await classifyFormula({ licenseName: 'Apache License 2.0', licenseCategory: 'platform_restricted' } as Formula)
+    expect(r.category).toBe('proprietary')
   })
 
-  it('non-open categories never produce an open bucket, even with open-ish name', () => {
-    // An "Apache" name on a platform_restricted formula is misclassified upstream,
-    // but the homepage must trust licenseCategory and route it to proprietary.
-    const r = bucketFormula({ licenseName: 'Apache License 2.0', licenseCategory: 'platform_restricted' })
-    expect(r.kind).toBe('prop')
+  it('does not throw on undefined licenseName', async () => {
+    expect(classifyFormula({ licenseCategory: 'open_source' } as Formula)).resolves.toBeDefined()
+    const r = await classifyFormula({ licenseCategory: 'open_source' } as Formula)
+    expect(r.bucket).toBe('Other open source')
+  })
+})
+
+describe('license classifier — bulk bucketing', () => {
+  beforeEach(() => clearLicenseIndexCache())
+
+  it('groups formulas and sorts by count descending', async () => {
+    const formulas: Formula[] = [
+      { licenseName: 'SIL Open Font License 1.1', licenseCategory: 'open_source' },
+      { licenseName: 'SIL Open Font License 1.1', licenseCategory: 'open_source' },
+      { licenseName: 'Apache License 2.0', licenseCategory: 'open_source' },
+      { licenseName: 'Apple-only License', licenseCategory: 'platform_restricted' },
+      { licenseName: 'LICENSEREF-MICROSOFT-OFFICE2013-1', licenseCategory: 'bundled_software' },
+    ]
+    const { open, proprietary } = await bucketFormulas(formulas as any)
+    expect(open[0]).toEqual({ bucket: 'SIL Open Font License 1.1', count: 2, slug: 'ofl' })
+    expect(open[1].bucket).toBe('Apache License 2.0')
+    expect(proprietary.find(b => b.bucket === 'Apple-only')?.count).toBe(1)
+    expect(proprietary.find(b => b.bucket === 'Microsoft')?.count).toBe(1)
+  })
+})
+
+describe('license classifier — formulaMatchesLicenseSync', () => {
+  it('returns true when name matches a matcher', () => {
+    const f = { licenseName: 'SIL Open Font License 1.1', licenseCategory: 'open_source' } as Formula
+    const lic = mockIndex[0]
+    expect(formulaMatchesLicenseSync(f as any, lic)).toBe(true)
   })
 
-  it('does not throw on undefined licenseName', () => {
-    expect(() => bucketFormula({ licenseCategory: 'open_source' })).not.toThrow()
-    const r = bucketFormula({ licenseCategory: 'open_source' })
-    expect(r.label).toBe('Other open source')
+  it('returns false on exclude_matchers hit', () => {
+    const f = { licenseName: 'GNU LGPL', licenseCategory: 'open_source' } as Formula
+    const gpl = mockIndex[5] // has exclude_matchers: ['lgpl']
+    expect(formulaMatchesLicenseSync(f as any, gpl)).toBe(false)
+  })
+
+  it('returns false when matchers array is empty', () => {
+    const f = { licenseName: 'Anything', licenseCategory: 'open_source' } as Formula
+    expect(formulaMatchesLicenseSync(f as any, { slug: 'x', name: 'X', category: 'permissive', blurb: '', matchers: [] })).toBe(false)
   })
 })
