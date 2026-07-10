@@ -198,9 +198,9 @@ for f in formulas-data.json stats.json fonts.json font-metadata.json; do
     printf '  %-25s %s bytes\n' "$f" "$sz"
   fi
 done
-count_cov=$(ls "$PUBLIC/coverage" 2>/dev/null | wc -l | tr -d ' ')
-count_details=$(find "$PUBLIC/details" -name '*.json' 2>/dev/null | wc -l | tr -d ' ')
-count_woff=$(find "$PUBLIC/woff" -name '*.woff' 2>/dev/null | wc -l | tr -d ' ')
+count_cov=$(find "$PUBLIC/coverage" -maxdepth 1 -type f 2>/dev/null | wc -l | tr -d ' ' || true)
+count_details=$(find "$PUBLIC/details" -name '*.json' 2>/dev/null | wc -l | tr -d ' ' || true)
+count_woff=$(find "$PUBLIC/woff" -name '*.woff' 2>/dev/null | wc -l | tr -d ' ' || true)
 printf '  %-25s %s files\n' "coverage/" "$count_cov"
 printf '  %-25s %s files\n' "details/" "$count_details"
 printf '  %-25s %s woff files\n' "woff/" "$count_woff"
