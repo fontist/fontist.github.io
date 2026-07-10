@@ -211,7 +211,7 @@ useHead({
 }
 .fp-lede {
   font-size: 1rem;
-  color: var(--vp-c-text-2, #555);
+  color: var(--color-ink-soft);
   max-width: 60ch;
   margin: 0;
 }
@@ -226,10 +226,10 @@ useHead({
   flex: 1;
   padding: 0.7rem 1rem;
   font-size: 1rem;
-  border: 2px solid var(--vp-c-divider, #e8e6e0);
+  border: 2px solid var(--spec-rule);
   border-radius: 8px;
-  background: var(--vp-c-bg-alt, #faf8f5);
-  color: var(--vp-c-text-1, #1a1a1a);
+  background: var(--color-paper-deep);
+  color: var(--color-ink);
 }
 .search-input:focus {
   outline: none;
@@ -237,7 +237,7 @@ useHead({
 }
 .result-count {
   font-size: 0.85rem;
-  color: var(--vp-c-text-2, #555);
+  color: var(--color-ink-soft);
   white-space: nowrap;
 }
 
@@ -247,7 +247,7 @@ useHead({
   flex-wrap: wrap;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--vp-c-divider, #e8e6e0);
+  border-bottom: 1px solid var(--spec-rule);
 }
 .filter-group { display: flex; flex-direction: column; gap: 0.3rem; }
 .filter-label {
@@ -255,14 +255,14 @@ useHead({
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
 }
 .filter-select {
   padding: 0.3rem 0.5rem;
-  border: 1px solid var(--vp-c-divider, #e8e6e0);
+  border: 1px solid var(--spec-rule);
   border-radius: 4px;
-  background: var(--vp-c-bg, #fff);
-  color: var(--vp-c-text-1, #1a1a1a);
+  background: var(--color-paper);
+  color: var(--color-ink);
   font-size: 0.85rem;
   font-family: inherit;
 }
@@ -270,9 +270,9 @@ useHead({
 .chip {
   padding: 0.25rem 0.7rem;
   font-size: 0.78rem;
-  background: var(--vp-c-bg, #fff);
-  color: var(--vp-c-text-2, #555);
-  border: 1px solid var(--vp-c-divider, #e8e6e0);
+  background: var(--color-paper);
+  color: var(--color-ink-soft);
+  border: 1px solid var(--spec-rule);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.15s;
@@ -294,10 +294,10 @@ useHead({
   width: 32px;
   height: 32px;
   padding: 0;
-  border: 1px solid var(--vp-c-divider, #e8e6e0);
+  border: 1px solid var(--spec-rule);
   border-radius: 4px;
-  background: var(--vp-c-bg-alt, #faf8f5);
-  color: var(--vp-c-text-3, #888);
+  background: var(--color-paper-deep);
+  color: var(--color-mute);
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
@@ -307,8 +307,8 @@ useHead({
   color: var(--fontist-rose, #bf4e6a);
 }
 .alpha-nav button.has-content {
-  color: var(--vp-c-text-1, #1a1a1a);
-  background: var(--vp-c-bg, #fff);
+  color: var(--color-ink);
+  background: var(--color-paper);
 }
 .alpha-nav button:disabled { opacity: 0.4; cursor: default; }
 
@@ -331,15 +331,15 @@ useHead({
   justify-content: space-between;
   align-items: center;
   padding: 0.6rem 0.9rem;
-  border: 1px solid var(--vp-c-divider, #e8e6e0);
+  border: 1px solid var(--spec-rule);
   border-radius: 6px;
-  background: var(--vp-c-bg, #fff);
+  background: var(--color-paper);
   text-decoration: none;
   transition: all 0.15s;
 }
 .family-item:hover {
   border-color: var(--fontist-rose, #bf4e6a);
-  background: var(--vp-c-bg-alt, #faf8f5);
+  background: var(--color-paper-deep);
   transform: translateX(3px);
 }
 .family-main {
@@ -351,14 +351,14 @@ useHead({
 }
 .family-name {
   font-weight: 600;
-  color: var(--vp-c-text-1, #1a1a1a);
+  color: var(--color-ink);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .family-meta {
   font-size: 0.78rem;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
 }
 .family-badges {
   display: flex;
@@ -371,9 +371,9 @@ useHead({
 .badge-license {
   font-size: 0.68rem;
   font-family: var(--spec-font-mono, monospace);
-  color: var(--vp-c-text-2, #555);
-  background: var(--vp-c-bg-soft, #faf8f5);
-  border: 1px solid var(--vp-c-divider, #e8e6e0);
+  color: var(--color-ink-soft);
+  background: var(--color-paper-deep);
+  border: 1px solid var(--spec-rule);
   padding: 0.1rem 0.35rem;
   border-radius: 3px;
   max-width: 100px;
@@ -386,7 +386,7 @@ useHead({
   line-height: 1;
 }
 .badge-redist.yes { color: var(--fontist-rose, #bf4e6a); }
-.badge-redist:not(.yes) { color: var(--vp-c-text-3, #aaa); }
+.badge-redist:not(.yes) { color: var(--color-mute); }
 
 @media (max-width: 768px) {
   .family-items { grid-template-columns: 1fr; }

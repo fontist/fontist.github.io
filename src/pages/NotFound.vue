@@ -69,7 +69,7 @@ const suggestions: { label: string; to: string; hint: string }[] = [
   gap: 0.75rem;
   margin-bottom: 2.5rem;
 }
-.nf-rule-line { flex: 1; height: 1px; background: var(--vp-c-divider, rgba(28,26,24,0.16)); }
+.nf-rule-line { flex: 1; height: 1px; background: var(--spec-rule); }
 .nf-rule-diamond { color: var(--fontist-rose); font-size: 0.65rem; opacity: 0.7; }
 
 /* ── Header ────────────────────────────────────────────────── */
@@ -150,7 +150,7 @@ const suggestions: { label: string; to: string; hint: string }[] = [
   gap: 0.15rem;
   padding: 0.85rem 1rem;
   background: var(--spec-paper);
-  border: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border: 1px solid var(--spec-rule);
   border-radius: 3px;
   text-decoration: none;
   color: var(--spec-ink);
@@ -195,7 +195,7 @@ const suggestions: { label: string; to: string; hint: string }[] = [
 /* ── Footer link ───────────────────────────────────────────── */
 .nf-foot {
   padding-top: 1.5rem;
-  border-top: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border-top: 1px solid var(--spec-rule);
 }
 
 .nf-back {

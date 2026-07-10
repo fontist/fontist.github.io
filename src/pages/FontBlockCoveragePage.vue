@@ -178,7 +178,7 @@ useHead(() => ({
 .fbcp-head {
   margin-bottom: 2rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border-bottom: 1px solid var(--spec-rule);
 }
 
 .fbcp-back {
@@ -259,7 +259,7 @@ useHead(() => ({
 .fbcp-stat-divider {
   width: 1px;
   align-self: stretch;
-  background: var(--vp-c-divider, rgba(28,26,24,0.16));
+  background: var(--spec-rule);
 }
 
 .fbcp-switcher { margin-bottom: 1.5rem; }
@@ -278,7 +278,7 @@ useHead(() => ({
   gap: 0.5rem;
   padding: 0.35rem 0.7rem;
   background: transparent;
-  border: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border: 1px solid var(--spec-rule);
   border-radius: 3px;
   cursor: pointer;
   font-family: var(--spec-font-mono);

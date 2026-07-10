@@ -170,7 +170,7 @@ function switchFormula(formulaSlug: string) {
 .fsp-header {
   margin-bottom: 2rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border-bottom: 1px solid var(--spec-rule);
 }
 .fsp-family-link {
   margin: 0 0 0.6rem;
@@ -225,13 +225,13 @@ function switchFormula(formulaSlug: string) {
 .fsp-meta {
   margin: 0.5rem 0 0;
   font-size: 0.82rem;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
 }
 .fsp-code {
   font-family: var(--spec-font-mono, monospace);
   font-size: 0.78rem;
-  background: var(--vp-c-bg-soft, #faf8f5);
-  border: 1px solid var(--vp-c-divider, #e8e6e0);
+  background: var(--color-paper-deep);
+  border: 1px solid var(--spec-rule);
   padding: 0.05rem 0.35rem;
   border-radius: 3px;
 }
@@ -263,7 +263,7 @@ function switchFormula(formulaSlug: string) {
 .fsp-provenance {
   margin-bottom: 1.5rem;
   padding: 0.9rem 1rem;
-  background: var(--vp-c-bg-soft, #faf8f5);
+  background: var(--color-paper-deep);
   border-left: 3px solid var(--fontist-rose, #bf4e6a);
   border-radius: 0 4px 4px 0;
 }
@@ -276,7 +276,7 @@ function switchFormula(formulaSlug: string) {
   color: var(--spec-ink);
   position: relative;
   padding-bottom: 0.4rem;
-  border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border-bottom: 1px solid var(--spec-rule);
 }
 .fsp-section-title::before {
   content: '';
@@ -297,9 +297,9 @@ function switchFormula(formulaSlug: string) {
 .fsp-formula-link {
   font-family: var(--spec-font-mono, monospace);
   font-size: 0.82rem;
-  color: var(--vp-c-text-1, #1a1a1a);
-  background: var(--vp-c-bg, #fff);
-  border: 1px solid var(--vp-c-divider, #e8e6e0);
+  color: var(--color-ink);
+  background: var(--color-paper);
+  border: 1px solid var(--spec-rule);
   padding: 0.25rem 0.6rem;
   border-radius: 3px;
   text-decoration: none;
@@ -321,8 +321,8 @@ function switchFormula(formulaSlug: string) {
   align-items: center;
   gap: 0.5rem;
   padding: 0.35rem 0.75rem;
-  background: var(--vp-c-bg, #fff);
-  border: 1px solid var(--vp-c-divider, #e8e6e0);
+  background: var(--color-paper);
+  border: 1px solid var(--spec-rule);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s;
@@ -336,15 +336,15 @@ function switchFormula(formulaSlug: string) {
 .fsp-chip-formula {
   font-family: var(--spec-font-mono, monospace);
   font-size: 0.78rem;
-  color: var(--vp-c-text-1, #1a1a1a);
+  color: var(--color-ink);
 }
 .fsp-chip.on .fsp-chip-formula { color: #fff; }
 .fsp-chip-flag {
   font-size: 0.62rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--vp-c-text-3, #888);
-  border-left: 1px solid var(--vp-c-divider, #e8e6e0);
+  color: var(--color-mute);
+  border-left: 1px solid var(--spec-rule);
   padding-left: 0.5rem;
 }
 .fsp-chip.on .fsp-chip-flag { color: rgba(255, 255, 255, 0.75); border-left-color: rgba(255, 255, 255, 0.3); }
@@ -353,11 +353,11 @@ function switchFormula(formulaSlug: string) {
 .fsp-empty {
   padding: 1.5rem;
   text-align: center;
-  background: var(--vp-c-bg-soft, #faf8f5);
+  background: var(--color-paper-deep);
   border-radius: 8px;
 }
-.fsp-empty p { margin: 0 0 0.3rem; color: var(--vp-c-text-2, #555); }
-.fsp-empty-hint { font-size: 0.85rem; color: var(--vp-c-text-3, #888); }
+.fsp-empty p { margin: 0 0 0.3rem; color: var(--color-ink-soft); }
+.fsp-empty-hint { font-size: 0.85rem; color: var(--color-mute); }
 
 .fsp-loading {
   display: flex;
@@ -366,6 +366,6 @@ function switchFormula(formulaSlug: string) {
   justify-content: center;
   gap: 0.5rem;
   min-height: 50vh;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
 }
 </style>

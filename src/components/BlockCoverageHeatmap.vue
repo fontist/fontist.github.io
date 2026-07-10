@@ -321,7 +321,7 @@ function openBlock(tile: Tile) {
   gap: 2.5rem;
   align-items: end;
   padding: 0 0 1.5rem;
-  border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border-bottom: 1px solid var(--spec-rule);
   margin-bottom: 1.75rem;
 }
 
@@ -396,7 +396,7 @@ function openBlock(tile: Tile) {
 .cov-stats-divider {
   width: 1px;
   align-self: stretch;
-  background: var(--vp-c-divider, rgba(28,26,24,0.16));
+  background: var(--spec-rule);
   margin: 0.2rem 0;
 }
 
@@ -414,7 +414,7 @@ function openBlock(tile: Tile) {
   gap: 0.4rem;
   padding: 0.4rem 0.7rem 0.35rem;
   background: transparent;
-  border: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border: 1px solid var(--spec-rule);
   border-radius: 3px;
   font-family: var(--spec-font-mono);
   font-size: 0.74rem;
@@ -459,7 +459,7 @@ function openBlock(tile: Tile) {
   gap: 1rem;
   padding-bottom: 0.6rem;
   margin-bottom: 0.75rem;
-  border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border-bottom: 1px solid var(--spec-rule);
 }
 
 .cov-plane-title {
@@ -632,7 +632,7 @@ function openBlock(tile: Tile) {
   gap: 0.5rem 1.25rem;
   margin-top: 2rem;
   padding-top: 1rem;
-  border-top: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border-top: 1px solid var(--spec-rule);
 }
 
 .cov-legend-label {

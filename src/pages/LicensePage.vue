@@ -68,5 +68,5 @@ useHead(() => ({
 
 <style scoped>
 .license-page { max-width: 800px; }
-.lp-notfound { padding: 3rem 1rem; text-align: center; color: var(--vp-c-text-2); }
+.lp-notfound { padding: 3rem 1rem; text-align: center; color: var(--color-ink-soft); }
 </style>

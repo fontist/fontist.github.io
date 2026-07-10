@@ -175,11 +175,11 @@ function displayName(char: UnicodeCharacter): string {
   gap: 1.5rem;
   padding: 0.6rem 0.8rem;
   margin-bottom: 0.75rem;
-  background: var(--vp-c-bg-soft, #f8f7f4);
-  border: 1px solid var(--vp-c-divider, #e8e6e0);
+  background: var(--color-paper-deep);
+  border: 1px solid var(--spec-rule);
   border-radius: 6px;
   font-size: 0.78rem;
-  color: var(--vp-c-text-2, #555);
+  color: var(--color-ink-soft);
 }
 .ub-legend-item {
   display: flex;
@@ -191,12 +191,12 @@ function displayName(char: UnicodeCharacter): string {
   width: 28px;
   height: 20px;
   border-radius: 3px;
-  border: 1px solid var(--vp-c-divider, #ccc);
+  border: 1px solid var(--spec-rule);
 }
 .ub-legend-swatch--ok {
-  background: var(--vp-c-bg, #fff);
+  background: var(--color-paper);
   border-style: solid;
-  border-color: var(--vp-c-divider, #ccc);
+  border-color: var(--spec-rule);
 }
 .ub-legend-swatch--no {
   background: repeating-linear-gradient(
@@ -205,14 +205,14 @@ function displayName(char: UnicodeCharacter): string {
     transparent 3px,
     rgba(0,0,0,0.08) 3px,
     rgba(0,0,0,0.08) 5px
-  ), var(--vp-c-bg-alt, #f2f1ed);
+  ), var(--color-paper-deep);
   border-style: dashed;
-  border-color: var(--vp-c-text-3, #999);
+  border-color: var(--color-mute);
 }
 .ub-legend-hint {
   margin-left: auto;
   font-size: 0.72rem;
-  color: var(--vp-c-text-3, #999);
+  color: var(--color-mute);
   font-style: italic;
 }
 
@@ -228,8 +228,8 @@ function displayName(char: UnicodeCharacter): string {
   width: 158px;
   min-height: 120px;
   padding: 6px;
-  background: var(--vp-c-bg, #fff);
-  border: 1px solid var(--vp-c-divider, #e2e2e3);
+  background: var(--color-paper);
+  border: 1px solid var(--spec-rule);
   border-radius: 6px;
   cursor: pointer;
   overflow: hidden;
@@ -243,13 +243,13 @@ function displayName(char: UnicodeCharacter): string {
 .ub-cell.missing {
   background: repeating-linear-gradient(
     135deg,
-    var(--vp-c-bg-alt, #f2f1ed),
-    var(--vp-c-bg-alt, #f2f1ed) 3px,
-    var(--vp-c-bg-soft, #f8f7f4) 3px,
-    var(--vp-c-bg-soft, #f8f7f4) 6px
+    var(--color-paper-deep),
+    var(--color-paper-deep) 3px,
+    var(--color-paper-deep) 3px,
+    var(--color-paper-deep) 6px
   );
   border-style: dashed;
-  border-color: var(--vp-c-text-3, #999);
+  border-color: var(--color-mute);
   opacity: 0.55;
 }
 .ub-missing-badge {
@@ -263,8 +263,8 @@ function displayName(char: UnicodeCharacter): string {
 }
 .ub-cp {
   font-size: 0.55rem;
-  font-family: var(--vp-font-family-mono, monospace);
-  color: var(--vp-c-text-3, #888);
+  font-family: var(--font-mono);
+  color: var(--color-mute);
 }
 
 /* Glyph box with typographic guide lines */
@@ -317,15 +317,15 @@ function displayName(char: UnicodeCharacter): string {
 .ub-control-box {
   position: relative;
   z-index: 1;
-  font-family: var(--vp-font-family-mono, monospace);
+  font-family: var(--font-mono);
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.04em;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
   padding: 0.25rem 0.5rem;
-  border: 1px dashed var(--vp-c-text-3, #aaa);
+  border: 1px dashed var(--color-mute);
   border-radius: 3px;
-  background: var(--vp-c-bg-alt, #f6f6f7);
+  background: var(--color-paper-deep);
 }
 
 .ub-multi {
@@ -342,7 +342,7 @@ function displayName(char: UnicodeCharacter): string {
 .ub-name {
   font-size: 0.5rem;
   text-align: center;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
   line-height: 1.1;
   overflow: hidden;
   display: -webkit-box;

@@ -45,7 +45,7 @@ const CATEGORY_LABELS: Record<Props['category'], string> = {
   gap: 0.5rem;
   padding: 1.25rem 1.25rem 1rem;
   background: var(--spec-paper);
-  border: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border: 1px solid var(--spec-rule);
   border-top-width: 3px;
   border-radius: 3px;
   text-decoration: none;
@@ -98,7 +98,7 @@ const CATEGORY_LABELS: Record<Props['category'], string> = {
   align-items: baseline;
   justify-content: space-between;
   padding-top: 0.7rem;
-  border-top: 1px solid var(--vp-c-divider, rgba(28,26,24,0.1));
+  border-top: 1px solid var(--spec-rule);
   margin-top: auto;
 }
 

@@ -91,9 +91,9 @@ function goToChar(cp: number) {
 .pdp { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
 .pdp-head { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--fontist-rose, #bf4e6a); }
 .pdp-back { font-size: 0.85rem; color: var(--fontist-rose, #bf4e6a); text-decoration: none; }
-.pdp-up { font-size: 0.78rem; color: var(--vp-c-text-3, #888); text-decoration: none; }
+.pdp-up { font-size: 0.78rem; color: var(--color-mute); text-decoration: none; }
 .pdp-up:hover { color: var(--fontist-rose, #bf4e6a); }
 .pdp-head h1 { font-family: var(--spec-font-mono); font-size: 1.3rem; margin: 0; }
-.pdp-count { font-size: 0.75rem; font-family: var(--spec-font-mono); color: var(--vp-c-text-3, #888); margin-left: auto; }
-.pdp-loading { display: flex; align-items: center; justify-content: center; height: 50vh; color: var(--vp-c-text-3, #888); }
+.pdp-count { font-size: 0.75rem; font-family: var(--spec-font-mono); color: var(--color-mute); margin-left: auto; }
+.pdp-loading { display: flex; align-items: center; justify-content: center; height: 50vh; color: var(--color-mute); }
 </style>

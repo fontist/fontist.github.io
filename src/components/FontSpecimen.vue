@@ -127,7 +127,7 @@ onMounted(async () => {
   font-weight: 500;
   line-height: 1;
   letter-spacing: -0.03em;
-  color: var(--vp-c-text-1);
+  color: var(--color-ink);
   outline: none;
   caret-color: var(--fontist-rose, #bf4e6a);
   padding: 0.5rem 0;
@@ -135,7 +135,7 @@ onMounted(async () => {
 }
 
 .specimen-hero:focus {
-  background: var(--vp-c-bg-soft);
+  background: var(--color-paper-deep);
 }
 
 .specimen-strip {
@@ -146,7 +146,7 @@ onMounted(async () => {
 }
 
 .specimen-line {
-  color: var(--vp-c-text-2);
+  color: var(--color-ink-soft);
   outline: none;
   caret-color: var(--fontist-rose, #bf4e6a);
   cursor: text;
@@ -155,7 +155,7 @@ onMounted(async () => {
 }
 
 .specimen-line:focus {
-  background: var(--vp-c-bg-soft);
+  background: var(--color-paper-deep);
 }
 
 /* Controls */
@@ -165,7 +165,7 @@ onMounted(async () => {
   gap: 1rem 2rem;
   align-items: flex-end;
   padding: 1rem 0;
-  border-top: 1px solid var(--vp-c-divider);
+  border-top: 1px solid var(--spec-rule);
 }
 
 .control-group {
@@ -179,13 +179,13 @@ onMounted(async () => {
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--vp-c-text-3);
+  color: var(--color-mute);
   display: flex;
   justify-content: space-between;
 }
 
 .control-value {
-  font-family: var(--vp-font-family-mono, monospace);
+  font-family: var(--font-mono);
   color: var(--fontist-rose, #bf4e6a);
 }
 
@@ -193,7 +193,7 @@ onMounted(async () => {
   -webkit-appearance: none;
   width: 100%;
   height: 4px;
-  background: var(--vp-c-divider);
+  background: var(--spec-rule);
   border-radius: 2px;
   outline: none;
 }
@@ -225,10 +225,10 @@ onMounted(async () => {
 .feature-chip {
   padding: 0.2rem 0.6rem;
   font-size: 0.7rem;
-  font-family: var(--vp-font-family-mono, monospace);
-  background: var(--vp-c-bg-soft);
-  color: var(--vp-c-text-3);
-  border: 1px solid var(--vp-c-divider);
+  font-family: var(--font-mono);
+  background: var(--color-paper-deep);
+  color: var(--color-mute);
+  border: 1px solid var(--spec-rule);
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.15s;
@@ -244,25 +244,25 @@ onMounted(async () => {
 .specimen-unavailable {
   padding: 1.5rem;
   border-left: 3px solid var(--fontist-rose, #bf4e6a);
-  background: var(--vp-c-bg-soft);
+  background: var(--color-paper-deep);
 }
 
 .unavailable-text {
   font-size: 0.9rem;
-  color: var(--vp-c-text-2);
+  color: var(--color-ink-soft);
   margin: 0 0 0.3rem 0;
 }
 
 .unavailable-hint {
   font-size: 0.8rem;
-  color: var(--vp-c-text-3);
+  color: var(--color-mute);
   margin: 0;
 }
 
 .unavailable-hint code {
-  font-family: var(--vp-font-family-mono, monospace);
+  font-family: var(--font-mono);
   font-size: 0.75rem;
-  background: var(--vp-c-bg);
+  background: var(--color-paper);
   padding: 0.1em 0.3em;
   border-radius: 2px;
 }

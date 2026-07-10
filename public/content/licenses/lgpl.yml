@@ -1,0 +1,31 @@
+slug: lgpl
+name: GNU LGPL (with font exception)
+short_name: LGPL
+spdx: LGPL-3.0-or-later
+version: '3.0'
+year_adopted: '1999'
+category: copyleft
+blurb: A library-style copyleft license with explicit font-embedding exception; mostly
+  used for the Ghostscript font collection.
+matchers:
+- lgpl
+permissions:
+  commercial-static: 'yes'
+  commercial-web: 'yes'
+  commercial-app: 'yes'
+  commercial-server: 'yes'
+  open-source: conditional
+  modification: conditional
+  redistribute: conditional
+  standalone-sale: 'no'
+  embed-document: 'yes'
+  subsetting: 'yes'
+  rename: 'yes'
+  attribution: conditional
+siblings:
+- gpl
+examples:
+- name: URW++ Base 35
+  note: Ghostscript's 35-font PS replacement set
+- name: Liberation Sans
+  note: Red Hat's metrics-compatible Arial substitute

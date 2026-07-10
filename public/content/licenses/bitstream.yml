@@ -1,0 +1,32 @@
+slug: bitstream
+name: Bitstream Vera License
+short_name: Bitstream
+spdx: Bitstream-Vera
+version: '1.0'
+year_adopted: '2003'
+category: permissive
+blurb: A precursor to OFL, designed for Bitstream's Vera family; still used by derivative
+  works like DejaVu.
+matchers:
+- bitstream
+permissions:
+  commercial-static: 'yes'
+  commercial-web: 'yes'
+  commercial-app: 'yes'
+  commercial-server: 'yes'
+  open-source: 'yes'
+  modification: conditional
+  redistribute: conditional
+  standalone-sale: 'no'
+  embed-document: 'yes'
+  subsetting: 'yes'
+  rename: 'yes'
+  attribution: conditional
+siblings:
+- ofl
+- mit
+examples:
+- name: DejaVu Sans
+  note: Widely-installed Linux system font
+- name: DejaVu Sans Mono
+  note: Console-friendly monospace variant

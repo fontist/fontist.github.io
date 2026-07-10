@@ -47,7 +47,7 @@ const CATEGORY_LABELS: Record<Props['category'], string> = {
   gap: 0.6rem;
   padding: 1.25rem 1.25rem 1rem;
   background: var(--spec-paper);
-  border: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border: 1px solid var(--spec-rule);
   border-left-width: 3px;
   border-radius: 3px;
   text-decoration: none;
@@ -60,7 +60,7 @@ const CATEGORY_LABELS: Record<Props['category'], string> = {
 .lc--permissive    { border-left-color: #a8c19e; }
 .lc--copyleft      { border-left-color: #c19e9e; }
 .lc--public-domain { border-left-color: #c1b89e; }
-.lc--special       { border-left-color: var(--vp-c-divider, rgba(28,26,24,0.32)); }
+.lc--special       { border-left-color: var(--spec-rule); }
 
 .lc:hover {
   transform: translateY(-2px);
@@ -116,7 +116,7 @@ const CATEGORY_LABELS: Record<Props['category'], string> = {
   align-items: baseline;
   gap: 0.5rem;
   padding-top: 0.7rem;
-  border-top: 1px solid var(--vp-c-divider, rgba(28,26,24,0.1));
+  border-top: 1px solid var(--spec-rule);
   margin-top: auto;
 }
 

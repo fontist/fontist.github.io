@@ -1,0 +1,29 @@
+slug: cc-by
+name: Creative Commons Attribution 4.0
+short_name: CC BY 4.0
+spdx: CC-BY-4.0
+version: '4.0'
+year_adopted: '2013'
+category: permissive
+blurb: A general-purpose license borrowed from creative work; permissive for fonts
+  but requires explicit attribution.
+matchers:
+- CC BY
+permissions:
+  commercial-static: 'yes'
+  commercial-web: 'yes'
+  commercial-app: 'yes'
+  commercial-server: 'yes'
+  open-source: 'yes'
+  modification: 'yes'
+  redistribute: conditional
+  standalone-sale: 'no'
+  embed-document: 'yes'
+  subsetting: 'yes'
+  rename: 'yes'
+  attribution: conditional
+siblings:
+- cc-by-sa
+- mit
+- ofl
+examples: []

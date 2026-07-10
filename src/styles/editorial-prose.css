@@ -127,7 +127,7 @@
 
 .editorial-body hr {
   border: none;
-  border-top: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border-top: 1px solid var(--spec-rule);
   margin: 2.5rem 0;
 }
 
@@ -144,7 +144,7 @@
 .editorial-body th,
 .editorial-body td {
   padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.1));
+  border-bottom: 1px solid var(--spec-rule);
   text-align: left;
   vertical-align: top;
 }

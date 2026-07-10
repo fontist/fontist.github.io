@@ -1,0 +1,33 @@
+slug: mit
+name: MIT License
+short_name: MIT
+spdx: MIT
+version: (unspecified)
+year_adopted: '1988'
+category: permissive
+blurb: 'The shortest permissive license: do anything, just keep the copyright notice.
+  Occasionally adopted for fonts.'
+matchers:
+- mit
+permissions:
+  commercial-static: 'yes'
+  commercial-web: 'yes'
+  commercial-app: 'yes'
+  commercial-server: 'yes'
+  open-source: 'yes'
+  modification: 'yes'
+  redistribute: conditional
+  standalone-sale: 'no'
+  embed-document: 'yes'
+  subsetting: 'yes'
+  rename: 'yes'
+  attribution: conditional
+siblings:
+- apache
+- bsd
+- ofl
+examples:
+- name: Hack
+  note: Powerline-friendly coding font
+- name: Fira Code
+  note: Mozilla's ligature-rich coding font (dual MIT + OFL)

@@ -120,9 +120,6 @@ const motdText = ref('')
 const motdIndex = ref(0)
 let typeTimer: ReturnType<typeof setTimeout> | null = null
 
-const essenfontSample = 'Aαあ字€→😀⟁'
-const essenfontDemoText = ref('')
-
 function typeMotd() {
   const msg = motds[motdIndex.value]
   let i = 0
@@ -342,64 +339,36 @@ useHead({
       </div>
     </section>
 
-    <!-- Essenfont spotlight -->
-    <section class="section essenfont-spotlight divider">
+    <!-- Ecosystem companion projects -->
+    <section class="section ecosystem divider">
       <div class="wrap">
         <header class="head">
           <div>
-            <p class="eyebrow">§ Universal Font</p>
-            <h2>Every glyph.<br /><em>One font.</em></h2>
+            <p class="eyebrow">§ Companion Projects</p>
+            <h2>Beyond the<br /><em>registry.</em></h2>
           </div>
           <p class="lede">
-            <strong>essenfont</strong> — a single OFL-licensed font covering every assigned
-            Unicode 17 codepoint. 131,000+ glyphs, 346 blocks, 5 planes. No more tofu.
+            Two sibling projects extend the Fontist ecosystem — one builds a universal
+            Unicode font, the other delivers meteorological symbols.
           </p>
         </header>
 
-        <div class="esf-demo">
-          <div class="esf-demo-stage">
-            <span class="esf-demo-glyph">{{ essenfontDemoText || essenfontSample }}</span>
-          </div>
-          <div class="esf-demo-input-wrap">
-            <input
-              v-model="essenfontDemoText"
-              type="text"
-              class="esf-demo-input"
-              :placeholder="essenfontSample"
-              maxlength="60"
-              aria-label="Type any text to render in essenfont"
-            />
-            <span class="esf-demo-hint">↑ type anything — every character renders</span>
-          </div>
-        </div>
-
-        <div class="esf-stats">
-          <div class="esf-stat">
-            <span class="esf-stat-num">131K+</span>
-            <span class="esf-stat-label">glyphs</span>
-          </div>
-          <span class="esf-stat-divider"></span>
-          <div class="esf-stat">
-            <span class="esf-stat-num">346</span>
-            <span class="esf-stat-label">blocks</span>
-          </div>
-          <span class="esf-stat-divider"></span>
-          <div class="esf-stat">
-            <span class="esf-stat-num">5</span>
-            <span class="esf-stat-label">planes</span>
-          </div>
-          <span class="esf-stat-divider"></span>
-          <div class="esf-stat">
-            <span class="esf-stat-num">OFL</span>
-            <span class="esf-stat-label">licensed</span>
-          </div>
-        </div>
-
-        <div class="esf-actions">
-          <a href="https://www.essenfont.org" class="btn-ink" rel="noreferrer">
-            Download essenfont →
+        <div class="eco-grid">
+          <a href="https://www.essenfont.org" class="eco-card" rel="noreferrer">
+            <img src="/logos/essenfont-light.svg" alt="Essenfont" class="eco-card-logo eco-card-logo--light" />
+            <img src="/logos/essenfont-dark.svg" alt="Essenfont" class="eco-card-logo eco-card-logo--dark" />
+            <span class="eco-card-eyebrow">essenfont.org</span>
+            <h3 class="eco-card-name">Essenfont</h3>
+            <p class="eco-card-desc">The universal Unicode 17 font. One OFL-licensed typeface covering every assigned codepoint — 131K+ glyphs across 346 blocks and 5 planes. Real vector outlines, not placeholder boxes.</p>
+            <span class="eco-card-arrow">→</span>
           </a>
-          <code class="esf-install">fontist install "essenfont"</code>
+          <a href="https://www.metfont.org" class="eco-card" rel="noreferrer">
+            <img src="/logos/metfont-icon.svg" alt="MetFont" class="eco-card-logo" />
+            <span class="eco-card-eyebrow">metfont.org</span>
+            <h3 class="eco-card-name">MetFont</h3>
+            <p class="eco-card-desc">541 WMO and ICAO meteorological symbols as an open-source font. Browse, search, and download every weather glyph — accurate symbols for accurate weather.</p>
+            <span class="eco-card-arrow">→</span>
+          </a>
         </div>
       </div>
     </section>
@@ -855,127 +824,83 @@ useHead({
 }
 .fb-foot a { color: var(--fontist-rose); border-bottom: 1px solid currentColor; padding-bottom: 1px; }
 
-/* ── Essenfont spotlight ───────────────────────────────────── */
-.essenfont-spotlight {
-  background: var(--spec-paper-deep);
-  padding-top: clamp(48px, 8vw, 96px) !important;
-  padding-bottom: clamp(48px, 8vw, 96px) !important;
-}
-.essenfont-spotlight .head h2 em { color: var(--fontist-rose); font-style: italic; }
-.essenfont-spotlight .head .lede strong { color: var(--fontist-rose); }
+/* ── Ecosystem companion projects ──────────────────────────── */
+.ecosystem .head h2 em { color: var(--fontist-rose); font-style: italic; }
 
-.esf-demo {
-  margin: 2.5rem 0;
+.eco-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.eco-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.5rem 1.5rem 1.25rem;
   background: var(--spec-paper);
   border: 1px solid var(--spec-rule);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.esf-demo-stage {
-  padding: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem);
-  text-align: center;
+  border-left: 3px solid var(--fontist-rose);
+  border-radius: 3px;
+  text-decoration: none;
+  color: var(--spec-ink);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
   min-height: 180px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.esf-demo-glyph {
-  font-family: 'Essenfont', 'IBM Plex Sans', sans-serif;
-  font-size: clamp(2.5rem, 8vw, 5rem);
-  line-height: 1.2;
-  color: var(--spec-ink);
-  letter-spacing: 0.05em;
-  word-break: break-all;
+.eco-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(28,26,24,0.08);
 }
 
-.esf-demo-input-wrap {
-  padding: 0.75rem 1rem;
-  border-top: 1px solid var(--spec-rule);
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.esf-demo-input {
-  flex: 1;
-  min-width: 200px;
-  padding: 0.5rem 0;
-  border: none;
-  background: transparent;
-  font-family: var(--spec-font-mono);
-  font-size: 0.85rem;
-  color: var(--spec-ink);
-  border-bottom: 1px solid transparent;
-  transition: border-color 0.2s ease;
-}
-.esf-demo-input:focus {
-  outline: none;
-  border-bottom-color: var(--fontist-rose);
-}
-.esf-demo-input::placeholder { color: var(--spec-mute); font-style: italic; }
-
-.esf-demo-hint {
+.eco-card-eyebrow {
   font-family: var(--spec-font-mono);
   font-size: 0.65rem;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--spec-mute);
-  white-space: nowrap;
-}
-
-.esf-stats {
-  display: flex;
-  align-items: baseline;
-  gap: 1.5rem;
-  padding: 1.25rem 0;
-  border-top: 1px solid var(--spec-rule);
-  border-bottom: 1px solid var(--spec-rule);
-  flex-wrap: wrap;
-}
-
-.esf-stat { display: flex; flex-direction: column; gap: 0.15rem; }
-
-.esf-stat-num {
-  font-family: var(--spec-font-display);
-  font-size: 1.5rem;
-  font-weight: 400;
-  color: var(--fontist-rose);
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-}
-
-.esf-stat-label {
-  font-family: var(--spec-font-mono);
-  font-size: 0.62rem;
-  text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--spec-mute);
+  font-weight: 600;
 }
 
-.esf-stat-divider {
-  width: 1px;
-  align-self: stretch;
-  background: var(--spec-rule);
+.eco-card-name {
+  font-family: var(--spec-font-display);
+  font-size: 1.6rem;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--spec-ink);
+  letter-spacing: -0.01em;
+  margin: 0.15rem 0 0.3rem;
 }
 
-.esf-actions {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  margin-top: 1.5rem;
-  flex-wrap: wrap;
-}
-
-.esf-install {
-  font-family: var(--spec-font-mono);
-  font-size: 0.82rem;
-  background: var(--spec-paper);
-  padding: 0.4rem 0.75rem;
-  border-radius: 3px;
-  border: 1px solid var(--spec-rule);
+.eco-card-desc {
+  font-family: var(--spec-font-body);
+  font-size: 0.88rem;
+  line-height: 1.55;
   color: var(--spec-ink-soft);
+  margin: 0;
 }
+
+.eco-card-arrow {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  font-size: 1rem;
+  color: var(--spec-mute);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.eco-card:hover .eco-card-arrow {
+  color: var(--fontist-rose);
+  transform: translateX(3px);
+}
+
+.eco-card-logo {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 0.25rem;
+}
+.eco-card-logo--dark { display: none; }
+html.dark .eco-card-logo--light { display: none; }
+html.dark .eco-card-logo--dark { display: block; }
 </style>

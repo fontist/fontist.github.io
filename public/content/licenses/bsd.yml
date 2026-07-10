@@ -1,0 +1,29 @@
+slug: bsd
+name: BSD License (3-Clause)
+short_name: BSD-3
+spdx: BSD-3-Clause
+version: (unspecified)
+year_adopted: 1990s
+category: permissive
+blurb: Like MIT but with a non-endorsement clause — you can't use the author's name
+  to promote derived works.
+matchers:
+- bsd
+permissions:
+  commercial-static: 'yes'
+  commercial-web: 'yes'
+  commercial-app: 'yes'
+  commercial-server: 'yes'
+  open-source: 'yes'
+  modification: 'yes'
+  redistribute: conditional
+  standalone-sale: 'no'
+  embed-document: 'yes'
+  subsetting: 'yes'
+  rename: 'yes'
+  attribution: conditional
+siblings:
+- mit
+- apache
+- ofl
+examples: []

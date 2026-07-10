@@ -66,7 +66,7 @@ const categoryLabels: Record<Props['category'], string> = {
 <style scoped>
 .lh {
   padding: 0 0 1.5rem;
-  border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border-bottom: 1px solid var(--spec-rule);
   margin-bottom: 2.5rem;
 }
 
@@ -87,13 +87,13 @@ const categoryLabels: Record<Props['category'], string> = {
   text-transform: uppercase;
   letter-spacing: 0.14em;
   padding: 0.25rem 0.5rem 0.2rem;
-  border: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border: 1px solid var(--spec-rule);
   border-radius: 2px;
 }
 .lh-cat--permissive    { color: #6b8f71; border-color: #c9dcc8; background: rgba(201,220,200,0.4); }
 .lh-cat--copyleft      { color: #8a6b6b; border-color: #f0d6d6; background: rgba(240,214,214,0.35); }
 .lh-cat--public-domain { color: #8a7a5e; border-color: #edeed5; background: rgba(237,238,213,0.4); }
-.lh-cat--special       { color: var(--spec-ink-soft); border-color: var(--vp-c-divider, rgba(28,26,24,0.16)); background: transparent; }
+.lh-cat--special       { color: var(--spec-ink-soft); border-color: var(--spec-rule); background: transparent; }
 html.dark .lh-cat--permissive    { color: #b6d2b8; }
 html.dark .lh-cat--copyleft      { color: #d4b6b6; }
 html.dark .lh-cat--public-domain { color: #c9c39e; }
@@ -145,7 +145,7 @@ html.dark .lh-cat--public-domain { color: #c9c39e; }
   gap: 0 2rem;
   margin: 0;
   padding: 1rem 0 0;
-  border-top: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border-top: 1px solid var(--spec-rule);
 }
 
 .lh-stat { margin: 0; padding: 0; }

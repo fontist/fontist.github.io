@@ -128,7 +128,7 @@ function selectFile(slug: string) {
 .ffup-head {
   margin-bottom: 1.5rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--vp-c-divider, #e8e6e0);
+  border-bottom: 1px solid var(--spec-rule);
 }
 .ffup-back {
   font-size: 0.85rem;
@@ -138,11 +138,11 @@ function selectFile(slug: string) {
 .ffup-head h1 {
   font-size: 1.5rem;
   margin: 0.3rem 0 0.25rem;
-  color: var(--vp-c-text-1, #1a1a1a);
+  color: var(--color-ink);
 }
 .ffup-meta {
   font-size: 0.82rem;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
   margin: 0;
 }
 
@@ -153,7 +153,7 @@ function selectFile(slug: string) {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   margin: 0 0 0.5rem;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
 }
 .ffup-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .ffup-chip {
@@ -161,8 +161,8 @@ function selectFile(slug: string) {
   flex-direction: column;
   align-items: flex-start;
   padding: 0.35rem 0.75rem;
-  background: var(--vp-c-bg, #fff);
-  border: 1px solid var(--vp-c-divider, #e8e6e0);
+  background: var(--color-paper);
+  border: 1px solid var(--spec-rule);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s;
@@ -173,19 +173,19 @@ function selectFile(slug: string) {
   background: var(--fontist-rose, #bf4e6a);
   border-color: var(--fontist-rose, #bf4e6a);
 }
-.ffup-chip-style { font-size: 0.82rem; font-weight: 600; color: var(--vp-c-text-1, #1a1a1a); }
+.ffup-chip-style { font-size: 0.82rem; font-weight: 600; color: var(--color-ink); }
 .ffup-chip.on .ffup-chip-style { color: #fff; }
 .ffup-chip-formula {
   font-family: var(--spec-font-mono, monospace);
   font-size: 0.68rem;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
 }
 .ffup-chip.on .ffup-chip-formula { color: rgba(255, 255, 255, 0.75); }
 
 .ffup-compare-link {
   margin-top: 2rem;
   padding: 1rem;
-  background: var(--vp-c-bg-soft, #faf8f5);
+  background: var(--color-paper-deep);
   border-radius: 6px;
   text-align: center;
 }
@@ -199,7 +199,7 @@ function selectFile(slug: string) {
 .ffup-empty {
   padding: 2rem;
   text-align: center;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
 }
 .ffup-loading {
   display: flex;
@@ -208,6 +208,6 @@ function selectFile(slug: string) {
   justify-content: center;
   gap: 0.5rem;
   min-height: 50vh;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
 }
 </style>

@@ -5,26 +5,36 @@
     "gen-routes": "node scripts/gen-ssg-routes.mjs",
     "gen-unicode": "node scripts/gen-unicode-data.mjs",
     "gen-font-families": "node scripts/gen-font-families.mjs",
-    "build": "bash scripts/fetch-data.sh && node scripts/gen-font-families.mjs && node scripts/gen-ssg-routes.mjs && vite-ssg build",
-    "build:no-fetch": "node scripts/gen-font-families.mjs && node scripts/gen-ssg-routes.mjs && vite-ssg build",
+    "gen-licenses": "node scripts/gen-licenses-index.mjs",
+    "build": "bash scripts/fetch-data.sh && node scripts/gen-font-families.mjs && node scripts/gen-licenses-index.mjs && node scripts/gen-ssg-routes.mjs && vite-ssg build",
+    "build:no-fetch": "node scripts/gen-font-families.mjs && node scripts/gen-licenses-index.mjs && node scripts/gen-ssg-routes.mjs && vite-ssg build",
     "preview": "vite preview",
     "format": "prettier -w .",
     "test": "node --test tests/*.test.mjs src/lib/markdown/__tests__/*.test.ts src/lib/unicode/__tests__/*.test.ts src/lib/fonts/__tests__/*.test.ts src/lib/formulas/__tests__/*.test.ts src/lib/__tests__/*.test.ts scripts/__tests__/*.test.ts scripts/__tests__/*.test.mjs",
-    "test:watch": "node --test --watch tests/*.test.mjs src/lib/markdown/__tests__/*.test.ts src/lib/unicode/__tests__/*.test.ts src/lib/fonts/__tests__/*.test.ts src/lib/formulas/__tests__/*.test.ts src/lib/__tests__/*.test.ts scripts/__tests__/*.test.ts scripts/__tests__/*.test.mjs"
+    "test:watch": "node --test --watch tests/*.test.mjs src/lib/markdown/__tests__/*.test.ts src/lib/unicode/__tests__/*.test.ts src/lib/fonts/__tests__/*.test.ts src/lib/formulas/__tests__/*.test.ts src/lib/__tests__/*.test.ts scripts/__tests__/*.test.ts scripts/__tests__/*.test.mjs",
+    "test:vitest": "vitest run",
+    "test:vitest:watch": "vitest",
+    "test:all": "npm test && npm run test:vitest"
   },
   "type": "module",
   "dependencies": {
+    "@tailwindcss/vite": "^4.3.2",
     "marked": "^18.0.5",
+    "tailwindcss": "^4.3.2",
     "vue": "^3.5.0",
     "vue-router": "^4.4.0"
   },
   "devDependencies": {
     "@types/node": "^25.4.0",
-    "@vitejs/plugin-vue": "^5.1.0",
+    "@vitejs/plugin-vue": "^5.2.4",
+    "@vue/test-utils": "^2.4.11",
+    "happy-dom": "^20.10.6",
+    "js-yaml": "^5.2.1",
     "node-html-parser": "^7.0.1",
     "prettier": "^3.8.1",
     "typescript": "^5.9.3",
     "vite": "^5.4.0",
-    "vite-ssg": "^0.24.3"
+    "vite-ssg": "^0.24.3",
+    "vitest": "^4.1.10"
   }
 }

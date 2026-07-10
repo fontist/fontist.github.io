@@ -115,7 +115,7 @@ const COLUMNS: { title: string; links: { label: string; to: string; external?: b
 .sf-rule-line {
   flex: 1;
   height: 1px;
-  background: var(--vp-c-divider, rgba(28,26,24,0.16));
+  background: var(--spec-rule);
 }
 
 .sf-rule-diamond {
@@ -244,7 +244,7 @@ const COLUMNS: { title: string; links: { label: string; to: string; external?: b
   max-width: 1320px;
   margin: 0 auto;
   padding: 1rem clamp(20px, 4vw, 56px) 1.5rem;
-  border-top: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border-top: 1px solid var(--spec-rule);
   font-family: var(--spec-font-mono);
   font-size: 0.68rem;
   color: var(--spec-mute);
