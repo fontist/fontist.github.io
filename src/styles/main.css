@@ -3,6 +3,14 @@
    One @theme block defines all tokens; everything else lives in
    @layer base/components/utilities so Tailwind's cascade order
    keeps utility classes authoritative.
+
+   The base layer and the shared layout primitives (layout shell,
+   nav, footer, specimen vocabulary) use `@apply` for Tailwind-idiomatic
+   declarations. Per-component rules further down still use raw CSS
+   declarations referencing the same `var(--color-*)` / `var(--font-*)`
+   tokens — Tailwind idiom is preserved either way. As pages migrate to
+   .astro files (see TODO.astro/02-08), their rules move out of this file
+   into per-page `<style>` blocks where `@apply` is also used.
    =================================================================== */
 
 @import "tailwindcss";
@@ -147,9 +155,7 @@ html.dark {
   }
 
   body {
-    background-color: var(--color-paper);
-    font-family: var(--font-body);
-    color: var(--color-ink);
+    @apply bg-paper text-ink font-body;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -158,10 +164,8 @@ html.dark {
   /* Paper grain overlay */
   body::before {
     content: "";
-    position: fixed;
-    inset: 0;
+    @apply fixed inset-0 pointer-events-none;
     z-index: 200;
-    pointer-events: none;
     opacity: 0.04;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
     mix-blend-mode: multiply;
@@ -172,23 +176,22 @@ html.dark {
   }
 
   a {
-    color: var(--color-accent);
-    text-decoration: none;
+    @apply text-accent no-underline;
     transition: color 0.15s;
   }
-  a:hover { color: var(--color-rose); }
+  a:hover { @apply text-rose; }
 
   img { max-width: 100%; height: auto; }
 
   /* Selection */
   ::selection {
     background: rgba(191, 78, 106, 0.18);
-    color: var(--color-ink);
+    @apply text-ink;
     text-shadow: none;
   }
   html.dark ::selection {
     background: rgba(212, 113, 138, 0.28);
-    color: var(--color-paper);
+    @apply text-paper;
   }
 
   /* Focus-visible (keyboard only) */
@@ -212,20 +215,18 @@ html.dark {
   .layout {
     min-height: 100vh;
     display: flex;
-    flex-direction: column;
-    background: var(--color-paper);
+  .layout {
+    @apply flex flex-col bg-paper;
+    min-height: 100vh;
   }
 
   .main {
-    flex: 1;
-    width: 100%;
+    @apply flex-1 w-full;
   }
 
   /* ===== Specimen page vocabulary (HomePage, AboutPage, etc.) ===== */
   .specimen {
-    color: var(--color-ink);
-    background-color: var(--color-paper);
-    overflow-x: hidden;
+    @apply text-ink bg-paper overflow-x-hidden;
   }
   .specimen .wrap {
     max-width: 1320px;
@@ -235,19 +236,14 @@ html.dark {
   .specimen .section { padding: clamp(64px, 11vw, 140px) 0; }
   .specimen .divider { border-top: 1px solid var(--spec-rule); }
   .specimen .masthead {
+    @apply font-mono uppercase text-ink-soft flex justify-between items-center;
     border-bottom: 1px solid var(--spec-rule);
     padding: 14px clamp(20px, 4vw, 56px);
-    font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--color-ink-soft);
-    display: flex;
-    justify-content: space-between;
     gap: 24px;
-    align-items: center;
   }
-  .specimen .masthead .c { color: var(--color-ink); }
+  .specimen .masthead .c { @apply text-ink; }
   .specimen .eyebrow {
     font-family: var(--font-mono);
     font-size: 11px;
@@ -665,96 +661,88 @@ html.dark {
     box-shadow: 0 1px 0 var(--spec-rule);
   }
   .nav-inner {
+    @apply flex items-center justify-between;
     max-width: 1320px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 56px);
-    display: flex; align-items: center; justify-content: space-between;
     gap: 1.5rem;
     height: 56px;
   }
   .nav-logo {
-    display: flex; align-items: center; gap: 0.5rem;
-    font-family: var(--font-display);
+    @apply flex items-center font-display no-underline text-ink;
+    gap: 0.5rem;
     font-weight: 400; font-size: 18px;
     letter-spacing: 0.02em;
-    text-decoration: none;
-    color: var(--color-ink);
     flex-shrink: 0;
   }
   .nav-logo-img { width: 32px; height: 32px; }
   .nav-utility {
-    display: flex; align-items: center; gap: 0.25rem; flex-shrink: 0;
+    @apply flex items-center;
+    gap: 0.25rem; flex-shrink: 0;
   }
   .nav-link {
-    font-family: var(--font-mono);
+    @apply font-mono uppercase no-underline text-ink-soft;
     font-size: 12px; font-weight: 500;
-    letter-spacing: 0.14em; text-transform: uppercase;
-    text-decoration: none;
-    color: var(--color-ink-soft);
+    letter-spacing: 0.14em;
     transition: color 0.2s ease;
   }
   .nav-link:hover,
-  .nav-link.router-link-active { color: var(--color-accent); }
+  .nav-link.router-link-active { @apply text-accent; }
   .ext-arrow {
     font-size: 0.78em; margin-left: 0.18em;
     vertical-align: super;
-    color: var(--color-mute);
+    @apply text-mute;
     transition: color 0.2s ease;
   }
-  .nav-link:hover .ext-arrow { color: var(--color-accent); }
+  .nav-link:hover .ext-arrow { @apply text-accent; }
   .nav-icon-btn {
+    @apply inline-flex items-center justify-center text-ink-soft cursor-pointer;
     background: none; border: 1px solid transparent;
-    color: var(--color-ink-soft);
-    cursor: pointer;
     width: 32px; height: 32px;
-    display: inline-flex; align-items: center; justify-content: center;
     border-radius: 4px;
     transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
   }
   .nav-icon-btn:hover {
-    color: var(--color-accent);
+    @apply text-accent;
     border-color: var(--spec-rule);
   }
   .nav-icon-btn:focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
   }
-  .nav-burger { display: none; }
+  .nav-burger { @apply hidden; }
   .nav-icon-link {
-    display: inline-flex; align-items: center; justify-content: center;
+    @apply inline-flex items-center justify-center text-ink-soft;
     width: 32px; height: 32px;
-    color: var(--color-ink-soft);
     border-radius: 4px;
     transition: color 0.2s ease;
   }
-  .nav-icon-link:hover { color: var(--color-accent); }
+  .nav-icon-link:hover { @apply text-accent; }
   .nav-links {
-    display: flex; gap: 1.5rem; align-items: center;
+    @apply flex items-center;
+    gap: 1.5rem;
   }
 
   /* ===== Site-wide footer (was DefaultLayout.vue scoped) ===== */
   .footer {
+    @apply font-mono text-mute;
     border-top: 1px solid var(--spec-rule);
     padding: 28px 24px 40px;
-    font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 0.1em;
-    color: var(--color-mute);
   }
   .footer-inner {
+    @apply flex items-center justify-center;
     max-width: 1320px; margin: 0 auto;
-    display: flex; gap: 0.75rem; justify-content: center; align-items: center;
+    gap: 0.75rem;
   }
   .footer a {
-    font-family: var(--font-mono);
+    @apply font-mono uppercase no-underline text-ink-soft;
     font-size: 11px;
     letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-ink-soft);
-    text-decoration: none;
     border-bottom: 1px solid var(--spec-rule-strong);
     padding-bottom: 2px;
     transition: color 0.2s, border-color 0.2s;
   }
-  .footer a:hover { color: var(--color-accent); border-color: var(--color-accent); }
+  .footer a:hover { @apply text-accent; border-color: var(--color-accent); }
 
   /* ===== HomePage — hero, specimen row, instruments, story, blog, ecosystem ===== */
   .hero {
@@ -1234,92 +1222,78 @@ html.dark {
     background: var(--spec-rule);
   }
   .sf-rule-diamond {
-    color: var(--color-rose);
+    @apply text-rose;
     font-size: 0.65rem;
     letter-spacing: 0.5em;
     opacity: 0.7;
   }
   .sf-inner {
+    @apply grid;
     max-width: 1320px;
     margin: 0 auto;
     padding: 2.5rem clamp(20px, 4vw, 56px) 2rem;
-    display: grid;
     grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
     gap: 2.5rem;
   }
   .sf-brand {
-    display: flex;
-    flex-direction: column;
+    @apply flex flex-col;
     gap: 0.6rem;
   }
   .sf-brand-logo {
-    display: inline-flex;
-    align-items: center;
+    @apply inline-flex items-center no-underline;
     gap: 0.5rem;
-    text-decoration: none;
     margin-bottom: 0.4rem;
   }
   .sf-brand-img { width: 28px; height: 28px; }
   .sf-brand-name {
-    font-family: var(--font-display);
+    @apply font-display text-ink;
     font-size: 1.3rem;
     font-weight: 400;
     letter-spacing: -0.01em;
-    color: var(--color-ink);
   }
   .sf-brand-tag {
-    font-family: var(--font-body);
+    @apply font-body text-ink-soft;
     font-size: 0.85rem;
     line-height: 1.55;
-    color: var(--color-ink-soft);
     margin: 0;
     max-width: 30ch;
   }
   .sf-brand-credit {
-    font-family: var(--font-mono);
+    @apply font-mono text-mute;
     font-size: 0.7rem;
-    color: var(--color-mute);
     margin: 0.4rem 0 0;
     letter-spacing: 0.02em;
   }
   .sf-brand-link {
-    color: var(--color-rose);
+    @apply text-rose;
     border-bottom: 1px solid currentColor;
     padding-bottom: 1px;
   }
   .sf-brand-github {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    @apply inline-flex items-center justify-center text-ink-soft;
     width: 32px;
     height: 32px;
     margin-top: 0.5rem;
-    color: var(--color-ink-soft);
     border: 1px solid var(--spec-rule);
     border-radius: 4px;
     transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
   }
   .sf-brand-github:hover {
-    color: var(--color-rose);
+    @apply text-rose bg-paper-deep;
     border-color: var(--color-rose);
-    background: var(--color-paper-deep);
   }
-  .sf-cols { display: contents; }
+  .sf-cols { @apply contents; }
   .sf-col-title {
-    font-family: var(--font-mono);
+    @apply font-mono uppercase text-rose;
     font-size: 0.65rem;
     font-weight: 600;
-    text-transform: uppercase;
     letter-spacing: 0.16em;
-    color: var(--color-rose);
     margin: 0 0 0.85rem;
   }
   .sf-col-list {
-    list-style: none;
+    @apply list-none flex flex-col;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
     gap: 0.4rem;
   }
   .sf-col-item { margin: 0; padding: 0; }
@@ -7065,6 +7039,8 @@ html.dark .ucp-nav-btn:hover { border-color: var(--spec-rose, #d4718a); backgrou
   .block-code { font-size: 0.7rem; }
   .block-name { font-size: 0.8rem; }
 }
+
+} /* end @layer components */
 
 /* ── Utilities layer: loading state, print, reduced motion ──── */
 @layer utilities {
