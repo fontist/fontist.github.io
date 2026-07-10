@@ -1,6 +1,8 @@
 {
   "scripts": {
     "dev": "vite",
+    "dev:astro": "astro dev",
+    "build:astro": "astro build",
     "fetch-data": "bash scripts/fetch-data.sh",
     "gen-routes": "node scripts/gen-ssg-routes.mjs",
     "gen-unicode": "node scripts/gen-unicode-data.mjs",
@@ -25,9 +27,11 @@
     "vue-router": "^4.4.0"
   },
   "devDependencies": {
+    "@astrojs/vue": "^5.1.4",
     "@types/node": "^25.4.0",
     "@vitejs/plugin-vue": "^5.2.4",
     "@vue/test-utils": "^2.4.11",
+    "astro": "^5.18.2",
     "happy-dom": "^20.10.6",
     "js-yaml": "^5.2.1",
     "node-html-parser": "^7.0.1",

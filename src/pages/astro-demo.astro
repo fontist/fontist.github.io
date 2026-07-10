@@ -1,0 +1,44 @@
+---
+// Astro migration proof-of-concept page.
+//
+// Verifies three things at once:
+//   1. Astro picks up the @astrojs/vue integration
+//   2. Tailwind 4 tokens from src/styles/main.css are applied
+//   3. Vue components mount as islands via client:directives
+//
+// This page exists alongside the vite-ssg app during the migration
+// (TODO.astro/). It is safe to remove in phase 08-cleanup.
+import '../styles/main.css'
+import AstroDemoIsland from '../components/AstroDemoIsland.vue'
+const now = new Date().toISOString()
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Astro migration proof — Fontist</title>
+  </head>
+  <body>
+    <main class="max-w-3xl mx-auto p-8">
+      <h1 class="font-display text-4xl italic text-ink mb-4">
+        Astro <em class="text-rose">migration proof</em>
+      </h1>
+
+      <p class="font-body text-ink-soft mb-6">
+        Rendered at <code class="font-mono text-rose">{now}</code>.
+        If you can read this, Astro is serving HTML and Tailwind 4
+        tokens are wired through.
+      </p>
+
+      <section class="border-t border-rule pt-6">
+        <h2 class="font-display text-2xl italic mb-3">Vue island</h2>
+        <AstroDemoIsland client:load label="Click me" />
+      </section>
+
+      <p class="mt-8 font-mono text-xs text-mute">
+        See <code>TODO.astro/</code> for the migration plan.
+      </p>
+    </main>
+  </body>
+</html>
