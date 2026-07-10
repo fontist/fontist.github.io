@@ -60,49 +60,5 @@ function isSupported(cp: number, font: FontContext): boolean {
 </template>
 
 <style scoped>
-.ub-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));
-  gap: 6px;
-}
-.ub-cell, .ub-cell-multi {
-  display: flex; flex-direction: column; align-items: center;
-  width: 100%; min-height: 110px; padding: 8px;
-  background: var(--color-paper);
-  border: 1px solid var(--spec-rule);
-  border-radius: 6px; cursor: pointer; overflow: hidden;
-  gap: 4px; transition: border-color 0.12s;
-}
-.ub-cell:hover, .ub-cell-multi:hover {
-  border-color: var(--fontist-rose, #bf4e6a);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-.ub-cell.active, .ub-cell-multi.active {
-  border-color: var(--fontist-rose, #bf4e6a);
-  border-width: 2px;
-}
-.ub-cp {
-  font-size: 0.55rem; font-family: var(--font-mono);
-  color: var(--color-mute); line-height: 1;
-}
-.ub-glyph {
-  font-size: 2rem; line-height: 1; color: var(--color-ink);
-  flex: 1; display: flex; align-items: center;
-}
-.ub-fallback { color: var(--color-mute); opacity: 0.3; }
-.ub-name {
-  font-size: 0.5rem; text-align: center; color: var(--color-mute);
-  line-height: 1.1; overflow: hidden;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-}
-
-/* Multi-font mode */
-.ub-glyphs { display: flex; gap: 4px; flex: 1; align-items: center; justify-content: center; }
-.ub-glyph-slot { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 40px; }
-.ub-glyph-slot .ub-glyph { font-size: 1.4rem; }
-.ub-missing { opacity: 0.2; }
-.ub-font-tag {
-  font-size: 0.45rem; font-family: var(--font-mono);
-  font-weight: 600;
-}
+/* All styles migrated to src/styles/main.css (@layer components). */
 </style>

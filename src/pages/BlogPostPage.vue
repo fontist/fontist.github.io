@@ -83,47 +83,5 @@ useHead(() => ({
 </template>
 
 <style scoped>
-.blog { max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem 5rem; font-family: var(--spec-font-body); }
-
-.blog-crumbs { display: flex; align-items: center; gap: 0.5rem; font-family: var(--spec-font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--spec-mute); margin-bottom: 2rem; }
-.blog-crumbs a { color: var(--fontist-rose); text-decoration: none; }
-.blog-crumbs a:hover { text-decoration: underline; }
-.blog-crumbs-sep { opacity: 0.5; }
-.blog-crumbs-here { color: var(--spec-ink-soft); }
-
-.blog-head { margin-bottom: 2.5rem; }
-.blog-eyebrow { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; font-family: var(--spec-font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--fontist-rose); font-weight: 600; margin-bottom: 1rem; }
-.blog-eyebrow time, .blog-eyebrow .blog-author { color: var(--spec-ink-soft); font-weight: 500; }
-.blog-eyebrow-sep { color: var(--spec-mute); }
-
-.blog-title { font-family: var(--spec-font-display); font-size: clamp(2.2rem, 5vw, 3.4rem); font-weight: 400; font-style: italic; letter-spacing: -0.02em; line-height: 1.05; color: var(--spec-ink); margin: 0 0 1rem; }
-.blog-lede { font-family: var(--spec-font-display); font-style: italic; font-size: 1.2rem; line-height: 1.5; color: var(--spec-ink-soft); margin: 0 0 1.75rem; max-width: 38em; }
-.blog-rule { border: none; border-top: 1px solid var(--spec-rule); margin: 0; }
-
-.blog-body { font-size: 1.0rem; line-height: 1.7; color: var(--spec-ink); }
-.blog-body :deep(h1) { font-family: var(--spec-font-display); font-size: clamp(2rem, 5vw, 3rem); font-style: italic; font-weight: 400; letter-spacing: -0.02em; line-height: 1.05; margin: 2rem 0 1rem; color: var(--spec-ink); }
-.blog-body :deep(h2) { font-family: var(--spec-font-display); font-size: 1.6rem; font-weight: 400; font-style: italic; letter-spacing: -0.015em; margin: 2.5rem 0 0.75rem; color: var(--spec-ink); position: relative; }
-.blog-body :deep(h2)::before { content: ''; display: block; width: 1.5rem; height: 1px; background: var(--fontist-rose); margin-bottom: 0.75rem; }
-.blog-body :deep(h3) { font-family: var(--spec-font-display); font-size: 1.2rem; font-weight: 400; margin: 1.75rem 0 0.5rem; color: var(--spec-ink); }
-.blog-body :deep(p) { margin: 0 0 1rem; }
-.blog-body :deep(ul), .blog-body :deep(ol) { margin: 0 0 1.25rem; padding-left: 1.25rem; }
-.blog-body :deep(li) { margin-bottom: 0.35rem; }
-.blog-body :deep(li::marker) { color: var(--fontist-rose); }
-.blog-body :deep(a) { color: var(--fontist-rose); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
-.blog-body :deep(code) { font-family: var(--spec-font-mono); font-size: 0.85em; background: var(--spec-paper-deep); padding: 0.1em 0.4em; border-radius: 2px; }
-.blog-body :deep(pre) { background: var(--spec-paper-deep); padding: 1.25rem 1.5rem; border-radius: 3px; border-left: 3px solid var(--fontist-rose); overflow-x: auto; margin: 1.5rem 0; font-family: var(--spec-font-mono); font-size: 0.85rem; line-height: 1.6; }
-.blog-body :deep(pre code) { background: transparent; padding: 0; }
-.blog-body :deep(blockquote) { margin: 1.5rem 0; padding: 0.5rem 0 0.5rem 1.25rem; border-left: 3px solid var(--fontist-rose); font-family: var(--spec-font-display); font-style: italic; font-size: 1.15rem; line-height: 1.5; color: var(--spec-ink-soft); }
-.blog-body :deep(img) { display: block; margin: 1.5rem auto; border-radius: 3px; }
-.blog-body :deep(hr) { border: none; border-top: 1px solid var(--spec-rule); margin: 2.5rem 0; }
-.blog-body :deep(strong) { font-weight: 600; color: var(--spec-ink); }
-.blog-body :deep(em) { font-style: italic; }
-.blog-body :deep(figure) { margin: 1.5rem 0; }
-.blog-body :deep(figcaption) { font-family: var(--spec-font-mono); font-size: 0.75rem; color: var(--spec-mute); text-align: center; margin-top: 0.5rem; }
-
-.blog-foot { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--spec-rule); }
-.blog-back { font-family: var(--spec-font-mono); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--fontist-rose); text-decoration: none; }
-.blog-back:hover { text-decoration: underline; }
-
-.blog-loading { padding: 4rem 1rem; text-align: center; color: var(--spec-mute); font-family: var(--spec-font-mono); }
+/* All styles migrated to src/styles/main.css (@layer components). */
 </style>

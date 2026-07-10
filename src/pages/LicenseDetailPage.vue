@@ -211,51 +211,5 @@ useHead(() => ({
 </template>
 
 <style scoped>
-.license-detail { max-width: 900px; }
-.ld-notfound { padding: 4rem 1rem; text-align: center; }
-.ld-notfound h1 { font-family: var(--spec-font-display); font-style: italic; font-weight: 400; font-size: 1.8rem; margin: 0 0 0.75rem; color: var(--spec-ink); }
-.ld-notfound p { color: var(--spec-ink-soft); margin: 0 0 1.5rem; }
-.ld-notfound a { color: var(--fontist-rose); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
-.ld-notfound code { font-family: var(--spec-font-mono); font-size: 0.85rem; background: var(--spec-paper-deep); padding: 0.1em 0.4em; border-radius: 2px; }
-.ld-crumbs { display: flex; align-items: center; gap: 0.5rem; font-family: var(--spec-font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1.5rem; }
-.ld-crumbs-link { color: var(--fontist-rose); text-decoration: none; }
-.ld-crumbs-link:hover { text-decoration: underline; }
-.ld-crumbs-sep { color: var(--spec-mute); }
-.ld-crumbs-here { color: var(--spec-mute); }
-.ld-section-head { margin-bottom: 1rem; }
-.ld-section-title { font-family: var(--spec-font-display); font-size: 1.3rem; font-style: italic; font-weight: 400; margin: 0 0 0.2rem; color: var(--spec-ink); letter-spacing: -0.005em; }
-.ld-section-sub { font-family: var(--spec-font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--spec-mute); margin: 0; }
-.ld-examples { margin: 2.5rem 0; }
-.ld-examples-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.5rem 1.25rem; }
-.ld-example { display: flex; flex-direction: column; gap: 0.15rem; padding: 0.5rem 0; border-bottom: 1px solid var(--spec-rule); }
-.ld-example-name { font-family: var(--spec-font-display); font-size: 1.1rem; color: var(--spec-ink); font-weight: 500; letter-spacing: -0.005em; }
-.ld-example-note { font-family: var(--spec-font-body); font-size: 0.78rem; color: var(--spec-ink-soft); font-style: italic; }
-.ld-siblings { margin: 3rem 0; }
-.ld-siblings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.75rem; }
-.ld-sibling { display: block; padding: 1rem 1.1rem 1rem 1.25rem; background: var(--spec-paper); border: 1px solid var(--spec-rule); border-left-width: 3px; border-radius: 3px; text-decoration: none; color: var(--spec-ink); transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; position: relative; }
-.ld-sibling--permissive { border-left-color: #a8c19e; }
-.ld-sibling--copyleft { border-left-color: #c19e9e; }
-.ld-sibling--public-domain { border-left-color: #c1b89e; }
-.ld-sibling:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(28,26,24,0.08); }
-.ld-sibling-head { display: flex; flex-direction: column; gap: 0.2rem; margin-bottom: 0.5rem; }
-.ld-sibling-cat { font-family: var(--spec-font-mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; color: var(--spec-mute); }
-.ld-sibling-cat--permissive { color: #6b8f71; }
-.ld-sibling-cat--copyleft { color: #8a6b6b; }
-.ld-sibling-cat--public-domain { color: #8a7a5e; }
-.ld-sibling-name { font-family: var(--spec-font-display); font-size: 1.05rem; font-style: italic; color: var(--spec-ink); }
-.ld-sibling-blurb { font-family: var(--spec-font-body); font-size: 0.78rem; line-height: 1.5; color: var(--spec-ink-soft); margin: 0; }
-.ld-sibling-arrow { position: absolute; right: 0.75rem; bottom: 0.5rem; font-size: 0.95rem; color: var(--spec-mute); transition: color 0.2s ease, transform 0.2s ease; }
-.ld-sibling:hover .ld-sibling-arrow { color: var(--fontist-rose); transform: translateX(3px); }
-.ld-formulas { margin: 3rem 0; }
-.ld-formulas-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.4rem 1.5rem; }
-.ld-formula { margin: 0; padding: 0; }
-.ld-formula-link { display: flex; flex-direction: column; gap: 0.1rem; padding: 0.5rem 0; border-bottom: 1px solid var(--spec-rule); text-decoration: none; transition: border-color 0.15s ease; }
-.ld-formula-link:hover { border-bottom-color: var(--fontist-rose); }
-.ld-formula-name { font-family: var(--spec-font-display); font-size: 0.95rem; color: var(--spec-ink); }
-.ld-formula-slug { font-family: var(--spec-font-mono); font-size: 0.7rem; color: var(--spec-mute); }
-.ld-formulas-more { font-family: var(--spec-font-mono); font-size: 0.75rem; color: var(--spec-mute); margin: 1rem 0 0; }
-.ld-formulas-more a { color: var(--fontist-rose); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
-.ld-body { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--spec-rule); }
-.ld-loading { padding: 4rem 1rem; text-align: center; color: var(--spec-mute); font-family: var(--spec-font-mono); }
-@media (max-width: 720px) { .ld-siblings-grid { grid-template-columns: 1fr; } .ld-formulas-list { grid-template-columns: 1fr 1fr; } }
+/* All styles migrated to src/styles/main.css (@layer components). */
 </style>

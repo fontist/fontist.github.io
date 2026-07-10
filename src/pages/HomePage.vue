@@ -16,8 +16,35 @@ import { fetchJson } from '../lib/ssr-fetch'
 
 const formulaCount = ref(0)
 const openSourceCount = ref(0)
-const licenseBuckets = ref<{ label: string; count: number; pct: number }[]>([])
+const openLicenseBuckets = ref<{ label: string; count: number; score: number }[]>([])
+const propLicenseBuckets = ref<{ label: string; count: number; score: number }[]>([])
 const recentPosts = ref<{ slug: string; title: string; date: string; description?: string }[]>([])
+
+// Canonical license bucketing — collapses the long tail of licenseName
+// variants into a small set of human-readable groups. Microsoft and
+// Adobe each consolidate their LICENSEREF-* family into one row.
+//
+// `open_source` formulas (per licenseCategory) feed the positive
+// top-of-chart rows; everything else (platform_restricted,
+// bundled_software, freely_distributable) lands in the muted
+// proprietary block at the bottom.
+const OPEN_MATCHERS: { label: string; test: (n: string) => boolean }[] = [
+  { label: 'SIL Open Font License',          test: n => n.includes('open font license') || n === 'ofl' || n.startsWith('ofl-1') },
+  { label: 'Apache License 2.0',             test: n => n.includes('apache') },
+  { label: 'IPA Font License',               test: n => n.includes('ipa font') },
+  { label: 'CC0 / Public Domain',            test: n => n.includes('creative commons zero') || n.includes('cc0') || n.includes('public domain') || n.includes('publicdomain') },
+  { label: 'Ubuntu Font Licence',            test: n => n.includes('ubuntu font') },
+  { label: 'GNU GPL (with Font Exception)',  test: n => n.includes('gnu gpl') || n.includes('lppl') },
+]
+const PROP_MATCHERS: { label: string; test: (n: string) => boolean }[] = [
+  { label: 'Apple-only',     test: n => n.includes('apple') },
+  { label: 'Microsoft',      test: n => n.includes('microsoft') },
+  { label: 'Adobe',          test: n => n.includes('adobe') },
+]
+
+function normLicenseName(raw: string | undefined): string {
+  return (raw || 'Unknown').replace(/^LICENSEREF-/i, '').toLowerCase()
+}
 
 async function loadStats() {
   try {
@@ -25,19 +52,36 @@ async function loadStats() {
     formulaCount.value = all.length
     openSourceCount.value = all.filter((f) => f.licenseCategory === 'open_source').length
 
-    // Build license distribution — group by license name, take top 6.
-    const counts = new Map<string, number>()
+    const openCounts = new Map<string, number>()
+    const propCounts = new Map<string, number>()
+    let openOther = 0
+    let propOther = 0
+
     for (const f of all) {
-      const name = (f.licenseName || 'Unknown').replace(/^LICENSEREF-/, '').replace(/-/g, ' ')
-      counts.set(name, (counts.get(name) ?? 0) + 1)
+      const name = normLicenseName(f.licenseName)
+      const isOpen = f.licenseCategory === 'open_source'
+      if (isOpen) {
+        const hit = OPEN_MATCHERS.find(m => m.test(name))
+        if (hit) openCounts.set(hit.label, (openCounts.get(hit.label) ?? 0) + 1)
+        else openOther++
+      } else {
+        const hit = PROP_MATCHERS.find(m => m.test(name))
+        if (hit) propCounts.set(hit.label, (propCounts.get(hit.label) ?? 0) + 1)
+        else propOther++
+      }
     }
-    const sorted = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6)
-    const total = all.length
-    licenseBuckets.value = sorted.map(([label, count]) => ({
-      label,
-      count,
-      pct: total > 0 ? Math.round((count / total) * 1000) / 10 : 0,
-    }))
+
+    const toBuckets = (entries: [string, number][], other: number, otherLabel: string) => {
+      const list = entries
+        .map(([label, count]) => ({ label, count }))
+        .sort((a, b) => b.count - a.count)
+      if (other > 0) list.push({ label: otherLabel, count: other })
+      const max = Math.max(...list.map(b => b.count), 1)
+      return list.map(b => ({ ...b, score: Math.round((b.count / max) * 100) }))
+    }
+
+    openLicenseBuckets.value = toBuckets([...openCounts.entries()], openOther, 'Other open source')
+    propLicenseBuckets.value = toBuckets([...propCounts.entries()], propOther, 'Other proprietary')
   } catch {}
 
   try {
@@ -221,7 +265,6 @@ useHead({
       <div class="wrap">
         <header class="head">
           <div>
-            <p class="eyebrow">§ The Suite</p>
             <h2>Engineer.<br />Manage. <em>Discover.</em></h2>
           </div>
           <p class="lede">
@@ -247,7 +290,6 @@ useHead({
       <div class="wrap">
         <header class="head">
           <div>
-            <p class="eyebrow">§ Specimens</p>
             <h2>Available<br />type.</h2>
           </div>
           <p class="lede">
@@ -279,27 +321,33 @@ useHead({
     </section>
 
     <!-- License landscape: visual distribution of the archive -->
-    <section v-if="licenseBuckets.length > 0" class="section licenses-landscape divider">
+    <section v-if="openLicenseBuckets.length > 0" class="section licenses-landscape divider">
       <div class="wrap">
         <header class="head">
           <div>
-            <p class="eyebrow">§ The Landscape</p>
             <h2>What's in the<br /><em>archive.</em></h2>
           </div>
           <p class="lede">
-            A breakdown by license — the rough shape of the openly-licensed type universe as Fontist sees it.
+            A breakdown by license — {{ openSourceCount.toLocaleString() }} openly-licensed
+            formulas against a smaller set of platform-restricted and bundled families.
           </p>
         </header>
 
         <ul class="ll-list">
-          <li v-for="(b, i) in licenseBuckets" :key="b.label" class="ll-row">
-            <span class="ll-rank">{{ String(i + 1).padStart(2, '0') }}</span>
+          <li v-for="b in openLicenseBuckets" :key="'open-' + b.label" class="ll-row ll-row--open">
             <span class="ll-label">{{ b.label }}</span>
             <span class="ll-bar-track" aria-hidden="true">
-              <span class="ll-bar-fill" :style="{ width: Math.max(2, b.pct) + '%' }"></span>
+              <span class="ll-bar-fill ll-bar-fill--open" :style="{ width: Math.max(2, b.score) + '%' }"></span>
             </span>
             <span class="ll-count">{{ b.count.toLocaleString() }}</span>
-            <span class="ll-pct">{{ b.pct }}%</span>
+          </li>
+          <li class="ll-separator" aria-hidden="true"></li>
+          <li v-for="b in propLicenseBuckets" :key="'prop-' + b.label" class="ll-row ll-row--prop">
+            <span class="ll-label">{{ b.label }}</span>
+            <span class="ll-bar-track" aria-hidden="true">
+              <span class="ll-bar-fill ll-bar-fill--prop" :style="{ width: Math.max(2, b.score) + '%' }"></span>
+            </span>
+            <span class="ll-count">{{ b.count.toLocaleString() }}</span>
           </li>
         </ul>
 
@@ -314,7 +362,6 @@ useHead({
       <div class="wrap">
         <header class="head">
           <div>
-            <p class="eyebrow">§ From the Journal</p>
             <h2>Recent<br /><em>dispatches.</em></h2>
           </div>
           <p class="lede">
@@ -344,7 +391,6 @@ useHead({
       <div class="wrap">
         <header class="head">
           <div>
-            <p class="eyebrow">§ Companion Projects</p>
             <h2>Beyond the<br /><em>registry.</em></h2>
           </div>
           <p class="lede">
@@ -407,500 +453,5 @@ useHead({
 </template>
 
 <style scoped>
-/* Hero — unique to this page */
-.hero {
-  position: relative;
-  padding-top: clamp(40px, 7vw, 96px);
-  padding-bottom: clamp(56px, 9vw, 120px);
-  border-bottom: 1px solid var(--spec-rule);
-  overflow: hidden;
-}
-.hero-motd {
-  font-family: "Spectral", Georgia, serif;
-  font-weight: 360;
-  font-variation-settings: "opsz" 72;
-  font-size: clamp(32px, 5.5vw, 76px);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  margin: 0;
-  color: var(--spec-ink);
-  cursor: pointer;
-  user-select: none;
-  min-height: 2.4em;
-  max-width: 18ch;
-  transition: color 0.2s;
-}
-.hero-motd:hover { color: var(--spec-ink); }
-.motd-cursor {
-  display: inline-block;
-  width: 9px;
-  height: 1.05em;
-  background: var(--spec-rose);
-  margin-left: 3px;
-  vertical-align: text-bottom;
-  animation: motd-blink 1.06s steps(1) infinite;
-}
-@keyframes motd-blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
-.hero .below {
-  display: grid;
-  grid-template-columns: 1.4fr 0.9fr;
-  gap: clamp(32px, 6vw, 88px);
-  align-items: end;
-  margin-top: clamp(40px, 6vw, 80px);
-}
-.hero .spec {
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 13px;
-  line-height: 1.7;
-  color: var(--spec-ink-soft);
-  margin: 0;
-}
-.hero .spec .pip { color: var(--spec-rose); padding: 0 0.35em; }
-.hero .actions {
-  display: flex;
-  gap: 26px;
-  align-items: baseline;
-  margin-top: 28px;
-  flex-wrap: wrap;
-}
-.plate {
-  background: var(--spec-term-bg);
-  color: var(--spec-term-ink);
-  padding: 22px 24px 26px;
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 13px;
-  line-height: 1.85;
-  position: relative;
-  box-shadow: 18px 18px 0 -1px var(--spec-paper-deep), 18px 18px 0 var(--spec-rule);
-}
-.plate::before {
-  content: "SPECIMEN PLATE — LIVE";
-  position: absolute;
-  top: -11px;
-  left: 18px;
-  background: var(--spec-paper);
-  color: var(--spec-rose);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  padding: 2px 8px;
-  border: 1px solid var(--spec-rule);
-}
-.plate .ok { color: #8fb98a; }
-.plate .out { opacity: 0.78; }
-.hero .ghost-numeral {
-  position: absolute;
-  right: -2vw;
-  bottom: -8vw;
-  font-family: "Spectral", Georgia, serif;
-  font-weight: 300;
-  font-style: italic;
-  font-size: 42vw;
-  line-height: 1;
-  color: var(--spec-ink);
-  opacity: 0.035;
-  pointer-events: none;
-  user-select: none;
-}
-.hero .wrap { position: relative; z-index: 1; }
-
-/* Specimens */
-.spec-list { list-style: none; margin: 0; padding: 0; }
-.spec-row {
-  padding: clamp(12px, 1.5vw, 18px) 0;
-  border-top: 1px solid var(--spec-rule);
-}
-.spec-row:last-child { border-bottom: 1px solid var(--spec-rule); }
-.spec-sample {
-  font-size: clamp(22px, 2.5vw, 34px);
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-  color: var(--spec-ink);
-  margin-bottom: 0.1em;
-  transition: color 0.3s ease;
-}
-.spec-row:hover .spec-sample { color: var(--spec-rose); }
-.spec-detail {
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  color: var(--spec-mute);
-}
-.spec-detail .cmd { color: var(--spec-ink-soft); }
-.spec-detail .sep { color: var(--spec-rose); padding: 0 0.5em; }
-
-/* Instruments */
-.inst-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  background: var(--spec-rule);
-  border: 1px solid var(--spec-rule);
-}
-.inst-card {
-  background: var(--spec-paper);
-  padding: clamp(28px, 3.5vw, 44px);
-  display: flex;
-  flex-direction: column;
-}
-.inst-num {
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  color: var(--spec-rose);
-  margin-bottom: 18px;
-}
-.inst-name {
-  font-family: "Spectral", Georgia, serif;
-  font-weight: 360;
-  font-variation-settings: "opsz" 72;
-  font-size: clamp(28px, 3vw, 38px);
-  letter-spacing: -0.02em;
-  margin: 0 0 14px;
-  color: var(--spec-ink);
-}
-.inst-role {
-  font-size: 14.5px;
-  line-height: 1.55;
-  color: var(--spec-ink-soft);
-  margin: 0 0 16px;
-  flex: 1;
-}
-.inst-spec {
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  color: var(--spec-mute);
-  margin: 0 0 20px;
-}
-.inst-link {
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--spec-ink);
-  text-decoration: none;
-  border-bottom: 1px solid var(--spec-rule-strong);
-  padding-bottom: 2px;
-  align-self: flex-start;
-  transition: color 0.2s, border-color 0.2s;
-}
-.inst-link:hover { color: var(--spec-rose); border-color: var(--spec-rose); }
-
-/* Colophon */
-.colophon { text-align: center; }
-.colophon p {
-  font-family: "Spectral", Georgia, serif;
-  font-weight: 330;
-  font-size: clamp(24px, 3.6vw, 48px);
-  line-height: 1.25;
-  letter-spacing: -0.015em;
-  margin: 0 auto;
-  max-width: 22ch;
-  color: var(--spec-ink);
-}
-.colophon p .n {
-  font-style: italic;
-  color: var(--spec-rose);
-  font-variation-settings: "opsz" 144, "wght" 420;
-}
-
-/* Story */
-.story-grid {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: clamp(40px, 6vw, 96px);
-}
-.story .label {
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--spec-rose);
-  margin: 0;
-}
-.story .body p {
-  font-family: "Spectral", Georgia, serif;
-  font-weight: 360;
-  font-size: clamp(18px, 1.8vw, 23px);
-  line-height: 1.55;
-  color: var(--spec-ink-soft);
-  margin: 0 0 1.2em;
-}
-.story .body p:first-child::first-letter {
-  font-family: "Spectral", Georgia, serif;
-  font-style: italic;
-  font-size: 4.6em;
-  float: left;
-  line-height: 0.82;
-  padding: 0.06em 0.12em 0 0;
-  color: var(--spec-rose);
-  font-variation-settings: "opsz" 144, "wght" 520;
-}
-.story .body .signoff {
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--spec-mute);
-  margin-top: 2em;
-}
-.story .body .signoff a {
-  color: var(--spec-ink);
-  border-bottom: 1px solid var(--spec-rule-strong);
-  text-decoration: none;
-  padding-bottom: 2px;
-}
-.story .body .signoff a:hover { color: var(--spec-rose); border-color: var(--spec-rose); }
-
-@media (max-width: 860px) {
-  .hero .below { grid-template-columns: 1fr; }
-  .inst-grid { grid-template-columns: 1fr; }
-  .story-grid { grid-template-columns: 1fr; }
-  .ll-row { grid-template-columns: 28px 1fr; gap: 0.3rem 0.6rem; }
-  .ll-bar-track { grid-column: 2; }
-  .ll-count, .ll-pct { grid-column: 2; }
-  .fb-link { padding: 1rem 1.1rem; }
-}
-
-/* ── License landscape: editorial bar chart ─────────────────── */
-.licenses-landscape .head h2 em { color: var(--fontist-rose); font-style: italic; }
-
-.ll-list {
-  list-style: none;
-  margin: 1.5rem 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-}
-
-.ll-row {
-  display: grid;
-  grid-template-columns: 32px minmax(180px, 1fr) minmax(120px, 2fr) 64px 56px;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.45rem 0;
-  border-bottom: 1px solid var(--spec-rule);
-}
-
-.ll-row:last-child { border-bottom: none; }
-
-.ll-rank {
-  font-family: var(--spec-font-mono);
-  font-size: 0.66rem;
-  color: var(--spec-mute);
-  text-align: right;
-  letter-spacing: 0.05em;
-}
-
-.ll-label {
-  font-family: var(--spec-font-body);
-  font-size: 0.88rem;
-  color: var(--spec-ink);
-}
-
-.ll-bar-track {
-  display: block;
-  height: 6px;
-  background: var(--spec-paper-deep);
-  border-radius: 1px;
-  overflow: hidden;
-}
-
-.ll-bar-fill {
-  display: block;
-  height: 100%;
-  background: linear-gradient(90deg, var(--coverage-25), var(--coverage-75));
-  border-radius: 1px;
-  transition: width 0.4s cubic-bezier(.2,.7,.3,1);
-}
-
-.ll-count {
-  font-family: var(--spec-font-display);
-  font-size: 0.95rem;
-  font-variant-numeric: tabular-nums;
-  font-weight: 500;
-  color: var(--spec-ink);
-  text-align: right;
-}
-
-.ll-pct {
-  font-family: var(--spec-font-mono);
-  font-size: 0.7rem;
-  color: var(--spec-mute);
-  text-align: right;
-  letter-spacing: 0.02em;
-}
-
-.ll-foot {
-  font-family: var(--spec-font-mono);
-  font-size: 0.78rem;
-  color: var(--spec-ink-soft);
-  margin: 1.5rem 0 0;
-}
-.ll-foot a { color: var(--fontist-rose); border-bottom: 1px solid currentColor; padding-bottom: 1px; }
-
-/* ── From the blog: editorial recent-posts grid ─────────────── */
-.from-the-blog .head h2 em { color: var(--fontist-rose); font-style: italic; }
-
-.fb-list {
-  list-style: none;
-  margin: 1.5rem 0 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 0.85rem;
-}
-
-.fb-item { margin: 0; padding: 0; }
-
-.fb-link {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  padding: 1.1rem 1.25rem;
-  background: var(--spec-paper);
-  border: 1px solid var(--spec-rule);
-  border-left: 3px solid var(--fontist-rose);
-  border-radius: 2px;
-  text-decoration: none;
-  color: var(--spec-ink);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  position: relative;
-  height: 100%;
-}
-
-.fb-link:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(28,26,24,0.08);
-}
-
-.fb-date {
-  font-family: var(--spec-font-mono);
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--spec-mute);
-}
-
-.fb-title {
-  font-family: var(--spec-font-display);
-  font-size: 1.15rem;
-  font-style: italic;
-  color: var(--spec-ink);
-  letter-spacing: -0.005em;
-  line-height: 1.2;
-}
-
-.fb-desc {
-  font-family: var(--spec-font-body);
-  font-size: 0.8rem;
-  line-height: 1.5;
-  color: var(--spec-ink-soft);
-}
-
-.fb-arrow {
-  position: absolute;
-  right: 0.85rem;
-  top: 1.1rem;
-  font-size: 1rem;
-  color: var(--spec-mute);
-  transition: color 0.2s ease, transform 0.2s ease;
-}
-
-.fb-link:hover .fb-arrow {
-  color: var(--fontist-rose);
-  transform: translateX(3px);
-}
-
-.fb-foot {
-  font-family: var(--spec-font-mono);
-  font-size: 0.78rem;
-  color: var(--spec-ink-soft);
-  margin: 1.5rem 0 0;
-}
-.fb-foot a { color: var(--fontist-rose); border-bottom: 1px solid currentColor; padding-bottom: 1px; }
-
-/* ── Ecosystem companion projects ──────────────────────────── */
-.ecosystem .head h2 em { color: var(--fontist-rose); font-style: italic; }
-
-.eco-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1rem;
-}
-
-.eco-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  padding: 1.5rem 1.5rem 1.25rem;
-  background: var(--spec-paper);
-  border: 1px solid var(--spec-rule);
-  border-left: 3px solid var(--fontist-rose);
-  border-radius: 3px;
-  text-decoration: none;
-  color: var(--spec-ink);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  position: relative;
-  min-height: 180px;
-}
-
-.eco-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(28,26,24,0.08);
-}
-
-.eco-card-eyebrow {
-  font-family: var(--spec-font-mono);
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--spec-mute);
-  font-weight: 600;
-}
-
-.eco-card-name {
-  font-family: var(--spec-font-display);
-  font-size: 1.6rem;
-  font-style: italic;
-  font-weight: 400;
-  color: var(--spec-ink);
-  letter-spacing: -0.01em;
-  margin: 0.15rem 0 0.3rem;
-}
-
-.eco-card-desc {
-  font-family: var(--spec-font-body);
-  font-size: 0.88rem;
-  line-height: 1.55;
-  color: var(--spec-ink-soft);
-  margin: 0;
-}
-
-.eco-card-arrow {
-  position: absolute;
-  right: 1rem;
-  bottom: 1rem;
-  font-size: 1rem;
-  color: var(--spec-mute);
-  transition: color 0.2s ease, transform 0.2s ease;
-}
-
-.eco-card:hover .eco-card-arrow {
-  color: var(--fontist-rose);
-  transform: translateX(3px);
-}
-
-.eco-card-logo {
-  width: 40px;
-  height: 40px;
-  margin-bottom: 0.25rem;
-}
-.eco-card-logo--dark { display: none; }
-html.dark .eco-card-logo--light { display: none; }
-html.dark .eco-card-logo--dark { display: block; }
+/* All styles migrated to src/styles/main.css (@layer components). */
 </style>

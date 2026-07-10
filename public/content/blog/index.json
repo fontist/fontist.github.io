@@ -1,5 +1,41 @@
 [
   {
+    "slug": "2026-05-03-windows-fod-fonts",
+    "title": "Installing Windows supplementary fonts with Features on Demand",
+    "date": "2026-05-03",
+    "description": "Fontist 3.0 can install over 100 Windows supplementary fonts — Japanese, Korean, Pan-European, and more — using Windows Features on Demand, automatically via PowerShell."
+  },
+  {
+    "slug": "2026-04-14-formula-v5",
+    "title": "Fontist Formula v5: multi-format and variable font support",
+    "date": "2026-04-14",
+    "description": "Formula v5 adds explicit schema versioning, multi-format resources, variable font metadata, and import provenance for Fontist formulas."
+  },
+  {
+    "slug": "2026-03-12-unified-design-and-logo",
+    "title": "Introducing Fontist's New Unified Design and Logo",
+    "date": "2026-03-12",
+    "description": "All Fontist project sites now share a beautiful, consistent design with a distinctive new logo and carefully crafted color palette."
+  },
+  {
+    "slug": "2024-03-02-creating-formulas",
+    "title": "Creating custom Fontist font formulas",
+    "date": "2024-03-02",
+    "description": "Easily create Fontist font formulas from font packages hosted online."
+  },
+  {
+    "slug": "2024-02-29-new-websites-thanks-to-jacob",
+    "title": "New Fontist sites contributed by Jacob!",
+    "date": "2024-02-29",
+    "description": "Expressing gratitude to Jacob Hummer for his outstanding contributions to Fontist's documentation and formula search sites."
+  },
+  {
+    "slug": "2024-01-23-office-fonts",
+    "title": "Installing Microsoft Office fonts",
+    "date": "2024-01-23",
+    "description": "Fontist now supports installing fonts from Microsoft Office packages."
+  },
+  {
     "slug": "2022-02-11-introducing-fontist",
     "title": "Introducing Fontist: the extensible font manager",
     "date": "2022-02-11",
@@ -10,41 +46,5 @@
     "title": "Installing macOS-specific add-on fonts",
     "date": "2022-02-11",
     "description": "Learn how to install macOS-specific add-on fonts via the fontist command-line interface."
-  },
-  {
-    "slug": "2024-01-23-office-fonts",
-    "title": "Installing Microsoft Office fonts",
-    "date": "2024-01-23",
-    "description": "Fontist now supports installing fonts from Microsoft Office packages."
-  },
-  {
-    "slug": "2024-02-29-new-websites-thanks-to-jacob",
-    "title": "New Fontist sites contributed by Jacob!",
-    "date": "2024-02-29",
-    "description": "Expressing gratitude to Jacob Hummer for his outstanding contributions to Fontist's documentation and formula search sites."
-  },
-  {
-    "slug": "2024-03-02-creating-formulas",
-    "title": "Creating custom Fontist font formulas",
-    "date": "2024-03-02",
-    "description": "Easily create Fontist font formulas from font packages hosted online."
-  },
-  {
-    "slug": "2026-03-12-unified-design-and-logo",
-    "title": "Introducing Fontist's New Unified Design and Logo",
-    "date": "2026-03-12",
-    "description": "All Fontist project sites now share a beautiful, consistent design with a distinctive new logo and carefully crafted color palette."
-  },
-  {
-    "slug": "2026-04-14-formula-v5",
-    "title": "Fontist Formula v5: multi-format and variable font support",
-    "date": "2026-04-14",
-    "description": "Formula v5 adds explicit schema versioning, multi-format resources, variable font metadata, and import provenance for Fontist formulas."
-  },
-  {
-    "slug": "2026-05-03-windows-fod-fonts",
-    "title": "Installing Windows supplementary fonts with Features on Demand",
-    "date": "2026-05-03",
-    "description": "Fontist 3.0 can install over 100 Windows supplementary fonts — Japanese, Korean, Pan-European, and more — using Windows Features on Demand, automatically via PowerShell."
   }
 ]

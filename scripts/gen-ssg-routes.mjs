@@ -64,6 +64,8 @@ try {
     }
     return { slug, title, date, description: get('description') }
   })
+  // Sort newest-first so consumers can `.slice(0, N)` for "latest" lists.
+  blogIndex.sort((a, b) => (b.date || '').localeCompare(a.date || ''))
 } catch {
   // blog dir optional
 }
