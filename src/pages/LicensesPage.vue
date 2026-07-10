@@ -6,20 +6,11 @@
 import { computed, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useHead } from '@unhead/vue'
-import { fetchJson } from '../lib/ssr-fetch'
+import { loadLicenseIndex, formulaMatchesLicenseSync, type LicenseIndexEntry } from '../lib/licenses/classifier'
 import { loadAllFormulas } from '../lib/formulas/loader'
 import LicenseCard from '../components/LicenseCard.vue'
 
-interface LicenseEntry {
-  slug: string
-  name: string
-  short_name?: string
-  spdx?: string
-  category: 'permissive' | 'copyleft' | 'public-domain' | 'special'
-  blurb: string
-  matchers?: string[]
-  exclude_matchers?: string[]
-}
+type LicenseEntry = LicenseIndexEntry
 
 const allLicenses = ref<LicenseEntry[]>([])
 const formulas = ref<Awaited<ReturnType<typeof loadAllFormulas>>>([])
@@ -27,7 +18,7 @@ const formulaCount = ref(0)
 
 async function loadAll() {
   try {
-    allLicenses.value = await fetchJson<LicenseEntry[]>('content/licenses/index.json')
+    allLicenses.value = await loadLicenseIndex()
   } catch {
     allLicenses.value = []
   }
@@ -58,26 +49,19 @@ const filteredLicenses = computed(() => {
   return allLicenses.value.filter(l => l.category === activeFilter.value)
 })
 
-function licenseMatches(license: LicenseEntry, licenseName: string | undefined): boolean {
-  if (!licenseName || !license.matchers) return false
-  const ln = licenseName.toLowerCase()
-  const matched = license.matchers.some(m => ln.includes(m.toLowerCase()))
-  if (!matched) return false
-  if (license.exclude_matchers) {
-    return !license.exclude_matchers.some(m => ln.includes(m.toLowerCase()))
-  }
-  return true
-}
-
 function formulaCountForLicense(license: LicenseEntry): number {
-  return formulas.value.filter(f => licenseMatches(license, f.licenseName)).length
+  let n = 0
+  for (const f of formulas.value) {
+    if (formulaMatchesLicenseSync(f, license)) n++
+  }
+  return n
 }
 
 const totalsByCategory = computed(() => {
   const counts: Record<string, number> = { permissive: 0, copyleft: 0, 'public-domain': 0, special: 0 }
   for (const f of formulas.value) {
     for (const lic of allLicenses.value) {
-      if (licenseMatches(lic, f.licenseName)) { counts[lic.category]++; break }
+      if (formulaMatchesLicenseSync(f, lic)) { counts[lic.category]++; break }
     }
   }
   return counts

@@ -3,6 +3,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useHead } from '@unhead/vue'
 import { RouterLink } from 'vue-router'
 import { loadAllFormulas } from '../lib/formulas/loader'
+import { bucketFormulas } from '../lib/licenses/classifier'
 import { fetchJson } from '../lib/ssr-fetch'
 
 // Type Specimen homepage.
@@ -20,68 +21,22 @@ const openLicenseBuckets = ref<{ label: string; count: number; score: number }[]
 const propLicenseBuckets = ref<{ label: string; count: number; score: number }[]>([])
 const recentPosts = ref<{ slug: string; title: string; date: string; description?: string }[]>([])
 
-// Canonical license bucketing — collapses the long tail of licenseName
-// variants into a small set of human-readable groups. Microsoft and
-// Adobe each consolidate their LICENSEREF-* family into one row.
-//
-// `open_source` formulas (per licenseCategory) feed the positive
-// top-of-chart rows; everything else (platform_restricted,
-// bundled_software, freely_distributable) lands in the muted
-// proprietary block at the bottom.
-const OPEN_MATCHERS: { label: string; test: (n: string) => boolean }[] = [
-  { label: 'SIL Open Font License',          test: n => n.includes('open font license') || n === 'ofl' || n.startsWith('ofl-1') },
-  { label: 'Apache License 2.0',             test: n => n.includes('apache') },
-  { label: 'IPA Font License',               test: n => n.includes('ipa font') },
-  { label: 'CC0 / Public Domain',            test: n => n.includes('creative commons zero') || n.includes('cc0') || n.includes('public domain') || n.includes('publicdomain') },
-  { label: 'Ubuntu Font Licence',            test: n => n.includes('ubuntu font') },
-  { label: 'GNU GPL (with Font Exception)',  test: n => n.includes('gnu gpl') || n.includes('lppl') },
-]
-const PROP_MATCHERS: { label: string; test: (n: string) => boolean }[] = [
-  { label: 'Apple-only',     test: n => n.includes('apple') },
-  { label: 'Microsoft',      test: n => n.includes('microsoft') },
-  { label: 'Adobe',          test: n => n.includes('adobe') },
-]
-
-function normLicenseName(raw: string | undefined): string {
-  return (raw || 'Unknown').replace(/^LICENSEREF-/i, '').toLowerCase()
-}
-
 async function loadStats() {
   try {
     const all = await loadAllFormulas()
     formulaCount.value = all.length
     openSourceCount.value = all.filter((f) => f.licenseCategory === 'open_source').length
 
-    const openCounts = new Map<string, number>()
-    const propCounts = new Map<string, number>()
-    let openOther = 0
-    let propOther = 0
+    // License bucketing lives in src/lib/licenses/classifier.ts — one seam,
+    // backed by the YAML matchers in public/content/licenses/*.yml.
+    const { open, proprietary } = await bucketFormulas(all)
 
-    for (const f of all) {
-      const name = normLicenseName(f.licenseName)
-      const isOpen = f.licenseCategory === 'open_source'
-      if (isOpen) {
-        const hit = OPEN_MATCHERS.find(m => m.test(name))
-        if (hit) openCounts.set(hit.label, (openCounts.get(hit.label) ?? 0) + 1)
-        else openOther++
-      } else {
-        const hit = PROP_MATCHERS.find(m => m.test(name))
-        if (hit) propCounts.set(hit.label, (propCounts.get(hit.label) ?? 0) + 1)
-        else propOther++
-      }
-    }
-
-    const toBuckets = (entries: [string, number][], other: number, otherLabel: string) => {
-      const list = entries
-        .map(([label, count]) => ({ label, count }))
-        .sort((a, b) => b.count - a.count)
-      if (other > 0) list.push({ label: otherLabel, count: other })
+    const withScore = (list: { bucket: string; count: number }[]) => {
       const max = Math.max(...list.map(b => b.count), 1)
-      return list.map(b => ({ ...b, score: Math.round((b.count / max) * 100) }))
+      return list.map(b => ({ label: b.bucket, count: b.count, score: Math.round((b.count / max) * 100) }))
     }
-
-    openLicenseBuckets.value = toBuckets([...openCounts.entries()], openOther, 'Other open source')
-    propLicenseBuckets.value = toBuckets([...propCounts.entries()], propOther, 'Other proprietary')
+    openLicenseBuckets.value = withScore(open)
+    propLicenseBuckets.value = withScore(proprietary)
   } catch {}
 
   try {
