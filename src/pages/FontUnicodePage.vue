@@ -3,7 +3,7 @@ import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import { injectFontFace } from '../composables/useFontFace'
-import { fetchCoverage } from '../composables/useCoverage'
+import { loadCoverage } from '../lib/unicode/coverage'
 import type { UnicodeBlock } from '../lib/unicode'
 import { loadAllBlocks, getPlanes, PLANES, blockDisplayName, blockSlug, hexCp } from '../lib/unicode'
 import type { FontContext, Coverage } from '../lib/types/domain'
@@ -38,7 +38,7 @@ async function loadData() {
   const { fontId: fid, ensureInjected } = injectFontFace(s, `fonts/${s}.woff2`, true)
   fontId.value = fid
   fontReady.value = ensureInjected()
-  coverage.value = await fetchCoverage(s)
+  coverage.value = await loadCoverage(s)
   allBlocks.value = await loadAllBlocks()
 }
 

@@ -9,10 +9,6 @@ export function loadAllFormulas(): Promise<FormulaData[]> {
   return allFormulasLoader.load()
 }
 
-export function clearAllFormulasCache(): void {
-  allFormulasLoader.clear()
-}
-
 export async function findFormula(slug: string): Promise<FormulaData | null> {
   const all = await loadAllFormulas()
   return all.find((f) => f.slug === slug) || null

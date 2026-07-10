@@ -11,11 +11,3 @@ export function loadFontsRegistry(): Promise<FontsRegistry> {
 export function loadFontMetadata(): Promise<FontMetadataFile> {
   return fontMetadataLoader.load()
 }
-
-export function clearFontsRegistryCache(): void {
-  fontsRegistryLoader.clear()
-}
-
-export function clearFontMetadataCache(): void {
-  fontMetadataLoader.clear()
-}

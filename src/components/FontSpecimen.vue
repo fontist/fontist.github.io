@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { injectFontFace } from '../composables/useFontFace'
-import { fetchCoverage } from '../composables/useCoverage'
+import { loadCoverage } from '../lib/unicode/coverage'
 import { useFontVariation } from '../composables/useFontVariation'
 
 const props = defineProps({
@@ -35,7 +35,7 @@ onMounted(async () => {
     const { fontId: fid } = injectFontFace(props.slug, props.fontPath, props.redistributable)
     fontId.value = fid
   }
-  const cov = await fetchCoverage(props.coverageFile || props.slug)
+  const cov = await loadCoverage(props.coverageFile || props.slug)
   if (cov) {
     axes.value = cov.variable_axes || []
     features.value = cov.opentype_features || []

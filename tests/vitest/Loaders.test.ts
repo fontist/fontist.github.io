@@ -11,19 +11,7 @@ import {
 } from '../../src/lib/loader-factory'
 
 // Domain loaders — tested via factory injection
-import {
-  loadFontsRegistry,
-  clearFontsRegistryCache,
-} from '../../src/lib/fonts/loader'
-import {
-  loadFontMetadata,
-  clearFontMetadataCache,
-} from '../../src/lib/fonts/loader'
-import {
-  loadAllFormulas,
-  findFormula,
-  clearAllFormulasCache,
-} from '../../src/lib/formulas/loader'
+import { findFormula } from '../../src/lib/formulas/loader'
 import {
   findFormulaDetails,
   clearDetailsCache,
@@ -145,33 +133,22 @@ describe('loader-factory — createKeyedJsonLoader with inject', () => {
   })
 })
 
-describe('fonts/loader — loadFontsRegistry (injected fetcher via factory)', () => {
-  // The loader uses the default fetcher which reads from public/ via SSR-fetch.
-  // In the test environment (happy-dom), it'll attempt to fetch /fonts.json.
-  // We test the cache behavior by importing the singleton — but since we can't
-  // inject into the singleton loader (it's already constructed), we test via
-  // clearFontsRegistryCache which exposes the seam.
-  it('exposes clearFontsRegistryCache for tests', () => {
-    expect(typeof clearFontsRegistryCache).toBe('function')
-    expect(() => clearFontsRegistryCache()).not.toThrow()
-  })
-
-  it('exposes clearFontMetadataCache for tests', () => {
-    expect(typeof clearFontMetadataCache).toBe('function')
-    expect(() => clearFontMetadataCache()).not.toThrow()
+describe('fonts/loader — singleton shape', () => {
+  // After deleting the clear*Cache wrappers (zero production callers),
+  // the singleton loader is no longer testable via its clear seam.
+  // The factory's caching behavior is already covered by the
+  // createLazyJsonLoader / createKeyedJsonLoader tests above.
+  it('loadFontsRegistry and loadFontMetadata are exported functions', async () => {
+    const { loadFontsRegistry, loadFontMetadata } = await import('../../src/lib/fonts/loader')
+    expect(typeof loadFontsRegistry).toBe('function')
+    expect(typeof loadFontMetadata).toBe('function')
   })
 })
 
 describe('formulas/loader — findFormula', () => {
-  beforeEach(() => {
-    clearAllFormulasCache()
-  })
-
-  it('returns null for unknown slug when formulas-data.json fails to load', async () => {
-    // In the test env (happy-dom, no dev server), fetch will fail.
-    // The loader uses createLazyJsonLoader which does not catch — so the call rejects.
-    // We assert that the import is the correct shape (the factory wraps it).
-    expect(typeof findFormula).toBe('function')
+  it('exposes findFormula and loadAllFormulas', async () => {
+    const { findFormula: ff, loadAllFormulas } = await import('../../src/lib/formulas/loader')
+    expect(typeof ff).toBe('function')
     expect(typeof loadAllFormulas).toBe('function')
   })
 })
