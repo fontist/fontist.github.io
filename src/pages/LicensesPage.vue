@@ -95,7 +95,6 @@ useHead({
 <template>
   <div class="lpi">
     <header class="lpi-hero">
-      <span class="lpi-eyebrow">Fontist Archive · Reference</span>
       <h1 class="lpi-title">License <em>Reference</em></h1>
       <p class="lpi-lede">
         A typography-focused guide to the licenses used by fonts in the Fontist
@@ -157,29 +156,5 @@ useHead({
 </template>
 
 <style scoped>
-.lpi { max-width: 1200px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
-.lpi-hero { margin-bottom: 2.5rem; max-width: 720px; }
-.lpi-eyebrow { display: inline-block; font-family: var(--spec-font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--fontist-rose); font-weight: 600; margin-bottom: 0.7rem; }
-.lpi-title { font-family: var(--spec-font-display); font-size: clamp(2.4rem, 6vw, 4rem); font-weight: 400; letter-spacing: -0.025em; line-height: 1.05; margin: 0 0 1rem; color: var(--spec-ink); }
-.lpi-title em { font-style: italic; color: var(--fontist-rose); }
-.lpi-lede { font-family: var(--spec-font-body); font-size: 1.05rem; line-height: 1.55; color: var(--spec-ink-soft); margin: 0; }
-.lpi-lede em { font-style: italic; color: var(--spec-ink); }
-.lpi-filter { display: flex; flex-wrap: wrap; gap: 0.5rem; padding-bottom: 1.25rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--spec-rule); }
-.lpi-filter-btn { display: inline-flex; align-items: baseline; gap: 0.5rem; padding: 0.4rem 0.85rem 0.35rem; background: transparent; border: 1px solid var(--spec-rule); border-radius: 2px; cursor: pointer; font-family: var(--spec-font-mono); color: var(--spec-ink-soft); transition: all 0.18s ease; }
-.lpi-filter-btn:hover { border-color: var(--fontist-rose); color: var(--spec-ink); }
-.lpi-filter-btn.on { background: var(--spec-ink); border-color: var(--spec-ink); color: var(--spec-paper); }
-.lpi-filter-btn--permissive.on { background: #a8c19e; border-color: #a8c19e; color: #1c2e1c; }
-.lpi-filter-btn--copyleft.on { background: #c19e9e; border-color: #c19e9e; color: #3a1c1c; }
-.lpi-filter-btn--public-domain.on { background: #c1b89e; border-color: #c1b89e; color: #2e2818; }
-.lpi-filter-name { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
-.lpi-filter-count { font-family: var(--spec-font-display); font-size: 0.95rem; font-weight: 400; font-variant-numeric: tabular-nums; opacity: 0.7; }
-.lpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 3rem; }
-.lpi-cell { display: contents; }
-.lpi-aside { max-width: 720px; padding: 1.75rem 1.75rem; background: var(--spec-paper-deep); border-left: 3px solid var(--fontist-rose); }
-.lpi-aside-title { font-family: var(--spec-font-display); font-size: 1.3rem; font-style: italic; font-weight: 400; color: var(--spec-ink); margin: 0 0 0.75rem; letter-spacing: -0.005em; }
-.lpi-aside-body { font-family: var(--spec-font-body); font-size: 0.92rem; line-height: 1.6; color: var(--spec-ink-soft); margin: 0 0 0.85rem; }
-.lpi-aside-body:last-child { margin-bottom: 0; }
-.lpi-aside-body strong { color: var(--spec-ink); font-weight: 600; }
-.lpi-aside-body code { font-family: var(--spec-font-mono); font-size: 0.85em; background: var(--spec-paper); padding: 0.1em 0.4em; border-radius: 2px; }
-@media (max-width: 720px) { .lpi-hero { margin-bottom: 1.5rem; } .lpi-grid { grid-template-columns: 1fr; } }
+/* All styles migrated to src/styles/main.css (@layer components). */
 </style>

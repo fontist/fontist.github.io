@@ -99,10 +99,5 @@ function goToChar(cp: number) {
 </template>
 
 <style scoped>
-.fbp { padding: 1.5rem; max-width: 1200px; margin: 0 auto; }
-.fbp-head { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--spec-rule); }
-.fbp-back { font-size: 0.85rem; color: var(--fontist-rose, #bf4e6a); text-decoration: none; }
-.fbp-head h1 { font-size: 1.3rem; margin: 0; color: var(--color-ink); }
-.fbp-meta { font-size: 0.78rem; color: var(--color-mute); font-family: monospace; margin-left: auto; }
-.fbp-loading { display: flex; align-items: center; justify-content: center; height: 60vh; color: var(--color-mute); }
+/* All styles migrated to src/styles/main.css (@layer components). */
 </style>

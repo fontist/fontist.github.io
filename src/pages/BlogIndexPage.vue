@@ -46,7 +46,6 @@ useHead({
   <div class="specimen">
     <div class="page-wrap">
       <header class="blog-head">
-        <p class="eyebrow">§ Journal</p>
         <h1>Field Notes from the Pressroom</h1>
         <p class="lede">Releases, type discoveries, and engineering notes from the Fontist project.</p>
       </header>
@@ -70,113 +69,5 @@ useHead({
 </template>
 
 <style scoped>
-.page-wrap {
-  max-width: 880px;
-  margin: 0 auto;
-  padding: 3rem 1.5rem 5rem;
-}
-.blog-head { margin-bottom: 2.5rem; }
-.eyebrow {
-  font-family: var(--spec-font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--fontist-rose);
-  font-weight: 600;
-  margin: 0 0 0.7rem;
-}
-.blog-head h1 {
-  font-family: var(--spec-font-display);
-  font-weight: 400;
-  font-style: italic;
-  font-size: clamp(2.2rem, 5vw, 3.4rem);
-  line-height: 1.05;
-  letter-spacing: -0.022em;
-  color: var(--spec-ink);
-  margin: 0 0 1rem;
-  max-width: 18ch;
-}
-.blog-head .lede {
-  font-family: var(--spec-font-body);
-  font-size: 1.05rem;
-  line-height: 1.55;
-  color: var(--spec-ink-soft);
-  max-width: 50ch;
-  margin: 0;
-}
-
-.post-list { list-style: none; padding: 0; margin: 0; }
-.post-item { border-top: 1px solid var(--spec-rule); }
-.post-item:last-child { border-bottom: 1px solid var(--spec-rule); }
-
-.post-link {
-  display: grid;
-  grid-template-columns: 120px 1fr 24px;
-  gap: 1.5rem;
-  align-items: baseline;
-  padding: 1.25rem 0;
-  text-decoration: none;
-  transition: padding 0.2s ease, color 0.2s ease;
-}
-
-.post-link:hover {
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-}
-
-.post-date {
-  font-family: var(--spec-font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  color: var(--spec-mute);
-  text-transform: uppercase;
-}
-
-.post-main {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
-
-.post-title {
-  font-family: var(--spec-font-display);
-  font-weight: 400;
-  font-size: clamp(1.1rem, 1.6vw, 1.4rem);
-  line-height: 1.2;
-  letter-spacing: -0.005em;
-  color: var(--spec-ink);
-  transition: color 0.2s ease;
-}
-
-.post-link:hover .post-title { color: var(--fontist-rose); }
-
-.post-desc {
-  font-family: var(--spec-font-body);
-  font-size: 0.85rem;
-  line-height: 1.5;
-  color: var(--spec-ink-soft);
-  max-width: 60ch;
-}
-
-.post-arrow {
-  font-family: var(--spec-font-mono);
-  font-size: 0.9rem;
-  color: var(--spec-mute);
-  transition: color 0.2s ease, transform 0.2s ease;
-  align-self: center;
-}
-
-.post-link:hover .post-arrow {
-  color: var(--fontist-rose);
-  transform: translateX(3px);
-}
-
-@media (max-width: 600px) {
-  .post-link {
-    grid-template-columns: 1fr;
-    gap: 0.3rem;
-    padding: 1rem 0;
-  }
-  .post-arrow { display: none; }
-}
+/* All styles migrated to src/styles/main.css (@layer components). */
 </style>

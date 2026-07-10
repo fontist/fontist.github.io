@@ -67,6 +67,5 @@ useHead(() => ({
 </template>
 
 <style scoped>
-.license-page { max-width: 800px; }
-.lp-notfound { padding: 3rem 1rem; text-align: center; color: var(--color-ink-soft); }
+/* All styles migrated to src/styles/main.css (@layer components). */
 </style>
