@@ -151,7 +151,7 @@ function rowAnswer(id: string): Answer {
   letter-spacing: 0.08em;
   font-size: 0.62rem;
   padding: 0.6rem 0.5rem;
-  border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border-bottom: 1px solid var(--spec-rule);
 }
 
 .pm-th-label {
@@ -173,7 +173,7 @@ function rowAnswer(id: string): Answer {
 
 .pm-row + .pm-row .pm-rowlabel,
 .pm-row + .pm-row .pm-cell {
-  border-top: 1px solid var(--vp-c-divider, rgba(28,26,24,0.08));
+  border-top: 1px solid var(--spec-rule);
 }
 
 .pm-rowlabel {

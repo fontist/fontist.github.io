@@ -68,8 +68,8 @@ function isSupported(cp: number, font: FontContext): boolean {
 .ub-cell, .ub-cell-multi {
   display: flex; flex-direction: column; align-items: center;
   width: 100%; min-height: 110px; padding: 8px;
-  background: var(--vp-c-bg, #fff);
-  border: 1px solid var(--vp-c-divider, #e2e2e3);
+  background: var(--color-paper);
+  border: 1px solid var(--spec-rule);
   border-radius: 6px; cursor: pointer; overflow: hidden;
   gap: 4px; transition: border-color 0.12s;
 }
@@ -82,16 +82,16 @@ function isSupported(cp: number, font: FontContext): boolean {
   border-width: 2px;
 }
 .ub-cp {
-  font-size: 0.55rem; font-family: var(--vp-font-family-mono, monospace);
-  color: var(--vp-c-text-3, #888); line-height: 1;
+  font-size: 0.55rem; font-family: var(--font-mono);
+  color: var(--color-mute); line-height: 1;
 }
 .ub-glyph {
-  font-size: 2rem; line-height: 1; color: var(--vp-c-text-1, #333);
+  font-size: 2rem; line-height: 1; color: var(--color-ink);
   flex: 1; display: flex; align-items: center;
 }
-.ub-fallback { color: var(--vp-c-text-3, #888); opacity: 0.3; }
+.ub-fallback { color: var(--color-mute); opacity: 0.3; }
 .ub-name {
-  font-size: 0.5rem; text-align: center; color: var(--vp-c-text-3, #888);
+  font-size: 0.5rem; text-align: center; color: var(--color-mute);
   line-height: 1.1; overflow: hidden;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
 }
@@ -102,7 +102,7 @@ function isSupported(cp: number, font: FontContext): boolean {
 .ub-glyph-slot .ub-glyph { font-size: 1.4rem; }
 .ub-missing { opacity: 0.2; }
 .ub-font-tag {
-  font-size: 0.45rem; font-family: var(--vp-font-family-mono, monospace);
+  font-size: 0.45rem; font-family: var(--font-mono);
   font-weight: 600;
 }
 </style>

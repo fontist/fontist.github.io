@@ -1,0 +1,35 @@
+slug: apache
+name: Apache License 2.0
+short_name: Apache 2.0
+spdx: Apache-2.0
+version: '2.0'
+year_adopted: '2004'
+category: permissive
+blurb: A general-purpose open-source license adopted by several type foundries; permissive
+  but requires explicit attribution.
+matchers:
+- apache
+permissions:
+  commercial-static: 'yes'
+  commercial-web: 'yes'
+  commercial-app: 'yes'
+  commercial-server: 'yes'
+  open-source: 'yes'
+  modification: 'yes'
+  redistribute: conditional
+  standalone-sale: 'no'
+  embed-document: 'yes'
+  subsetting: 'yes'
+  rename: 'yes'
+  attribution: conditional
+siblings:
+- mit
+- ofl
+- bsd
+examples:
+- name: Inter (older versions)
+  note: Pre-2024 versions under OFL, newer under Apache
+- name: Roboto Flex
+  note: Google's variable font extension
+- name: Cascadia Code
+  note: Microsoft's developer font

@@ -136,19 +136,19 @@ function goToChar(cp: number) {
 .ubp { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
 .ubp-head { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--fontist-rose, #bf4e6a); }
 .ubp-back { font-size: 0.85rem; color: var(--fontist-rose, #bf4e6a); text-decoration: none; }
-.ubp-head h1 { font-size: 1.4rem; font-weight: 600; margin: 0; color: var(--vp-c-text-1, #333); }
-.ubp-meta { font-size: 0.75rem; font-family: monospace; color: var(--vp-c-text-3, #888); margin-left: auto; }
+.ubp-head h1 { font-size: 1.4rem; font-weight: 600; margin: 0; color: var(--color-ink); }
+.ubp-meta { font-size: 0.75rem; font-family: monospace; color: var(--color-mute); margin-left: auto; }
 .ubp-script {
   font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em;
   color: var(--fontist-rose, #bf4e6a); margin-bottom: 1rem;
 }
-.ubp-loading { display: flex; align-items: center; justify-content: center; height: 60vh; color: var(--vp-c-text-3, #888); }
+.ubp-loading { display: flex; align-items: center; justify-content: center; height: 60vh; color: var(--color-mute); }
 
 .ubp-compare {
   margin-bottom: 1rem;
   padding: 0.6rem 0.85rem;
-  background: var(--vp-c-bg-soft, #faf8f5);
-  border: 1px solid var(--vp-c-divider, #e8e6e0);
+  background: var(--color-paper-deep);
+  border: 1px solid var(--spec-rule);
   border-radius: 6px;
 }
 .ubp-compare-title {
@@ -156,7 +156,7 @@ function goToChar(cp: number) {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
   margin-bottom: 0.4rem;
 }
 .ubp-compare-list {
@@ -179,16 +179,16 @@ function goToChar(cp: number) {
   border-radius: 3px;
   border: 1px solid rgba(0,0,0,0.15);
 }
-.ubp-compare-name { font-size: 0.85rem; font-weight: 600; color: var(--vp-c-text-1, #333); }
+.ubp-compare-name { font-size: 0.85rem; font-weight: 600; color: var(--color-ink); }
 .ubp-compare-slug {
   font-family: var(--spec-font-mono, monospace);
   font-size: 0.72rem;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
 }
 
 .ubp-pua-notice {
   padding: 2rem;
-  background: var(--vp-c-bg-soft, #f8f7f4);
+  background: var(--color-paper-deep);
   border-left: 4px solid var(--fontist-rose, #bf4e6a);
   border-radius: 8px;
   margin-bottom: 2rem;
@@ -197,12 +197,12 @@ function goToChar(cp: number) {
   font-size: 1.1rem;
   font-weight: 600;
   margin: 0 0 0.75rem;
-  color: var(--vp-c-text-1, #333);
+  color: var(--color-ink);
 }
 .ubp-pua-notice p {
   font-size: 0.88rem;
   line-height: 1.6;
-  color: var(--vp-c-text-2, #555);
+  color: var(--color-ink-soft);
   margin: 0 0 0.5rem;
 }
 .ubp-pua-link { margin-top: 1rem !important; }

@@ -1,252 +1,234 @@
 /* ===================================================================
-   Fontist — Type Specimen design system (site-wide)
-   Ported from .vitepress/theme/style.css.
-   One palette + type system applied across every surface.
-   Keeps --vp-c-* variable names for component compatibility.
+   Fontist — Tailwind 4 design system
+   One @theme block defines all tokens; everything else is utilities.
    =================================================================== */
 
-/* ── Brand + specimen palette ─────────────────────────────────── */
+@import "tailwindcss";
+
+/* Dark mode: class-based (html.dark), not prefers-color-scheme.
+   This makes `dark:` utilities work with the existing toggle. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Design tokens → Tailwind theme ────────────────────────────
+   Each token auto-generates utilities:
+     --color-rose  →  text-rose, bg-rose, border-rose, etc.
+     --font-display →  font-display
+*/
+@theme {
+  /* Brand */
+  --color-rose: #bf4e6a;
+  --color-rose-light: #d4718a;
+  --color-rose-dark: #4d4b54;
+
+  /* Paper / ink (light mode defaults) */
+  --color-paper: #f1ece1;
+  --color-paper-deep: #e7e0d1;
+  --color-ink: #1c1a18;
+  --color-ink-soft: #4a4744;
+  --color-mute: #75716c;
+  --color-accent: #b8475f;
+  --color-accent-soft: #d4718a;
+
+  /* Coverage heatmap palette */
+  --color-cov-0: #f0e0e6;
+  --color-cov-25: #f0e4d6;
+  --color-cov-50: #edeed5;
+  --color-cov-75: #dde9d6;
+  --color-cov-100: #c9dcc8;
+  --color-cov-none: #f3e8ed;
+  --color-cov-unknown: #ecebe3;
+
+  /* Typefaces */
+  --font-display: "Spectral", Georgia, serif;
+  --font-body: "IBM Plex Sans", -apple-system, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "JetBrains Mono", monospace;
+}
+
+/* ── Dark mode token overrides ───────────────────────────────── */
+@layer base {
+  html.dark {
+    --color-paper: #161513;
+    --color-paper-deep: #211f1c;
+    --color-ink: #ecdfd0;
+    --color-ink-soft: #b8ada0;
+    --color-mute: #8a857f;
+    --color-accent: #d4718a;
+    --color-accent-soft: #e08a9e;
+    --color-cov-0: #3a2832;
+    --color-cov-25: #3a3128;
+    --color-cov-50: #34352a;
+    --color-cov-75: #2a3a30;
+    --color-cov-100: #243328;
+    --color-cov-none: #3a2832;
+    --color-cov-unknown: #25201a;
+  }
+}
+
+/* Keep CSS custom property aliases for backward compatibility
+   with existing scoped styles that use var(--spec-*) / var(--fontist-*). */
 :root {
-  /* Brand colors from the logo */
-  --fontist-rose: #bf4e6a;
-  --fontist-rose-light: #d4718a;
-  --fontist-dark: #4d4b54;
+  --fontist-rose: var(--color-rose);
+  --fontist-rose-light: var(--color-rose-light);
+  --fontist-dark: var(--color-rose-dark);
   --fontist-gray: #676565;
   --fontist-cream: #e1dfd2;
   --fontist-beige: #bebbac;
   --fontist-pale: #dddac8;
 
-  /* Specimen tokens — LIGHT (default) */
-  --spec-paper: #f1ece1;
-  --spec-paper-deep: #e7e0d1;
-  --spec-ink: #1c1a18;
-  --spec-ink-soft: #4a4744;
-  --spec-mute: #75716c;
-  --spec-rose: #b8475f;
-  --spec-rose-soft: #d4718a;
+  --spec-paper: var(--color-paper);
+  --spec-paper-deep: var(--color-paper-deep);
+  --spec-ink: var(--color-ink);
+  --spec-ink-soft: var(--color-ink-soft);
+  --spec-mute: var(--color-mute);
+  --spec-rose: var(--color-accent);
+  --spec-rose-soft: var(--color-accent-soft);
   --spec-rule: rgba(28, 26, 24, 0.16);
   --spec-rule-strong: rgba(28, 26, 24, 0.5);
-  --spec-term-bg: #1c1a18;
-  --spec-term-ink: #ecdfd0;
+  --spec-term-bg: var(--color-ink);
+  --spec-term-ink: var(--color-paper);
 
-  /* VitePress brand wiring (kept for component compatibility) */
-  --vp-c-brand-1: var(--spec-rose);
-  --vp-c-brand-2: #a3435a;
-  --vp-c-brand-3: var(--spec-ink);
-  --vp-c-brand-soft: rgba(184, 71, 95, 0.12);
-  --vp-c-text-1: var(--spec-ink);
-  --vp-c-text-2: var(--spec-ink-soft);
-  --vp-c-text-3: var(--spec-mute);
-  --vp-c-bg: var(--spec-paper);
-  --vp-c-bg-soft: var(--spec-paper-deep);
-  --vp-c-bg-alt: var(--spec-paper-deep);
-  --vp-c-divider: var(--spec-rule);
-  --vp-c-gutter: var(--spec-rule);
+  --spec-font-display: var(--font-display);
+  --spec-font-body: var(--font-body);
+  --spec-font-mono: var(--font-mono);
 
-  /* Type */
-  --spec-font-display: "Spectral", Georgia, serif;
-  --spec-font-body: "IBM Plex Sans", -apple-system, system-ui, sans-serif;
-  --spec-font-mono: "IBM Plex Mono", ui-monospace, "JetBrains Mono", monospace;
-
-  /* ── Coverage heatmap palette ───────────────────────────────
-     Five-step pastel scale for Unicode block completeness.
-     Aims for an even luminance curve so the heatmap stays
-     scannable in grayscale and for deuteranopic viewers
-     (the rose→peach→sand→sage progression avoids the
-     red-green dichotomy).
-     All stops share ~85–95% lightness, ~5–20% saturation. */
-  --coverage-0:   #f0e0e6;   /* none        */
-  --coverage-25:  #f0e4d6;   /* sparse      */
-  --coverage-50:  #edeed5;   /* partial     */
-  --coverage-75:  #dde9d6;   /* mostly      */
-  --coverage-100: #c9dcc8;   /* complete    */
-  --coverage-none: #f3e8ed;  /* softer rose for 0%-and-unknown tile */
-  --coverage-unknown: #ecebe3; /* "no coverage data yet" — neutral */
+  --coverage-0: var(--color-cov-0);
+  --coverage-25: var(--color-cov-25);
+  --coverage-50: var(--color-cov-50);
+  --coverage-75: var(--color-cov-75);
+  --coverage-100: var(--color-cov-100);
+  --coverage-none: var(--color-cov-none);
+  --coverage-unknown: var(--color-cov-unknown);
   --coverage-tile-border: rgba(28, 26, 24, 0.08);
   --coverage-tile-border-strong: rgba(28, 26, 24, 0.22);
 
-  --vp-font-family-base: var(--spec-font-body);
-  --vp-font-family-mono: var(--spec-font-mono);
-
-  /* Buttons */
-  --vp-button-brand-border: var(--spec-rose);
-  --vp-button-brand-text: #ffffff;
-  --vp-button-brand-bg: var(--spec-rose);
-  --vp-button-brand-hover-border: #a3435a;
-  --vp-button-brand-hover-text: #ffffff;
-  --vp-button-brand-hover-bg: #a3435a;
-
-  --vp-button-alt-border: var(--spec-rule-strong);
-  --vp-button-alt-text: var(--spec-ink);
-  --vp-button-alt-bg: transparent;
-  --vp-button-alt-hover-border: var(--spec-rose);
-  --vp-button-alt-hover-text: var(--spec-rose);
-  --vp-button-alt-hover-bg: transparent;
-
-  /* Nav height — used by FontViewer height calc */
+  --vp-c-brand-1: var(--color-accent);
+  --vp-c-brand-2: #a3435a;
+  --vp-c-brand-3: var(--color-ink);
+  --vp-c-brand-soft: rgba(184, 71, 95, 0.12);
+  --vp-c-text-1: var(--color-ink);
+  --vp-c-text-2: var(--color-ink-soft);
+  --vp-c-text-3: var(--color-mute);
+  --vp-c-bg: var(--color-paper);
+  --vp-c-bg-soft: var(--color-paper-deep);
+  --vp-c-bg-alt: var(--color-paper-deep);
+  --vp-c-divider: var(--spec-rule);
+  --vp-c-gutter: var(--spec-rule);
+  --vp-font-family-base: var(--font-body);
+  --vp-font-family-mono: var(--font-mono);
   --vp-nav-height: 56px;
 }
 
-/* ── Dark mode specimen ───────────────────────────────────────── */
 html.dark {
-  --spec-paper: #161513;
-  --spec-paper-deep: #211f1c;
-  --spec-ink: #ecdfd0;
-  --spec-ink-soft: #b8ada0;
-  --spec-mute: #8a857f;
-  --spec-rose: #d4718a;
-  --spec-rose-soft: #e08a9e;
   --spec-rule: rgba(236, 223, 208, 0.14);
   --spec-rule-strong: rgba(236, 223, 208, 0.42);
   --spec-term-bg: #0d0c0c;
-  --spec-term-ink: #ecdfd0;
-
-  --vp-c-brand-1: var(--spec-rose);
-  --vp-c-brand-2: var(--fontist-rose);
-  --vp-c-brand-3: var(--spec-ink);
+  --spec-term-ink: var(--color-paper);
+  --vp-c-brand-1: var(--color-accent);
+  --vp-c-brand-2: var(--color-rose);
+  --vp-c-brand-3: var(--color-ink);
   --vp-c-brand-soft: rgba(212, 113, 138, 0.14);
-  --vp-c-text-1: var(--spec-ink);
-  --vp-c-text-2: var(--spec-ink-soft);
-  --vp-c-text-3: var(--spec-mute);
-  --vp-c-bg: var(--spec-paper);
-  --vp-c-bg-soft: var(--spec-paper-deep);
-  --vp-c-bg-alt: var(--spec-paper-deep);
   --vp-c-divider: var(--spec-rule);
   --vp-c-gutter: var(--spec-rule);
-
-  --vp-button-brand-border: var(--spec-rose);
-  --vp-button-brand-text: #161513;
-  --vp-button-brand-bg: var(--spec-rose);
-  --vp-button-brand-hover-border: var(--fontist-rose);
-  --vp-button-brand-hover-text: #161513;
-  --vp-button-brand-hover-bg: var(--fontist-rose);
-
-  /* Heatmap palette — dark mode (deeper pastels, same hue progression) */
-  --coverage-0:   #3a2832;   /* none        */
-  --coverage-25:  #3a3128;   /* sparse      */
-  --coverage-50:  #34352a;   /* partial     */
-  --coverage-75:  #2a3a30;   /* mostly      */
-  --coverage-100: #243328;   /* complete    */
-  --coverage-none: #3a2832;
-  --coverage-unknown: #25201a;
   --coverage-tile-border: rgba(236, 223, 208, 0.08);
   --coverage-tile-border-strong: rgba(236, 223, 208, 0.28);
 }
 
-/* ===================================================================
-   Reset & Base
-   =================================================================== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* ── Base layer: resets, global styles, paper texture ────────── */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    font-family: var(--font-body);
+    color: var(--color-ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Paper grain overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    pointer-events: none;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    mix-blend-mode: multiply;
+  }
+  html.dark body::before {
+    opacity: 0.06;
+    mix-blend-mode: screen;
+  }
+
+  a {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  a:hover { color: var(--color-rose); }
+
+  img { max-width: 100%; height: auto; }
+
+  /* Selection */
+  ::selection {
+    background: rgba(191, 78, 106, 0.18);
+    color: var(--color-ink);
+    text-shadow: none;
+  }
+  html.dark ::selection {
+    background: rgba(212, 113, 138, 0.28);
+    color: var(--color-paper);
+  }
+
+  /* Focus-visible (keyboard only) */
+  :focus { outline: none; }
+  :focus-visible {
+    outline: 2px solid var(--color-rose);
+    outline-offset: 2px;
+    border-radius: 1px;
+  }
+  input:focus-visible, textarea:focus-visible, select:focus-visible {
+    outline: 1px solid var(--color-rose);
+    outline-offset: 1px;
+  }
 }
 
-html {
-  scroll-behavior: smooth;
-  -webkit-text-size-adjust: 100%;
-}
-
-/* ── Site-wide body: paper + grain + base type ────────────────── */
-body {
-  background-color: var(--spec-paper);
-  font-family: var(--spec-font-body);
-  color: var(--spec-ink);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-/* paper grain overlay (every page) */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 200;
-  pointer-events: none;
-  opacity: 0.04;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  mix-blend-mode: multiply;
-}
-html.dark body::before {
-  opacity: 0.06;
-  mix-blend-mode: screen;
-}
-
-a {
-  color: var(--spec-rose);
-  text-decoration: none;
-  transition: color 0.15s;
-}
-
-a:hover {
-  color: var(--fontist-rose);
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-/* ── Site-wide loading + empty state ─────────────────────────
-   Editorial treatment: centered, mono caps, a thin rule above.
-   Replace bare "Loading…" text wherever it appears. */
-.site-loading,
-.site-empty {
-  padding: 4rem 1.5rem;
-  text-align: center;
-  font-family: var(--spec-font-mono);
-  color: var(--spec-mute);
-}
-.site-loading::before {
-  content: '';
-  display: block;
-  width: 1.5rem;
-  height: 1px;
-  background: var(--vp-c-divider, rgba(28,26,24,0.16));
-  margin: 0 auto 1.25rem;
-}
-.site-loading-text {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--fontist-rose);
-  font-weight: 600;
-  margin: 0;
-}
-.site-loading-sub {
-  font-family: var(--spec-font-body);
-  font-style: italic;
-  font-size: 0.88rem;
-  color: var(--spec-mute);
-  margin: 0.5rem 0 0;
-}
-
-/* ── Selection ──────────────────────────────────────────────────
-   Rose-tinted selection. Subtle but unmistakably brand-aligned.
-   Reads as "you marked this" without screaming. */
-::selection {
-  background: rgba(191, 78, 106, 0.18);
-  color: var(--spec-ink);
-  text-shadow: none;
-}
-html.dark ::selection {
-  background: rgba(212, 113, 138, 0.28);
-  color: var(--spec-paper);
-}
-
-/* ── Focus-visible ──────────────────────────────────────────────
-   Keyboard-only focus ring. Rose, 2px, offset 2px. Mouse clicks
-   don't trigger it (uses :focus-visible). */
-:focus { outline: none; }
-:focus-visible {
-  outline: 2px solid var(--fontist-rose);
-  outline-offset: 2px;
-  border-radius: 1px;
-}
-/* Inputs and textareas get a softer treatment */
-input:focus-visible, textarea:focus-visible, select:focus-visible {
-  outline: 1px solid var(--fontist-rose);
-  outline-offset: 1px;
+/* ── Utilities: loading state, print, reduced motion ────────── */
+@layer utilities {
+  .site-loading, .site-empty {
+    padding: 4rem 1.5rem;
+    text-align: center;
+    font-family: var(--font-mono);
+    color: var(--color-mute);
+  }
+  .site-loading::before {
+    content: '';
+    display: block;
+    width: 1.5rem;
+    height: 1px;
+    background: var(--spec-rule);
+    margin: 0 auto 1.25rem;
+  }
+  .site-loading-text {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--color-rose);
+    font-weight: 600;
+    margin: 0;
+  }
+  .site-loading-sub {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.88rem;
+    color: var(--color-mute);
+    margin: 0.5rem 0 0;
+  }
 }
 
 /* ── Reduced motion ──────────────────────────────────────────── */
@@ -259,11 +241,9 @@ input:focus-visible, textarea:focus-visible, select:focus-visible {
   }
 }
 
-/* ── Print ──────────────────────────────────────────────────────
-   Designers print specimen pages. Hide nav, footer, theme toggle;
-   force paper background to white; expand the specimen to full width. */
+/* ── Print ────────────────────────────────────────────────────── */
 @media print {
-  body::before { display: none !important; }              /* no grain */
+  body::before { display: none !important; }
   .nav, .footer, .nav-burger, .theme-toggle, .nav-icon-link { display: none !important; }
   .layout, .main { display: block !important; }
   body, .layout, .main {
@@ -280,794 +260,7 @@ input:focus-visible, textarea:focus-visible, select:focus-visible {
     font-size: 0.7em;
     color: #555;
   }
-  .fsp-nav, .fsup-head, .fbcp-head { display: none !important; }
-  /* pages should not break inside font cards */
+  .fsp-nav, .fsup-head, .fbcp-head, .cov-filter, .cov-legend { display: none !important; }
   .fsp, .fub, .cov { page-break-inside: avoid; }
   @page { margin: 1.5cm; }
-}
-
-/* ===================================================================
-   App-level layout styles
-   =================================================================== */
-.app-layout {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.app-nav {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  height: var(--vp-nav-height);
-  padding: 0 1.5rem;
-  background: var(--spec-paper);
-  border-bottom: none;
-  box-shadow: 0 1px 0 var(--spec-rule);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.nav-logo {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--spec-font-display);
-  font-weight: 400;
-  font-size: 18px;
-  letter-spacing: 0.02em;
-  color: var(--spec-ink);
-  text-decoration: none;
-  flex-shrink: 0;
-}
-
-.nav-logo img {
-  height: 32px;
-  width: auto;
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-}
-
-.nav-links a {
-  font-family: var(--spec-font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--spec-ink-soft);
-  text-decoration: none;
-  padding: 0.375rem 0;
-  border-bottom: 2px solid transparent;
-  transition: color 0.2s ease;
-}
-
-.nav-links a:hover,
-.nav-links a.router-link-active {
-  color: var(--spec-rose);
-  border-bottom-color: var(--spec-rose);
-}
-
-.nav-spacer {
-  flex: 1;
-}
-
-.nav-external {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.nav-external a {
-  font-family: var(--spec-font-mono);
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--spec-ink-soft);
-  text-decoration: none;
-}
-
-.nav-external a:hover {
-  color: var(--spec-rose);
-}
-
-.app-content {
-  flex: 1;
-  width: 100%;
-}
-
-/* ===================================================================
-   Page-level shared styles
-   =================================================================== */
-.page-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
-}
-
-.page-title {
-  font-family: var(--spec-font-display);
-  font-size: 1.75rem;
-  font-weight: 380;
-  color: var(--spec-ink);
-  margin-bottom: 1rem;
-}
-
-/* ===================================================================
-   Utility classes ported from VitePress default theme
-   =================================================================== */
-.font-filename {
-  display: inline-block;
-  max-width: 250px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  vertical-align: bottom;
-  position: relative;
-}
-
-.font-styles-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
-}
-
-.font-styles-table th,
-.font-styles-table td {
-  padding: 0.5rem;
-  text-align: left;
-  border: 1px solid var(--spec-rule);
-}
-
-.font-styles-table th {
-  background: var(--spec-paper-deep);
-  font-weight: 600;
-}
-
-.sha-cell {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.sha-value {
-  font-family: var(--spec-font-mono);
-  font-size: 0.8rem;
-  color: var(--spec-ink-soft);
-}
-
-.sha-copy-btn {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--spec-rose);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 0.2rem 0.5rem;
-  font-size: 0.7rem;
-  cursor: pointer;
-  opacity: 0;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.sha-cell:hover .sha-copy-btn {
-  opacity: 1;
-}
-
-.sha-copy-btn:hover {
-  background: var(--fontist-rose);
-  color: white;
-}
-
-.sha-copy-btn.copied {
-  background: #28a745;
-  border-color: #28a745;
-  color: white;
-}
-
-.source-badge {
-  height: 20px;
-  vertical-align: middle;
-}
-
-.v5-tag {
-  display: inline-block;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  font-size: 0.65rem;
-  font-weight: 700;
-  padding: 0.1em 0.4em;
-  border-radius: 3px;
-  vertical-align: middle;
-  margin-left: 0.3em;
-  letter-spacing: 0.02em;
-  line-height: 1.4;
-}
-
-/* ===================================================================
-   Section vocabulary — shared layout primitives
-   Used by HomePage.vue and available to any page that adopts
-   the specimen design system.
-   =================================================================== */
-.specimen {
-  color: var(--spec-ink);
-  background-color: var(--spec-paper);
-  overflow-x: hidden;
-}
-.specimen .wrap {
-  max-width: 1320px;
-  margin: 0 auto;
-  padding: 0 clamp(20px, 4vw, 56px);
-}
-.specimen .section { padding: clamp(64px, 11vw, 140px) 0; }
-.specimen .divider { border-top: 1px solid var(--spec-rule); }
-.specimen .masthead {
-  border-bottom: 1px solid var(--spec-rule);
-  padding: 14px clamp(20px, 4vw, 56px);
-  font-family: var(--spec-font-mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--spec-ink-soft);
-  display: flex;
-  justify-content: space-between;
-  gap: 24px;
-  align-items: center;
-}
-.specimen .masthead .c { color: var(--spec-ink); }
-.specimen .eyebrow {
-  font-family: var(--spec-font-mono);
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--spec-rose);
-  margin: 0 0 18px;
-}
-.specimen .lede {
-  font-family: var(--spec-font-display);
-  font-weight: 350;
-  font-size: clamp(19px, 2vw, 25px);
-  line-height: 1.4;
-  color: var(--spec-ink-soft);
-  max-width: 40ch;
-  margin: 0;
-}
-.specimen .head {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  align-items: end;
-  margin-bottom: clamp(48px, 8vw, 96px);
-}
-.specimen .head h2 {
-  font-family: var(--spec-font-display);
-  font-weight: 340;
-  font-size: clamp(34px, 5vw, 68px);
-  line-height: 0.98;
-  letter-spacing: -0.022em;
-  margin: 0;
-  color: var(--spec-ink);
-}
-.specimen .head h2 em { font-style: italic; color: var(--spec-rose); }
-.specimen .prompt { color: var(--spec-rose-soft); }
-.specimen .btn-ink {
-  font-family: var(--spec-font-mono);
-  font-size: 13px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--spec-paper);
-  background: var(--spec-ink);
-  padding: 14px 22px;
-  text-decoration: none;
-  transition: background 0.25s ease;
-}
-.specimen .btn-ink:hover { background: var(--spec-rose); }
-.specimen .btn-ghost {
-  font-family: var(--spec-font-mono);
-  font-size: 13px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--spec-ink);
-  text-decoration: none;
-  border-bottom: 1px solid var(--spec-rule-strong);
-  padding: 6px 0;
-  transition: color 0.2s, border-color 0.2s;
-}
-.specimen .btn-ghost:hover { color: var(--spec-rose); border-color: var(--spec-rose); }
-.specimen .foot {
-  border-top: 1px solid var(--spec-rule);
-  padding: 40px clamp(20px, 4vw, 56px) 56px;
-  font-family: var(--spec-font-mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--spec-mute);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-}
-.specimen .foot .r { text-align: right; }
-.specimen .foot em {
-  font-family: var(--spec-font-display);
-  font-style: italic;
-  text-transform: none;
-  letter-spacing: 0;
-  color: var(--spec-ink-soft);
-}
-@media (max-width: 860px) {
-  .specimen .head { grid-template-columns: 1fr; }
-  .specimen .foot { grid-template-columns: 1fr; }
-  .specimen .foot .r { text-align: left; }
-  .specimen .masthead { flex-direction: column; text-align: center; }
-}
-
-/* ===================================================================
-   About page styles
-   =================================================================== */
-.about-hero {
-  margin: 1rem 0 3rem;
-  padding: 0 0 2rem;
-  border-bottom: 1px solid var(--spec-rule);
-}
-.about-tagline {
-  font-family: var(--spec-font-display);
-  font-style: italic;
-  font-weight: 380;
-  font-size: 1.4rem;
-  line-height: 1.4;
-  color: var(--spec-ink);
-  margin: 0;
-}
-.logo-breakdown {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 2.5rem;
-  align-items: center;
-  margin: 2rem 0;
-  padding: 2rem 0;
-  border-top: 1px solid var(--spec-rule);
-  border-bottom: 1px solid var(--spec-rule);
-}
-.logo-display { display: flex; justify-content: center; align-items: center; }
-.logo-image { width: 140px; height: auto; }
-.logo-explanation { font-size: 15px; line-height: 1.65; color: var(--spec-ink-soft); }
-.logo-explanation p { margin: 1rem 0; }
-.logo-explanation strong { color: var(--spec-ink); }
-.mission-statement {
-  padding: 1.5rem 0 1.5rem 1.5rem;
-  border-left: 3px solid var(--spec-rose);
-  font-family: var(--spec-font-display);
-  font-style: italic;
-  font-weight: 380;
-  font-size: 1.2rem;
-  line-height: 1.5;
-  color: var(--spec-ink);
-  margin: 2rem 0;
-}
-.use-cases-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  margin: 2rem 0;
-  background: var(--spec-rule);
-  border: 1px solid var(--spec-rule);
-}
-.use-case {
-  padding: 1.5rem;
-  background: var(--spec-paper);
-  transition: background 0.2s ease;
-}
-.use-case:hover { background: var(--spec-paper-deep); }
-.use-case-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
-.use-case h4 {
-  margin: 0 0 0.5rem;
-  font-family: var(--spec-font-display);
-  font-weight: 400;
-  font-size: 1.05rem;
-  color: var(--spec-ink);
-}
-.use-case p { margin: 0; font-size: 13px; color: var(--spec-ink-soft); line-height: 1.5; }
-.get-started-links {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  margin: 2rem 0;
-  background: var(--spec-rule);
-  border: 1px solid var(--spec-rule);
-}
-.gs-link {
-  display: flex;
-  flex-direction: column;
-  padding: 1.5rem;
-  background: var(--spec-paper);
-  text-decoration: none;
-  transition: background 0.2s ease;
-}
-.gs-link:hover { background: var(--spec-paper-deep); }
-.gs-link-primary { background: var(--spec-rose); }
-.gs-link-primary:hover { background: var(--spec-rose); }
-.gs-link-primary .gs-title,
-.gs-link-primary .gs-desc { color: #fff; }
-.gs-title {
-  font-family: var(--spec-font-display);
-  font-weight: 400;
-  font-size: 1.05rem;
-  color: var(--spec-ink);
-  margin-bottom: 0.25rem;
-}
-.gs-desc { font-size: 13px; color: var(--spec-ink-soft); }
-@media (max-width: 768px) {
-  .logo-breakdown { grid-template-columns: 1fr; text-align: center; }
-  .use-cases-grid { grid-template-columns: repeat(2, 1fr); }
-  .get-started-links { grid-template-columns: 1fr; }
-}
-@media (max-width: 480px) {
-  .use-cases-grid { grid-template-columns: 1fr; }
-}
-
-/* ===================================================================
-   Markdown / rendered content pages — specimen typography
-   Applied to guide, licenses, and any markdown-rendered content.
-   =================================================================== */
-.md-doc,
-.license-page .lp-content,
-.guide-page .gp-content {
-  font-family: var(--spec-font-body);
-  color: var(--spec-ink);
-}
-.md-doc h1,
-.license-page .lp-content h1,
-.guide-page .gp-content h1 {
-  font-family: var(--spec-font-display);
-  font-size: clamp(40px, 6vw, 64px);
-  font-weight: 360;
-  font-variation-settings: "opsz" 120;
-  line-height: 1.02;
-  letter-spacing: -0.025em;
-  color: var(--spec-ink);
-  margin-top: 0;
-}
-.md-doc h2,
-.license-page .lp-content h2,
-.guide-page .gp-content h2 {
-  font-family: var(--spec-font-display);
-  font-size: clamp(28px, 3.4vw, 40px);
-  font-weight: 380;
-  font-variation-settings: "opsz" 60;
-  color: var(--spec-ink);
-  border-top: 1px solid var(--spec-rule);
-  padding-top: 1.6em;
-  margin-top: 2.2em;
-}
-.md-doc h3,
-.license-page .lp-content h3,
-.guide-page .gp-content h3 {
-  font-family: var(--spec-font-display);
-  font-size: clamp(20px, 2vw, 24px);
-  font-weight: 380;
-  color: var(--spec-ink);
-}
-.md-doc p,
-.md-doc li,
-.license-page .lp-content p,
-.license-page .lp-content li,
-.guide-page .gp-content p,
-.guide-page .gp-content li {
-  font-size: 16.5px;
-  line-height: 1.65;
-  color: var(--spec-ink-soft);
-}
-.md-doc a,
-.license-page .lp-content a,
-.guide-page .gp-content a {
-  color: var(--spec-rose);
-  text-decoration: none;
-  border-bottom: 1px solid var(--spec-rule);
-  transition: color 0.2s, border-color 0.2s;
-}
-.md-doc a:hover,
-.license-page .lp-content a:hover,
-.guide-page .gp-content a:hover {
-  color: var(--spec-rose);
-  border-color: var(--spec-rose);
-}
-.md-doc code,
-.license-page .lp-content code,
-.guide-page .gp-content code {
-  font-family: var(--spec-font-mono);
-  font-size: 0.9em;
-  background: var(--spec-paper-deep);
-  border: 1px solid var(--spec-rule);
-  padding: 0.1em 0.4em;
-  border-radius: 2px;
-  color: var(--spec-ink);
-}
-.md-doc pre,
-.license-page .lp-content pre,
-.guide-page .gp-content pre {
-  background-color: var(--spec-paper-deep);
-  border: 1px solid var(--spec-rule);
-  font-family: var(--spec-font-mono);
-  font-size: 13.5px;
-  color: var(--spec-ink);
-  padding: 1rem;
-  border-radius: 4px;
-  overflow-x: auto;
-  margin: 1.5rem 0;
-}
-.md-doc pre code,
-.license-page .lp-content pre code,
-.guide-page .gp-content pre code {
-  background: none;
-  border: none;
-  padding: 0;
-  font-size: inherit;
-  color: inherit;
-}
-.md-doc blockquote,
-.license-page .lp-content blockquote,
-.guide-page .gp-content blockquote {
-  font-family: var(--spec-font-display);
-  font-style: italic;
-  font-weight: 380;
-  font-size: 1.25em;
-  line-height: 1.5;
-  color: var(--spec-ink);
-  border-left: 3px solid var(--spec-rose);
-  padding-left: 1.5em;
-  margin: 2em 0;
-}
-.md-doc table,
-.license-page .lp-content table,
-.guide-page .gp-content table {
-  font-size: 14px;
-  border-collapse: collapse;
-}
-.md-doc table th,
-.md-doc table td,
-.license-page .lp-content table th,
-.license-page .lp-content table td {
-  border: 1px solid var(--spec-rule);
-  padding: 8px 12px;
-}
-.md-doc table th,
-.license-page .lp-content table th {
-  font-family: var(--spec-font-mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--spec-mute);
-  background: var(--spec-paper-deep);
-}
-
-/* ===================================================================
-   404 page — specimen
-   =================================================================== */
-.not-found {
-  text-align: center;
-  padding: clamp(3rem, 8vw, 6rem) 1.5rem clamp(4rem, 10vw, 8rem);
-  font-family: var(--spec-font-body);
-}
-.not-found .code {
-  font-family: var(--spec-font-display);
-  font-style: italic;
-  font-weight: 300;
-  font-variation-settings: "opsz" 144;
-  font-size: clamp(120px, 24vw, 280px);
-  line-height: 1;
-  color: var(--spec-rose);
-  opacity: 0.9;
-  margin: 0 0 0.5rem;
-}
-.not-found .title {
-  font-family: var(--spec-font-mono);
-  font-size: 12px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--spec-ink-soft);
-  margin: 0;
-}
-.not-found .nf-divider {
-  width: 60px;
-  border-top: 1px solid var(--spec-rule-strong);
-  margin: 2rem auto;
-}
-.not-found .quote {
-  font-family: var(--spec-font-display);
-  font-style: italic;
-  font-weight: 380;
-  font-size: clamp(18px, 2.2vw, 26px);
-  line-height: 1.5;
-  color: var(--spec-ink);
-  border: none;
-  max-width: 32ch;
-  margin: 0 auto 2rem;
-  padding: 0;
-}
-.not-found .nf-action .link {
-  font-family: var(--spec-font-mono);
-  font-size: 13px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--spec-paper);
-  background: var(--spec-ink);
-  padding: 12px 22px;
-  text-decoration: none;
-  display: inline-block;
-  transition: background 0.25s ease;
-}
-.not-found .nf-action .link:hover {
-  background: var(--spec-rose);
-}
-
-/* ===================================================================
-   Scrollbars
-   =================================================================== */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--spec-rule);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--spec-mute);
-}
-
-/* ===================================================================
-   Responsive nav
-   =================================================================== */
-@media (max-width: 768px) {
-  .app-nav {
-    gap: 1rem;
-    padding: 0 1rem;
-    overflow-x: auto;
-  }
-
-  .nav-links {
-    gap: 1rem;
-  }
-
-  .nav-external {
-    display: none;
-  }
-}
-
-/* ===================================================================
-   Noto Sans — Universal Unicode fallback font (locally hosted)
-   Ensures every character renders visibly on Unicode browser pages.
-   =================================================================== */
-@font-face {
-  font-family: 'Noto Sans';
-  src: url('/formulas/fonts/noto/noto-sans-400-latin.woff2') format('woff2');
-  font-weight: 400;
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+FEFF, U+FFFD;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Noto Sans';
-  src: url('/formulas/fonts/noto/noto-sans-400-latin-ext.woff2') format('woff2');
-  font-weight: 400;
-  unicode-range: U+0100-02AF, U+0300-0301, U+0304, U+1E00-1E9F, U+2020, U+20A0-20C0, U+A720-A7FF;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Noto Sans';
-  src: url('/formulas/fonts/noto/noto-sans-700-latin.woff2') format('woff2');
-  font-weight: 700;
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+FEFF, U+FFFD;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Noto Sans';
-  src: url('/formulas/fonts/noto/noto-sans-700-latin-ext.woff2') format('woff2');
-  font-weight: 700;
-  unicode-range: U+0100-02AF, U+0300-0301, U+0304, U+1E00-1E9F, U+2020, U+20A0-20C0, U+A720-A7FF;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Noto Sans';
-  src: url('/formulas/fonts/noto/noto-sans-400-greek.woff2') format('woff2');
-  font-weight: 400;
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Noto Sans';
-  src: url('/formulas/fonts/noto/noto-sans-400-cyrillic.woff2') format('woff2');
-  font-weight: 400;
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Noto Sans';
-  src: url('/formulas/fonts/noto/noto-sans-400-cyrillic-ext.woff2') format('woff2');
-  font-weight: 400;
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Noto Sans';
-  src: url('/formulas/fonts/noto/noto-sans-hebrew-400.woff2') format('woff2');
-  font-weight: 400;
-  unicode-range: U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Noto Sans';
-  src: url('/formulas/fonts/noto/noto-sans-arabic-400.woff2') format('woff2');
-  font-weight: 400;
-  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+FB50-FBC1, U+FBD3-FD3D, U+FD50-FD8F, U+FD92-FDC7, U+FDF0-FDF9;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Noto Sans';
-  src: url('/formulas/fonts/noto/noto-sans-400-devanagari.woff2') format('woff2');
-  font-weight: 400;
-  unicode-range: U+0900-097F, U+1CD0-1CF9, U+20B9, U+A830-A839, U+A8E0-A8FF;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Noto Sans';
-  src: url('/formulas/fonts/noto/noto-sans-thai-400.woff2') format('woff2');
-  font-weight: 400;
-  unicode-range: U+0E00-0E7F;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Noto Sans';
-  src: url('/formulas/fonts/noto/noto-sans-jp-400.woff2') format('woff2');
-  font-weight: 400;
-  unicode-range: U+3040-309F, U+30A0-30FF, U+31F0-31FF, U+4E00-9FFF;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Noto Sans';
-  src: url('/formulas/fonts/noto/noto-sans-kr-400.woff2') format('woff2');
-  font-weight: 400;
-  unicode-range: U+AC00-D7AF, U+1100-11FF, U+3130-318F;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Noto Sans';
-  src: url('/formulas/fonts/noto/noto-sans-400-vietnamese.woff2') format('woff2');
-  font-weight: 400;
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;
-  font-display: swap;
-}
-
-/* ===================================================================
-   Unicode glyph rendering — use Noto Sans as universal fallback
-   Applied to all Unicode browser character displays
-   =================================================================== */
-.ucp-glyph, .ubp-glyph, .ubp-d-glyph, .ubp-cell-glyph,
-.uc-cell-glyph, .uc-glyph, .fp-specimen {
-  font-family: 'Source Sans Pro', 'Source Sans 3', Roboto, 'San Francisco', 'Segoe UI', sans-serif;
-}
-
-/* Unicode browser glyph grid cells */
-.ubp-cell .ubp-glyph,
-.uc-cell .uc-cell-glyph,
-.ucp-nav-btn .ucp-nav-glyph {
-  font-family: 'Source Sans Pro', 'Source Sans 3', Roboto, 'San Francisco', 'Segoe UI', sans-serif;
-}
-
-/* Large character preview on char page */
-.ucp-glyph-area .ucp-glyph {
-  font-family: 'Source Sans Pro', 'Source Sans 3', Roboto, 'San Francisco', 'Segoe UI', sans-serif;
 }

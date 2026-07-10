@@ -22,7 +22,7 @@ import DefaultLayout from './layouts/DefaultLayout.vue'
   align-items: center;
   justify-content: center;
   min-height: 50vh;
-  color: var(--vp-c-text-3, #888);
-  font-family: var(--vp-font-family-base, system-ui, sans-serif);
+  color: var(--color-mute);
+  font-family: var(--font-body);
 }
 </style>

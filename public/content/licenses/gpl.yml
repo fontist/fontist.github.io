@@ -1,0 +1,29 @@
+slug: gpl
+name: GNU GPL (with font exception)
+short_name: GPL
+spdx: GPL-3.0-or-later
+version: '3.0'
+year_adopted: '2007'
+category: copyleft
+blurb: Strong copyleft with explicit font embedding exception; rare for fonts but
+  seen in a few historical distributions.
+matchers:
+- gpl
+exclude_matchers:
+- lgpl
+permissions:
+  commercial-static: 'yes'
+  commercial-web: 'yes'
+  commercial-app: 'yes'
+  commercial-server: 'yes'
+  open-source: conditional
+  modification: conditional
+  redistribute: conditional
+  standalone-sale: 'no'
+  embed-document: 'yes'
+  subsetting: 'yes'
+  rename: 'yes'
+  attribution: conditional
+siblings:
+- lgpl
+examples: []

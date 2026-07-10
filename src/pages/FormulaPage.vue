@@ -278,7 +278,7 @@ const resourceEntries = computed(() => {
 .formula-header {
   margin-bottom: 2rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border-bottom: 1px solid var(--spec-rule);
 }
 
 .formula-description {
@@ -307,7 +307,7 @@ const resourceEntries = computed(() => {
   letter-spacing: -0.005em;
   margin-bottom: 0.85rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border-bottom: 1px solid var(--spec-rule);
   position: relative;
 }
 .section-title::before {
@@ -340,28 +340,28 @@ const resourceEntries = computed(() => {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--vp-c-text-3);
+  color: var(--color-mute);
   font-weight: 600;
 }
 
 .info-row dd {
   font-size: 0.95rem;
-  color: var(--vp-c-text-1);
+  color: var(--color-ink);
 }
 
 .info-row code,
 .resource-key code,
 .ps-name,
 .install-cmd {
-  font-family: var(--vp-font-family-mono);
-  background: var(--vp-c-bg-soft);
+  font-family: var(--font-mono);
+  background: var(--color-paper-deep);
   padding: 0.15em 0.4em;
   border-radius: 3px;
   font-size: 0.85rem;
 }
 
 .ext-link {
-  color: var(--vp-c-brand-1);
+  color: var(--color-rose);
   text-decoration: none;
   word-break: break-all;
 }
@@ -378,22 +378,22 @@ const resourceEntries = computed(() => {
 }
 
 .license-name {
-  color: var(--vp-c-text-1);
+  color: var(--color-ink);
 }
 
 .spdx-badge {
-  font-family: var(--vp-font-family-mono);
-  background: var(--vp-c-bg-soft);
-  border: 1px solid var(--vp-c-divider);
+  font-family: var(--font-mono);
+  background: var(--color-paper-deep);
+  border: 1px solid var(--spec-rule);
   padding: 0.1em 0.4em;
   border-radius: 3px;
   font-size: 0.75rem;
-  color: var(--vp-c-text-2);
+  color: var(--color-ink-soft);
 }
 
 .license-link {
   font-size: 0.85rem;
-  color: var(--vp-c-brand-1);
+  color: var(--color-rose);
   text-decoration: none;
 }
 
@@ -421,14 +421,14 @@ const resourceEntries = computed(() => {
 }
 
 .copyright-text {
-  font-family: var(--vp-font-family-mono);
+  font-family: var(--font-mono);
   font-size: 0.8rem;
   line-height: 1.5;
-  color: var(--vp-c-text-2);
-  background: var(--vp-c-bg-soft);
+  color: var(--color-ink-soft);
+  background: var(--color-paper-deep);
   padding: 0.75rem 1rem;
   border-radius: 6px;
-  border: 1px solid var(--vp-c-divider);
+  border: 1px solid var(--spec-rule);
   white-space: pre-wrap;
   word-wrap: break-word;
   margin: 0;
@@ -442,9 +442,9 @@ const resourceEntries = computed(() => {
 
 .resource-item {
   padding: 0.75rem 1rem;
-  background: var(--vp-c-bg-soft);
+  background: var(--color-paper-deep);
   border-radius: 6px;
-  border: 1px solid var(--vp-c-divider);
+  border: 1px solid var(--spec-rule);
 }
 
 .resource-key {
@@ -462,12 +462,12 @@ const resourceEntries = computed(() => {
 
 .meta-pill {
   font-size: 0.75rem;
-  font-family: var(--vp-font-family-mono);
-  background: var(--vp-c-bg);
-  border: 1px solid var(--vp-c-divider);
+  font-family: var(--font-mono);
+  background: var(--color-paper);
+  border: 1px solid var(--spec-rule);
   padding: 0.1em 0.5em;
   border-radius: 999px;
-  color: var(--vp-c-text-2);
+  color: var(--color-ink-soft);
 }
 
 .resource-urls {
@@ -488,7 +488,7 @@ const resourceEntries = computed(() => {
 .styles-table td {
   text-align: left;
   padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid var(--vp-c-divider);
+  border-bottom: 1px solid var(--spec-rule);
   vertical-align: top;
 }
 
@@ -496,15 +496,15 @@ const resourceEntries = computed(() => {
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--vp-c-text-3);
+  color: var(--color-mute);
   font-weight: 600;
-  background: var(--vp-c-bg-soft);
+  background: var(--color-paper-deep);
 }
 
 .styles-table td.version-cell {
-  font-family: var(--vp-font-family-mono);
+  font-family: var(--font-mono);
   font-size: 0.8rem;
-  color: var(--vp-c-text-2);
+  color: var(--color-ink-soft);
 }
 
 .collection-item {
@@ -522,15 +522,15 @@ const resourceEntries = computed(() => {
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  background: var(--vp-c-bg-soft);
+  background: var(--color-paper-deep);
   border-radius: 8px;
-  border: 1px solid var(--vp-c-divider);
+  border: 1px solid var(--spec-rule);
 }
 
 .install-cmd {
   flex: 1;
   font-size: 0.9rem;
-  color: var(--vp-c-text-1);
+  color: var(--color-ink);
   background: transparent;
   padding: 0;
 }
@@ -539,22 +539,22 @@ const resourceEntries = computed(() => {
   padding: 0.375rem 0.75rem;
   font-size: 0.8125rem;
   font-weight: 500;
-  border: 1px solid var(--vp-c-divider);
+  border: 1px solid var(--spec-rule);
   border-radius: 6px;
-  background: var(--vp-c-bg);
-  color: var(--vp-c-text-2);
+  background: var(--color-paper);
+  color: var(--color-ink-soft);
   cursor: pointer;
   transition: all 0.15s;
 }
 
 .copy-btn:hover {
-  border-color: var(--vp-c-brand-1);
-  color: var(--vp-c-brand-1);
+  border-color: var(--color-rose);
+  color: var(--color-rose);
 }
 
 .copy-btn.copied {
-  background: var(--vp-c-brand-1);
-  border-color: var(--vp-c-brand-1);
+  background: var(--color-rose);
+  border-color: var(--color-rose);
   color: white;
 }
 
@@ -565,7 +565,7 @@ const resourceEntries = computed(() => {
 .view-font-btn {
   display: inline-block;
   padding: 0.75rem 1.5rem;
-  background: var(--vp-c-brand-1);
+  background: var(--color-rose);
   color: white;
   border-radius: 8px;
   font-weight: 500;
@@ -574,6 +574,6 @@ const resourceEntries = computed(() => {
 }
 
 .view-font-btn:hover {
-  background: var(--vp-c-brand-2);
+  background: var(--color-rose);
 }
 </style>

@@ -100,9 +100,9 @@ function goToChar(cp: number) {
 
 <style scoped>
 .fbp { padding: 1.5rem; max-width: 1200px; margin: 0 auto; }
-.fbp-head { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--vp-c-divider, #e2e2e3); }
+.fbp-head { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--spec-rule); }
 .fbp-back { font-size: 0.85rem; color: var(--fontist-rose, #bf4e6a); text-decoration: none; }
-.fbp-head h1 { font-size: 1.3rem; margin: 0; color: var(--vp-c-text-1, #333); }
-.fbp-meta { font-size: 0.78rem; color: var(--vp-c-text-3, #888); font-family: monospace; margin-left: auto; }
-.fbp-loading { display: flex; align-items: center; justify-content: center; height: 60vh; color: var(--vp-c-text-3, #888); }
+.fbp-head h1 { font-size: 1.3rem; margin: 0; color: var(--color-ink); }
+.fbp-meta { font-size: 0.78rem; color: var(--color-mute); font-family: monospace; margin-left: auto; }
+.fbp-loading { display: flex; align-items: center; justify-content: center; height: 60vh; color: var(--color-mute); }
 </style>

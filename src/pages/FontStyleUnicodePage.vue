@@ -128,7 +128,7 @@ function switchFormula(formulaSlug: string) {
 .fsup-head {
   margin-bottom: 1.5rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--vp-c-divider, #e8e6e0);
+  border-bottom: 1px solid var(--spec-rule);
 }
 .fsup-back {
   font-size: 0.85rem;
@@ -138,11 +138,11 @@ function switchFormula(formulaSlug: string) {
 .fsup-head h1 {
   font-size: 1.5rem;
   margin: 0.3rem 0 0.25rem;
-  color: var(--vp-c-text-1, #1a1a1a);
+  color: var(--color-ink);
 }
 .fsup-meta {
   font-size: 0.82rem;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
   margin: 0;
 }
 .fsup-notice {
@@ -162,7 +162,7 @@ function switchFormula(formulaSlug: string) {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   margin: 0 0 0.5rem;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
 }
 .fsup-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .fsup-chip {
@@ -170,8 +170,8 @@ function switchFormula(formulaSlug: string) {
   align-items: center;
   gap: 0.5rem;
   padding: 0.35rem 0.75rem;
-  background: var(--vp-c-bg, #fff);
-  border: 1px solid var(--vp-c-divider, #e8e6e0);
+  background: var(--color-paper);
+  border: 1px solid var(--spec-rule);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s;
@@ -185,15 +185,15 @@ function switchFormula(formulaSlug: string) {
 .fsup-chip-formula {
   font-family: var(--spec-font-mono, monospace);
   font-size: 0.78rem;
-  color: var(--vp-c-text-1, #1a1a1a);
+  color: var(--color-ink);
 }
 .fsup-chip.on .fsup-chip-formula { color: #fff; }
 .fsup-chip-flag {
   font-size: 0.62rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--vp-c-text-3, #888);
-  border-left: 1px solid var(--vp-c-divider, #e8e6e0);
+  color: var(--color-mute);
+  border-left: 1px solid var(--spec-rule);
   padding-left: 0.5rem;
 }
 .fsup-chip.on .fsup-chip-flag { color: rgba(255, 255, 255, 0.75); border-left-color: rgba(255, 255, 255, 0.3); }
@@ -201,7 +201,7 @@ function switchFormula(formulaSlug: string) {
 .fsup-empty {
   padding: 2rem;
   text-align: center;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
 }
 .fsup-loading {
   display: flex;
@@ -210,6 +210,6 @@ function switchFormula(formulaSlug: string) {
   justify-content: center;
   gap: 0.5rem;
   min-height: 50vh;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
 }
 </style>

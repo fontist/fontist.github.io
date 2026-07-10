@@ -1,0 +1,36 @@
+slug: cc0
+name: Creative Commons Zero (Public Domain)
+short_name: CC0
+spdx: CC0-1.0
+version: '1.0'
+year_adopted: '2009'
+category: public-domain
+blurb: A legal tool that dedicates work to the public domain — no attribution required,
+  no restrictions at all.
+matchers:
+- cc0
+- creative commons zero
+permissions:
+  commercial-static: 'yes'
+  commercial-web: 'yes'
+  commercial-app: 'yes'
+  commercial-server: 'yes'
+  open-source: 'yes'
+  modification: 'yes'
+  redistribute: 'yes'
+  standalone-sale: 'yes'
+  embed-document: 'yes'
+  subsetting: 'yes'
+  rename: 'yes'
+  attribution: 'yes'
+siblings:
+- public-domain
+- mit
+- ofl
+examples:
+- name: Noto Emoji
+  note: Google's monochrome emoji set
+- name: Noto Color Emoji
+  note: Google's color emoji set
+- name: Creepster
+  note: Google's free Halloween display font

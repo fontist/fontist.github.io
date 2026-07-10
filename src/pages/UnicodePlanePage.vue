@@ -165,14 +165,14 @@ useHead(() => ({
   max-width: 880px;
   margin: 0 auto;
   padding: 2rem 1.5rem 5rem;
-  font-family: var(--vp-font-family-base, system-ui, sans-serif);
+  font-family: var(--font-body);
 }
 
 /* ===== PLANE HEADER ===== */
 .plane-header {
   margin-bottom: 2.5rem;
   padding-bottom: 1.5rem;
-  border-bottom: 3px double var(--vp-c-text-1, #1a1a1a);
+  border-bottom: 3px double var(--color-ink);
 }
 .plane-back {
   display: inline-block;
@@ -201,7 +201,7 @@ useHead(() => ({
   font-size: clamp(1.1rem, 3vw, 1.6rem);
   font-weight: 600;
   margin: 0;
-  color: var(--vp-c-text-1, #1a1a1a);
+  color: var(--color-ink);
   letter-spacing: -0.01em;
 }
 .plane-meta {
@@ -209,7 +209,7 @@ useHead(() => ({
   align-items: center;
   gap: 0.4rem;
   font-size: 0.8rem;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
   font-family: var(--spec-font-mono);
 }
 .plane-sep { opacity: 0.4; }
@@ -217,7 +217,7 @@ useHead(() => ({
   display: inline-block;
   margin-top: 0.5rem;
   font-size: 0.72rem;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
   text-decoration: none;
   transition: color 0.15s;
 }
@@ -233,7 +233,7 @@ useHead(() => ({
   gap: 0.75rem;
   padding: 0.5rem 0;
   margin-bottom: 0.25rem;
-  border-bottom: 1px solid var(--vp-c-divider, #e8e6e0);
+  border-bottom: 1px solid var(--spec-rule);
 }
 
 /* Era color coding — left border on version header */
@@ -271,18 +271,18 @@ useHead(() => ({
 .version-label {
   font-size: 0.82rem;
   font-weight: 600;
-  color: var(--vp-c-text-1, #1a1a1a);
+  color: var(--color-ink);
 }
 .version-year {
   font-family: var(--spec-font-mono);
   font-size: 0.72rem;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
 }
 .version-block-count {
   margin-left: auto;
   font-family: var(--spec-font-mono);
   font-size: 0.7rem;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
 }
 
 /* ===== BLOCK ROWS ===== */
@@ -295,11 +295,11 @@ useHead(() => ({
   align-items: baseline;
   gap: 0.75rem;
   padding: 0.4rem 0 0.4rem 1rem;
-  border-bottom: 1px solid var(--vp-c-divider, #f0eee8);
+  border-bottom: 1px solid var(--spec-rule);
   transition: background 0.08s;
 }
 .block-row:hover {
-  background: var(--vp-c-bg-soft, #faf8f5);
+  background: var(--color-paper-deep);
 }
 .block-row:last-child {
   border-bottom: none;
@@ -325,12 +325,12 @@ useHead(() => ({
 .block-code-dash {
   font-family: var(--spec-font-mono);
   font-size: 0.7rem;
-  color: var(--vp-c-text-3, #aaa);
+  color: var(--color-mute);
 }
 .block-name {
   flex: 1;
   font-size: 0.85rem;
-  color: var(--vp-c-text-1, #1a1a1a);
+  color: var(--color-ink);
   cursor: pointer;
   transition: color 0.1s;
 }
@@ -341,13 +341,13 @@ useHead(() => ({
 .block-size {
   font-family: var(--spec-font-mono);
   font-size: 0.68rem;
-  color: var(--vp-c-text-3, #aaa);
+  color: var(--color-mute);
   white-space: nowrap;
 }
 
 .block-chart {
   font-size: 0.65rem;
-  color: var(--vp-c-text-3, #aaa);
+  color: var(--color-mute);
   text-decoration: none;
   white-space: nowrap;
   transition: color 0.1s;
@@ -366,7 +366,7 @@ useHead(() => ({
   align-items: center;
   justify-content: center;
   min-height: 50vh;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
   font-size: 0.9rem;
 }
 

@@ -1,0 +1,33 @@
+slug: gust
+name: GUST Font Source License
+short_name: GUST
+spdx: GUST-FONT-Source-License
+version: '2006-09-30'
+year_adopted: '2006'
+category: permissive
+blurb: Polish TeX Users Group license for TeX Gyre; broadly OFL-equivalent but with
+  custom attribution language.
+matchers:
+- gust
+permissions:
+  commercial-static: 'yes'
+  commercial-web: 'yes'
+  commercial-app: 'yes'
+  commercial-server: 'yes'
+  open-source: 'yes'
+  modification: conditional
+  redistribute: conditional
+  standalone-sale: 'no'
+  embed-document: 'yes'
+  subsetting: 'yes'
+  rename: conditional
+  attribution: conditional
+siblings:
+- ofl
+examples:
+- name: TeX Gyre Pagella
+  note: GUST's Palatino-derived family
+- name: TeX Gyre Schola
+  note: GUST's New Century Schoolbook derivative
+- name: TeX Gyre Termes
+  note: GUST's Times New Roman derivative

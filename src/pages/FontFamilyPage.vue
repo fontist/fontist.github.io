@@ -171,7 +171,7 @@ function selectFile(slug: string) {
 .ffp-header {
   margin-bottom: 2rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border-bottom: 1px solid var(--spec-rule);
 }
 .ffp-title-row {
   display: flex;
@@ -213,7 +213,7 @@ function selectFile(slug: string) {
 .ffp-meta {
   margin: 0.5rem 0 0;
   font-size: 0.82rem;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
 }
 .ffp-nav {
   display: flex;
@@ -230,12 +230,12 @@ function selectFile(slug: string) {
 }
 .ffp-nav-link:hover { opacity: 0.7; }
 .ffp-nav-link.on { border-bottom: 2px solid var(--fontist-rose, #bf4e6a); padding-bottom: 2px; }
-.ffp-nav-link--muted { color: var(--vp-c-text-3, #888); }
+.ffp-nav-link--muted { color: var(--color-mute); }
 
 .ffp-provenance {
   margin-bottom: 1.5rem;
   padding: 0.9rem 1rem;
-  background: var(--vp-c-bg-soft, #faf8f5);
+  background: var(--color-paper-deep);
   border-left: 3px solid var(--fontist-rose, #bf4e6a);
   border-radius: 0 4px 4px 0;
 }
@@ -258,9 +258,9 @@ function selectFile(slug: string) {
 .ffp-formula-link {
   font-family: var(--spec-font-mono, monospace);
   font-size: 0.82rem;
-  color: var(--vp-c-text-1, #1a1a1a);
-  background: var(--vp-c-bg, #fff);
-  border: 1px solid var(--vp-c-divider, #e8e6e0);
+  color: var(--color-ink);
+  background: var(--color-paper);
+  border: 1px solid var(--spec-rule);
   padding: 0.25rem 0.6rem;
   border-radius: 3px;
   text-decoration: none;
@@ -282,8 +282,8 @@ function selectFile(slug: string) {
   flex-direction: column;
   align-items: flex-start;
   padding: 0.35rem 0.75rem;
-  background: var(--vp-c-bg, #fff);
-  border: 1px solid var(--vp-c-divider, #e8e6e0);
+  background: var(--color-paper);
+  border: 1px solid var(--spec-rule);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s;
@@ -297,13 +297,13 @@ function selectFile(slug: string) {
 .ffp-chip-style {
   font-size: 0.82rem;
   font-weight: 600;
-  color: var(--vp-c-text-1, #1a1a1a);
+  color: var(--color-ink);
 }
 .ffp-chip.on .ffp-chip-style { color: #fff; }
 .ffp-chip-formula {
   font-family: var(--spec-font-mono, monospace);
   font-size: 0.68rem;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
 }
 .ffp-chip.on .ffp-chip-formula { color: rgba(255, 255, 255, 0.75); }
 
@@ -311,11 +311,11 @@ function selectFile(slug: string) {
 .ffp-empty {
   padding: 1.5rem;
   text-align: center;
-  background: var(--vp-c-bg-soft, #faf8f5);
+  background: var(--color-paper-deep);
   border-radius: 8px;
 }
-.ffp-empty p { margin: 0 0 0.3rem; color: var(--vp-c-text-2, #555); }
-.ffp-empty-hint { font-size: 0.85rem; color: var(--vp-c-text-3, #888); }
+.ffp-empty p { margin: 0 0 0.3rem; color: var(--color-ink-soft); }
+.ffp-empty-hint { font-size: 0.85rem; color: var(--color-mute); }
 
 .ffp-loading {
   display: flex;
@@ -324,6 +324,6 @@ function selectFile(slug: string) {
   justify-content: center;
   gap: 0.5rem;
   min-height: 50vh;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
 }
 </style>

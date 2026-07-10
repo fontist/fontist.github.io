@@ -167,8 +167,8 @@ useHead({
   gap: 1.5rem;
   padding: 1.25rem 0;
   margin-bottom: 3rem;
-  border-top: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
-  border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border-top: 1px solid var(--spec-rule);
+  border-bottom: 1px solid var(--spec-rule);
   flex-wrap: wrap;
 }
 
@@ -195,7 +195,7 @@ useHead({
 .uc-stat-divider {
   width: 1px;
   align-self: stretch;
-  background: var(--vp-c-divider, rgba(28,26,24,0.16));
+  background: var(--spec-rule);
 }
 
 /* ── Sections ──────────────────────────────────────────────── */
@@ -204,7 +204,7 @@ useHead({
 .uc-section-head {
   margin-bottom: 1.5rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border-bottom: 1px solid var(--spec-rule);
 }
 
 .uc-section-title {
@@ -239,7 +239,7 @@ useHead({
   gap: 0.4rem;
   padding: 1.25rem 1.25rem 1rem;
   background: var(--spec-paper);
-  border: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border: 1px solid var(--spec-rule);
   border-left: 3px solid var(--fontist-rose);
   border-radius: 3px;
   text-decoration: none;
@@ -299,7 +299,7 @@ useHead({
 .uc-plane-foot {
   margin-top: auto;
   padding-top: 0.7rem;
-  border-top: 1px solid var(--vp-c-divider, rgba(28,26,24,0.1));
+  border-top: 1px solid var(--spec-rule);
 }
 
 .uc-plane-blocks {
@@ -337,7 +337,7 @@ useHead({
   gap: 0.25rem;
   padding: 1rem 1.1rem;
   background: var(--spec-paper);
-  border: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16));
+  border: 1px solid var(--spec-rule);
   border-radius: 3px;
   text-decoration: none;
   color: var(--spec-ink);

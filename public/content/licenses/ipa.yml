@@ -1,0 +1,31 @@
+slug: ipa
+name: IPA Font License
+short_name: IPA
+spdx: IPA
+version: '1.0'
+year_adopted: '2007'
+category: permissive
+blurb: A font-specific license from the Japanese Information-technology Promotion
+  Agency, broadly OFL-compatible.
+matchers:
+- ipa
+permissions:
+  commercial-static: 'yes'
+  commercial-web: 'yes'
+  commercial-app: 'yes'
+  commercial-server: 'yes'
+  open-source: 'yes'
+  modification: conditional
+  redistribute: conditional
+  standalone-sale: 'no'
+  embed-document: 'yes'
+  subsetting: 'yes'
+  rename: conditional
+  attribution: conditional
+siblings:
+- ofl
+examples:
+- name: IPAex Gothic
+  note: IPA's open-source Japanese gothic font
+- name: IPAex Mincho
+  note: IPA's open-source Japanese mincho font

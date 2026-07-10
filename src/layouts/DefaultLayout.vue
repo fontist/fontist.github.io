@@ -118,7 +118,7 @@ onBeforeUnmount(() => { document.removeEventListener('keydown', onKey) })
   max-width: 1320px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 56px);
   display: flex; align-items: center; justify-content: space-between;
   gap: 1.5rem;
-  height: var(--vp-nav-height);
+  height: 56px;
 }
 .nav-logo {
   display: flex; align-items: center; gap: 0.5rem;
@@ -265,7 +265,7 @@ onBeforeUnmount(() => { document.removeEventListener('keydown', onKey) })
   }
 
   .nav-links--open {
-    max-height: calc(100vh - var(--vp-nav-height));
+    max-height: calc(100vh - 56px);
     overflow-y: auto;
     visibility: visible;
     padding-top: 0.75rem;

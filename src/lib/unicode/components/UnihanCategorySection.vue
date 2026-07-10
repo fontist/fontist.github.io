@@ -48,10 +48,10 @@ const props = defineProps<{
 .ucp-variant-item { display: inline-flex; align-items: baseline; gap: 0.35rem; }
 .ucp-variant-link { display: inline-flex; align-items: baseline; gap: 0.35rem; text-decoration: none; color: inherit; }
 .ucp-variant-link:hover { color: var(--spec-rose, #b8475f); }
-.ucp-variant-cp { font-family: var(--vp-font-family-mono, monospace); font-size: 0.85em; color: var(--vp-c-text-3, #888); }
-.ucp-variant-glyph { font-size: 1.5rem; line-height: 1; color: var(--vp-c-text-1, #1c1a18); }
-.ucp-variant-sep { color: var(--vp-c-text-3, #888); margin: 0 0.2rem; }
-.ucp-variant-self { display: inline-flex; align-items: baseline; gap: 0.3rem; padding: 0.15rem 0.4rem; border: 1px dashed var(--vp-c-divider, #e2e2e3); border-radius: 6px; opacity: 0.75; }
-.ucp-variant-self-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--vp-c-text-3, #888); font-weight: 500; }
-.ucp-variant-glyph-self { color: var(--vp-c-text-3, #888); }
+.ucp-variant-cp { font-family: var(--font-mono); font-size: 0.85em; color: var(--color-mute); }
+.ucp-variant-glyph { font-size: 1.5rem; line-height: 1; color: var(--color-ink); }
+.ucp-variant-sep { color: var(--color-mute); margin: 0 0.2rem; }
+.ucp-variant-self { display: inline-flex; align-items: baseline; gap: 0.3rem; padding: 0.15rem 0.4rem; border: 1px dashed var(--spec-rule); border-radius: 6px; opacity: 0.75; }
+.ucp-variant-self-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-mute); font-weight: 500; }
+.ucp-variant-glyph-self { color: var(--color-mute); }
 </style>

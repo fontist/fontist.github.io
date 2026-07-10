@@ -98,7 +98,7 @@ useHead(() => ({
 
 .blog-title { font-family: var(--spec-font-display); font-size: clamp(2.2rem, 5vw, 3.4rem); font-weight: 400; font-style: italic; letter-spacing: -0.02em; line-height: 1.05; color: var(--spec-ink); margin: 0 0 1rem; }
 .blog-lede { font-family: var(--spec-font-display); font-style: italic; font-size: 1.2rem; line-height: 1.5; color: var(--spec-ink-soft); margin: 0 0 1.75rem; max-width: 38em; }
-.blog-rule { border: none; border-top: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16)); margin: 0; }
+.blog-rule { border: none; border-top: 1px solid var(--spec-rule); margin: 0; }
 
 .blog-body { font-size: 1.0rem; line-height: 1.7; color: var(--spec-ink); }
 .blog-body :deep(h1) { font-family: var(--spec-font-display); font-size: clamp(2rem, 5vw, 3rem); font-style: italic; font-weight: 400; letter-spacing: -0.02em; line-height: 1.05; margin: 2rem 0 1rem; color: var(--spec-ink); }
@@ -115,13 +115,13 @@ useHead(() => ({
 .blog-body :deep(pre code) { background: transparent; padding: 0; }
 .blog-body :deep(blockquote) { margin: 1.5rem 0; padding: 0.5rem 0 0.5rem 1.25rem; border-left: 3px solid var(--fontist-rose); font-family: var(--spec-font-display); font-style: italic; font-size: 1.15rem; line-height: 1.5; color: var(--spec-ink-soft); }
 .blog-body :deep(img) { display: block; margin: 1.5rem auto; border-radius: 3px; }
-.blog-body :deep(hr) { border: none; border-top: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16)); margin: 2.5rem 0; }
+.blog-body :deep(hr) { border: none; border-top: 1px solid var(--spec-rule); margin: 2.5rem 0; }
 .blog-body :deep(strong) { font-weight: 600; color: var(--spec-ink); }
 .blog-body :deep(em) { font-style: italic; }
 .blog-body :deep(figure) { margin: 1.5rem 0; }
 .blog-body :deep(figcaption) { font-family: var(--spec-font-mono); font-size: 0.75rem; color: var(--spec-mute); text-align: center; margin-top: 0.5rem; }
 
-.blog-foot { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16)); }
+.blog-foot { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--spec-rule); }
 .blog-back { font-family: var(--spec-font-mono); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--fontist-rose); text-decoration: none; }
 .blog-back:hover { text-decoration: underline; }
 

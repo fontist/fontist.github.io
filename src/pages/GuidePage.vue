@@ -109,7 +109,7 @@ const byCategory = computed(() => {
 
 /* ── Sections ──────────────────────────────────────────────── */
 .gpi-section { margin-bottom: 2.5rem; }
-.gpi-section-head { margin-bottom: 1.25rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--vp-c-divider, rgba(28,26,24,0.16)); }
+.gpi-section-head { margin-bottom: 1.25rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--spec-rule); }
 .gpi-section-title {
   font-family: var(--spec-font-display);
   font-size: 1.5rem;

@@ -353,23 +353,23 @@ useHead(() => ({
 
 .ucp-crumbs { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; margin-bottom: 1rem; flex-wrap: wrap; }
 .ucp-crumbs a { color: var(--fontist-rose, #bf4e6a); text-decoration: none; }
-.ucp-crumbs span { color: var(--vp-c-text-3, #888); }
-.ucp-crumb-current { color: var(--vp-c-text-1, #333); font-weight: 500; }
+.ucp-crumbs span { color: var(--color-mute); }
+.ucp-crumb-current { color: var(--color-ink); font-weight: 500; }
 
 .ucp-nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
-.ucp-nav-btn { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border: 1px solid var(--vp-c-divider, #e2e2e3); border-radius: 8px; background: var(--vp-c-bg, #fff); color: var(--vp-c-text-1, #1c1a18); cursor: pointer; transition: border-color 0.15s, background 0.15s, color 0.15s; }
-.ucp-nav-btn:hover { border-color: var(--spec-rose, #b8475f); background: var(--vp-c-bg-soft, #f8f7f4); color: var(--spec-rose, #b8475f); }
-html.dark .ucp-nav-btn { background: var(--vp-c-bg, #161513); color: var(--vp-c-text-1, #ecdfd0); }
-html.dark .ucp-nav-btn:hover { border-color: var(--spec-rose, #d4718a); background: var(--vp-c-bg-soft, #211f1c); color: var(--spec-rose, #d4718a); }
+.ucp-nav-btn { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border: 1px solid var(--spec-rule); border-radius: 8px; background: var(--color-paper); color: var(--color-ink); cursor: pointer; transition: border-color 0.15s, background 0.15s, color 0.15s; }
+.ucp-nav-btn:hover { border-color: var(--spec-rose, #b8475f); background: var(--color-paper-deep); color: var(--spec-rose, #b8475f); }
+html.dark .ucp-nav-btn { background: var(--color-paper); color: var(--color-ink); }
+html.dark .ucp-nav-btn:hover { border-color: var(--spec-rose, #d4718a); background: var(--color-paper-deep); color: var(--spec-rose, #d4718a); }
 .ucp-nav-glyph { font-size: 1.5rem; }
-.ucp-nav-hex { font-size: 0.7rem; font-family: monospace; color: var(--vp-c-text-3, #888); }
-.ucp-nav-current { font-size: 0.85rem; font-family: monospace; color: var(--vp-c-text-3, #888); }
+.ucp-nav-hex { font-size: 0.7rem; font-family: monospace; color: var(--color-mute); }
+.ucp-nav-current { font-size: 0.85rem; font-family: monospace; color: var(--color-mute); }
 .ucp-nav-spacer { width: 80px; }
 
 .ucp-prop-list { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-.ucp-prop-tag { display: inline-block; padding: 0.2rem 0.5rem; background: var(--vp-c-bg-soft, #f8f7f4); border: 1px solid var(--vp-c-divider, #e2e2e3); border-radius: 6px; font-size: 0.78rem; }
+.ucp-prop-tag { display: inline-block; padding: 0.2rem 0.5rem; background: var(--color-paper-deep); border: 1px solid var(--spec-rule); border-radius: 6px; font-size: 0.78rem; }
 
-.ucp-glyph-area { display: flex; align-items: center; justify-content: center; padding: 3rem 1rem 2rem; background: var(--vp-c-bg-soft, #f8f7f4); border-radius: 12px; margin-bottom: 1.5rem; }
+.ucp-glyph-area { display: flex; align-items: center; justify-content: center; padding: 3rem 1rem 2rem; background: var(--color-paper-deep); border-radius: 12px; margin-bottom: 1.5rem; }
 .ucp-glyph-stage {
   position: relative;
   display: inline-flex;
@@ -410,39 +410,39 @@ html.dark .ucp-nav-btn:hover { border-color: var(--spec-rose, #d4718a); backgrou
   color: var(--spec-ink);
 }
 .ucp-control-box {
-  font-family: var(--vp-font-family-mono, monospace);
+  font-family: var(--font-mono);
   font-size: 2.5rem;
   font-weight: 700;
   letter-spacing: 0.04em;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
   padding: 1rem 2rem;
-  border: 2px dashed var(--vp-c-text-3, #aaa);
+  border: 2px dashed var(--color-mute);
   border-radius: 8px;
-  background: var(--vp-c-bg, #fff);
+  background: var(--color-paper);
 }
 
-.ucp-name { font-size: 1.5rem; font-weight: 600; margin: 0 0 0.3rem; color: var(--vp-c-text-1, #333); }
-.ucp-name-abbrev { font-size: 1rem; font-weight: 500; font-family: var(--vp-font-family-mono, monospace); color: var(--vp-c-text-3, #888); margin-left: 0.5rem; }
+.ucp-name { font-size: 1.5rem; font-weight: 600; margin: 0 0 0.3rem; color: var(--color-ink); }
+.ucp-name-abbrev { font-size: 1rem; font-weight: 500; font-family: var(--font-mono); color: var(--color-mute); margin-left: 0.5rem; }
 .ucp-hex { font-family: monospace; font-size: 1.1rem; color: var(--fontist-rose, #bf4e6a); }
 
 .ucp-nav-ctrl {
-  font-family: var(--vp-font-family-mono, monospace);
+  font-family: var(--font-mono);
   font-size: 0.8rem !important;
   font-weight: 700;
   padding: 0.2rem 0.4rem;
-  border: 1px dashed var(--vp-c-text-3, #aaa);
+  border: 1px dashed var(--color-mute);
   border-radius: 3px;
-  color: var(--vp-c-text-3, #888);
+  color: var(--color-mute);
 }
 
 .ucp-sections { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
-.ucp-section h2 { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fontist-rose, #bf4e6a); margin: 0 0 0.75rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--vp-c-divider, #e2e2e3); }
+.ucp-section h2 { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fontist-rose, #bf4e6a); margin: 0 0 0.75rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--spec-rule); }
 .ucp-section dl { display: grid; grid-template-columns: auto 1fr; gap: 0.4rem 1rem; margin: 0; }
-.ucp-section dt { font-size: 0.75rem; font-weight: 600; color: var(--vp-c-text-3, #888); white-space: nowrap; }
-.ucp-section dd { margin: 0; font-size: 0.85rem; color: var(--vp-c-text-1, #333); }
+.ucp-section dt { font-size: 0.75rem; font-weight: 600; color: var(--color-mute); white-space: nowrap; }
+.ucp-section dd { margin: 0; font-size: 0.85rem; color: var(--color-ink); }
 .ucp-section dd a { color: var(--fontist-rose, #bf4e6a); text-decoration: none; }
-.ucp-section dd code { font-family: monospace; font-size: 0.75rem; cursor: pointer; background: var(--vp-c-bg-soft, #f8f7f4); padding: 0.1rem 0.3rem; border-radius: 3px; }
+.ucp-section dd code { font-family: monospace; font-size: 0.75rem; cursor: pointer; background: var(--color-paper-deep); padding: 0.1rem 0.3rem; border-radius: 3px; }
 .ucp-section dd code:hover { color: var(--fontist-rose, #bf4e6a); }
 
-.ucp-notfound { display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 0.5rem; height: 60vh; color: var(--vp-c-text-3, #888); }
+.ucp-notfound { display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 0.5rem; height: 60vh; color: var(--color-mute); }
 </style>

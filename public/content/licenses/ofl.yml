@@ -1,0 +1,41 @@
+slug: ofl
+name: SIL Open Font License 1.1
+short_name: OFL
+spdx: OFL-1.1
+version: '1.1'
+year_adopted: '2005'
+category: permissive
+blurb: 'The workhorse font license: free to use, modify, embed, and redistribute —
+  with attribution and no standalone sale.'
+matchers:
+- sil open font
+- ofl
+permissions:
+  commercial-static: 'yes'
+  commercial-web: 'yes'
+  commercial-app: 'yes'
+  commercial-server: 'yes'
+  open-source: 'yes'
+  modification: conditional
+  redistribute: conditional
+  standalone-sale: 'no'
+  embed-document: 'yes'
+  subsetting: 'yes'
+  rename: conditional
+  attribution: conditional
+siblings:
+- apache
+- mit
+- ufl
+- ipa
+examples:
+- name: Roboto
+  note: Google's signature UI sans
+- name: Source Sans 3
+  note: Adobe's open-source workhorse
+- name: IBM Plex Sans
+  note: IBM's corporate family
+- name: Inter
+  note: Popular UI font by Rasmus Andersson
+- name: Crimson Pro
+  note: Open-source serif
