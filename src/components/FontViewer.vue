@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { injectFontFace } from '../composables/useFontFace'
-import { fetchCoverage } from '../composables/useCoverage'
+import { loadCoverage } from '../lib/unicode/coverage'
 import { useUnicodeBlock } from '../composables/useUnicodeBlock'
 import { useFontVariation } from '../composables/useFontVariation'
 
@@ -174,7 +174,7 @@ function togglePlane(key) {
 // --- Lifecycle ---
 // Top-level await: runs during SSG so coverage data renders into the
 // shipped HTML. Font CSS injection stays in onMounted (touches `document`).
-const cov = await fetchCoverage(props.coverageFile || props.slug)
+const cov = await loadCoverage(props.coverageFile || props.slug)
 coverage.value = cov
 
 if (cov?.variable_axes) {

@@ -5,7 +5,7 @@ import { useHead } from '@unhead/vue'
 import { findFilesBySlug, type FamilyFileEntry } from '../lib/fonts/families-loader'
 import type { FontFamily, FontFamilyFile, Coverage } from '../lib/types/domain'
 import BlockCoverageHeatmap from '../components/BlockCoverageHeatmap.vue'
-import { fetchCoverage } from '../composables/useCoverage'
+import { loadCoverage } from '../lib/unicode/coverage'
 import { fetchJson } from '../lib/ssr-fetch'
 import NotFound from './NotFound.vue'
 
@@ -52,7 +52,7 @@ async function load() {
     const file = activeEntry.value?.file
     const coveragePath = file?.coverage_file || file?.slug
     const [cov, blocks] = await Promise.all([
-      coveragePath ? fetchCoverage(coveragePath) : Promise.resolve(null),
+      coveragePath ? loadCoverage(coveragePath) : Promise.resolve(null),
       fetchJson<{ name: string; start: number; end: number }[]>('unicode-blocks.json'),
     ])
     coverage.value = cov

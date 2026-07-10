@@ -5,7 +5,7 @@ import { useHead } from '@unhead/vue'
 import { loadFontFamily } from '../lib/fonts/families-loader'
 import type { FontFamily, FontFamilyFile, Coverage } from '../lib/types/domain'
 import BlockCoverageHeatmap from '../components/BlockCoverageHeatmap.vue'
-import { fetchCoverage } from '../composables/useCoverage'
+import { loadCoverage } from '../lib/unicode/coverage'
 import { fetchJson } from '../lib/ssr-fetch'
 
 const route = useRoute()
@@ -46,7 +46,7 @@ async function loadFamily() {
     // Pre-fetch coverage + block registry so the heatmap paints on first paint.
     const path = currentFile.value?.coverage_file || currentFile.value?.slug
     const [cov, blocks] = await Promise.all([
-      path ? fetchCoverage(path) : Promise.resolve(null),
+      path ? loadCoverage(path) : Promise.resolve(null),
       fetchJson<{ name: string; start: number; end: number }[]>('unicode-blocks.json'),
     ])
     coverage.value = cov

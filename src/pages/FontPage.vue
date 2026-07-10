@@ -3,7 +3,7 @@ import { ref, computed, watch } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import { injectFontFace } from '../composables/useFontFace'
-import { fetchCoverage } from '../composables/useCoverage'
+import { loadCoverage } from '../lib/unicode/coverage'
 import { useFontVariation } from '../composables/useFontVariation'
 import { featureInfo } from '../lib/unicode'
 import { findFormula, type FormulaData } from '../lib/formulas/loader'
@@ -36,7 +36,7 @@ async function loadData() {
     const { fontId: fid, ensureInjected } = injectFontFace(s, `fonts/${s}.woff2`, true)
     fontId.value = fid
     fontReady.value = ensureInjected()
-    coverage.value = await fetchCoverage(s)
+    coverage.value = await loadCoverage(s)
 
     reset()
     if (coverage.value?.variable_axes)

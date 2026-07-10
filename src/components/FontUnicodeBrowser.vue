@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { injectFontFace } from '../composables/useFontFace'
-import { fetchCoverage } from '../composables/useCoverage'
+import { loadCoverage } from '../lib/unicode/coverage'
 import { useUnicodeBlock } from '../composables/useUnicodeBlock'
 import { blockScriptFamily, hexCp, safeChar, blockSlug, type ScriptFamily } from '../lib/unicode/constants'
 import type { Coverage, CoverageBlock } from '../lib/types/domain'
@@ -120,7 +120,7 @@ async function selectBlock(idx) {
 // Top-level await: runs during SSG so the rendered HTML contains real
 // coverage data, not a perpetual "Loading…" placeholder. Font CSS
 // injection stays in onMounted because it touches `document` (client-only).
-coverage.value = await fetchCoverage(props.coverageFile || props.slug)
+coverage.value = await loadCoverage(props.coverageFile || props.slug)
 if (coverage.value && blocks.value.length > 0) {
   // Deep-link to initialBlockSlug when provided; else default to first block.
   let startIdx = 0

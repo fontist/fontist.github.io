@@ -3,7 +3,7 @@ import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import { injectFontFace } from '../composables/useFontFace'
-import { fetchCoverage } from '../composables/useCoverage'
+import { loadCoverage } from '../lib/unicode/coverage'
 import { loadFontsRegistry, loadFontMetadata } from '../lib/fonts/loader'
 import type { Coverage } from '../lib/types/domain'
 
@@ -109,7 +109,7 @@ async function addFont(slug: string) {
   }
   columns.value.push(col)
 
-  col.coverage = await fetchCoverage(coveragePath)
+  col.coverage = await loadCoverage(coveragePath)
   if (col.coverage?.variable_axes) {
     const wght = col.coverage.variable_axes.find(a => a.tag === 'wght')
     if (wght) {

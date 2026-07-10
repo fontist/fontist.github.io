@@ -38,8 +38,3 @@ export async function findFilesBySlug(fileSlug: string): Promise<FamilyFileEntry
   await loadFontFamilies()
   return lookup!.filesBySlug(fileSlug)
 }
-
-export function clearFontFamiliesCache(): void {
-  indexLoader.clear()
-  lookup = null
-}
