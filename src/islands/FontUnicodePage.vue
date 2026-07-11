@@ -20,10 +20,10 @@ const fontId = ref('')
 const fontCtx = computed<FontContext | null>(() => {
   if (!coverage.value) return null
   return {
-    slug: slug.value,
-    familyName: slug.value,
-    fontId: fontId.value,
-    fontPath: `fonts/${slug.value}.woff2`,
+    slug: slug,
+    familyName: slug,
+    fontId: fontId,
+    fontPath: `fonts/${slug}.woff2`,
     redistributable: true,
     coverage: new Set(coverage.value.codepoints || []),
     color: '#bf4e6a',
@@ -33,10 +33,10 @@ const fontCtx = computed<FontContext | null>(() => {
 const planes = computed(() => allBlocks.value.length ? getPlanes(allBlocks.value) : [])
 
 async function loadData() {
-  const s = slug.value
+  const s = slug
   if (!s) return
   const { fontId: fid, ensureInjected } = injectFontFace(s, `fonts/${s}.woff2`, true)
-  fontId.value = fid
+  fontId = fid
   fontReady.value = ensureInjected()
   coverage.value = await loadCoverage(s)
   allBlocks.value = await loadAllBlocks()
@@ -61,7 +61,7 @@ function blockStatus(block: UnicodeBlock): string {
 }
 
 function navigateToBlock(blockName: string) {
-  window.location.href = `/font/${slug.value}/unicode/${blockSlug(blockName}`)
+  window.location.href = `/font/${slug}/unicode/${blockSlug(blockName}`)
 }
 </script>
 

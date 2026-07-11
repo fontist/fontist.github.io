@@ -1,15 +1,14 @@
 import { nextTick, onMounted, onUpdated, type Ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 /**
  * Intercept clicks on <a> tags inside v-html rendered content
- * and route internal links through Vue Router (no full page reload).
+ * and route internal links through plain navigation (full page load
+ * in the static-site world — Astro pages are pre-rendered HTML, so
+ * navigation is a simple location change).
  *
  * External links get target="_blank" + rel="noopener".
  */
 export function useMarkdownLinks(containerRef: Ref<HTMLElement | null>) {
-  const router = useRouter()
-
   function handleClick(e: MouseEvent) {
     const target = e.target as HTMLElement
     const anchor = target.closest('a')
@@ -39,19 +38,9 @@ export function useMarkdownLinks(containerRef: Ref<HTMLElement | null>) {
       return
     }
 
-    // Internal link — use Vue Router
-    e.preventDefault()
-
-    // Vue Router with base path (e.g. '/formulas/') will re-add the base
-    // to any path we push. Strip it first to avoid double-prefixing.
-    const base = import.meta.env.BASE_URL || '/'
-    const baseWithoutSlash = base.endsWith('/') ? base.slice(0, -1) : base
-    let path = resolved.pathname
-    if (baseWithoutSlash && path.startsWith(baseWithoutSlash)) {
-      path = path.slice(baseWithoutSlash.length)
-    }
-    path += resolved.search + resolved.hash
-    router.push(path)
+    // Internal link — let the browser navigate normally (full page load).
+    // In the Astro static-site world, every page is pre-rendered HTML,
+    // so a full navigation is fast and correct. No SPA routing needed.
   }
 
   function attach() {

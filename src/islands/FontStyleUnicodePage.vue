@@ -26,14 +26,14 @@ const hasMultipleFormulas = computed(() => {
 })
 
 const requestedMissing = computed(() => {
-  if (!requestedFormula.value) return false
-  return !entries.value.some(e => e.file.formula_slug === requestedFormula.value)
+  if (!requestedFormula) return false
+  return !entries.value.some(e => e.file.formula_slug === requestedFormula)
 })
 
 const activeEntry = computed<FamilyFileEntry | null>(() => {
   if (entries.value.length === 0) return null
-  if (requestedFormula.value) {
-    const hit = entries.value.find(e => e.file.formula_slug === requestedFormula.value)
+  if (requestedFormula) {
+    const hit = entries.value.find(e => e.file.formula_slug === requestedFormula)
     if (hit) return hit
   }
   const pool = redistributableEntries.value
@@ -46,7 +46,7 @@ const activeFile = computed<FontFamilyFile | null>(() => activeEntry.value?.file
 async function load() {
   loading.value = true
   try {
-    entries.value = await findFilesBySlug(fontSlug.value)
+    entries.value = await findFilesBySlug(fontSlug)
     // Load coverage + unicode block registry in parallel so the heatmap
     // has everything it needs on first paint.
     const file = activeEntry.value?.file
@@ -67,7 +67,7 @@ watch(fontSlug, load)
 
 
 function switchFormula(formulaSlug: string) {
-  window.location.replace({ path: `/fonts/${fontSlug.value}/unicode`, query: { ...route.query, formula: formulaSlug } })
+  window.location.replace({ path: `/fonts/${fontSlug}/unicode`, query: { ...route.query, formula: formulaSlug } })
 }
 </script>
 

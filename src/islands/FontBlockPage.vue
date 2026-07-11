@@ -24,8 +24,8 @@ const fontId = ref('')
 const fontCtx = computed<FontContext | null>(() => {
   if (!coverage.value) return null
   return {
-    slug: slug.value, familyName: slug.value, fontId: fontId.value,
-    fontPath: `fonts/${slug.value}.woff2`, redistributable: true,
+    slug: slug, familyName: slug, fontId: fontId,
+    fontPath: `fonts/${slug}.woff2`, redistributable: true,
     coverage: new Set(coverage.value.codepoints || []), color: '#bf4e6a',
   }
 })
@@ -42,15 +42,15 @@ const missingCount = computed(() => {
 })
 
 async function loadData() {
-  const s = slug.value
+  const s = slug
   if (!s) return
   const { fontId: fid, ensureInjected } = injectFontFace(s, `fonts/${s}.woff2`, true)
-  fontId.value = fid
+  fontId = fid
   fontReady.value = ensureInjected()
   coverage.value = await loadCoverage(s)
 
   const allBlocks = await loadAllBlocks()
-  const found = allBlocks.find(b => blockSlug(b.name) === blockParam.value)
+  const found = allBlocks.find(b => blockSlug(b.name) === blockParam)
 
   if (found) {
     const chars = await loadBlockCharacters(found.name)

@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import LicenseHero from '../../src/components/LicenseHero.vue'
 import LicenseCard from '../../src/components/LicenseCard.vue'
-import SiteFooter from '../../src/components/SiteFooter.vue'
 import TopicCard from '../../src/components/TopicCard.vue'
 
 describe('LicenseHero', () => {
@@ -97,25 +96,8 @@ describe('LicenseCard', () => {
   })
 })
 
-describe('SiteFooter', () => {
-  it('renders rose diamond rule', () => {
-    const wrapper = mount(SiteFooter, { global: { stubs: ['RouterLink'] } })
-    expect(wrapper.find('.sf-rule-diamond').exists()).toBe(true)
-  })
-
-  it('renders 3 link columns', () => {
-    const wrapper = mount(SiteFooter, { global: { stubs: ['RouterLink'] } })
-    const cols = wrapper.findAll('.sf-col')
-    expect(cols).toHaveLength(3)
-  })
-
-  it('renders copyright in base line', () => {
-    const wrapper = mount(SiteFooter, { global: { stubs: ['RouterLink'] } })
-    const base = wrapper.find('.sf-base-copy')
-    expect(base.text()).toContain('Fontist')
-    expect(base.text()).toContain('Ribose')
-  })
-})
+// SiteFooter is now an .astro file — component-level tests removed.
+// SiteFooter.astro is verified via the Astro build + e2e tests.
 
 describe('TopicCard', () => {
   it('renders title + blurb + reading time', () => {

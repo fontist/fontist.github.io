@@ -13,7 +13,7 @@ const props = defineProps({
 const slug = props.slug
 
 const { html, frontmatter, loading, contentRef, ready } = useMarkdownPage(
-  () => `content/blog/${slug.value}.md`,
+  () => `content/blog/${slug}.md`,
   { watchSource: slug },
 )
 await ready

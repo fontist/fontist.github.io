@@ -1,8 +1,9 @@
 {
   "scripts": {
-    "dev": "vite",
-    "dev:astro": "astro dev",
-    "build:astro": "astro build",
+    "dev": "astro dev",
+    "build": "bash scripts/fetch-data.sh && node scripts/gen-font-families.mjs && node scripts/gen-licenses-index.mjs && node scripts/gen-blog-index.mjs && node scripts/gen-guide-index.mjs && astro build && node scripts/gen-sitemap.mjs",
+    "build:no-fetch": "node scripts/gen-font-families.mjs && node scripts/gen-licenses-index.mjs && node scripts/gen-blog-index.mjs && node scripts/gen-guide-index.mjs && astro build && node scripts/gen-sitemap.mjs",
+    "preview": "astro preview",
     "fetch-data": "bash scripts/fetch-data.sh",
     "gen-routes": "node scripts/gen-blog-index.mjs && node scripts/gen-guide-index.mjs && node scripts/gen-routes.mjs",
     "gen-sitemap": "node scripts/gen-sitemap.mjs",
@@ -11,9 +12,6 @@
     "gen-licenses": "node scripts/gen-licenses-index.mjs",
     "gen-blog-index": "node scripts/gen-blog-index.mjs",
     "gen-guide-index": "node scripts/gen-guide-index.mjs",
-    "build": "bash scripts/fetch-data.sh && node scripts/gen-font-families.mjs && node scripts/gen-licenses-index.mjs && node scripts/gen-blog-index.mjs && node scripts/gen-guide-index.mjs && node scripts/gen-routes.mjs && vite-ssg build && node scripts/gen-sitemap.mjs",
-    "build:no-fetch": "node scripts/gen-font-families.mjs && node scripts/gen-licenses-index.mjs && node scripts/gen-blog-index.mjs && node scripts/gen-guide-index.mjs && node scripts/gen-routes.mjs && vite-ssg build && node scripts/gen-sitemap.mjs",
-    "preview": "vite preview",
     "format": "prettier -w .",
     "test": "node --test tests/*.test.mjs src/lib/markdown/__tests__/*.test.ts src/lib/unicode/__tests__/*.test.ts src/lib/fonts/__tests__/*.test.ts src/lib/formulas/__tests__/*.test.ts src/lib/__tests__/*.test.ts scripts/__tests__/*.test.ts scripts/__tests__/*.test.mjs",
     "test:watch": "node --test --watch tests/*.test.mjs src/lib/markdown/__tests__/*.test.ts src/lib/unicode/__tests__/*.test.ts src/lib/fonts/__tests__/*.test.ts src/lib/formulas/__tests__/*.test.ts src/lib/__tests__/*.test.ts scripts/__tests__/*.test.ts scripts/__tests__/*.test.mjs",
@@ -26,13 +24,11 @@
     "@tailwindcss/vite": "^4.3.2",
     "marked": "^18.0.5",
     "tailwindcss": "^4.3.2",
-    "vue": "^3.5.0",
-    "vue-router": "^4.4.0"
+    "vue": "^3.5.0"
   },
   "devDependencies": {
     "@astrojs/vue": "^5.1.4",
     "@types/node": "^25.4.0",
-    "@vitejs/plugin-vue": "^5.2.4",
     "@vue/test-utils": "^2.4.11",
     "astro": "^5.18.2",
     "happy-dom": "^20.10.6",
@@ -40,8 +36,6 @@
     "node-html-parser": "^7.0.1",
     "prettier": "^3.8.1",
     "typescript": "^5.9.3",
-    "vite": "^5.4.0",
-    "vite-ssg": "^0.24.3",
     "vitest": "^4.1.10"
   }
 }

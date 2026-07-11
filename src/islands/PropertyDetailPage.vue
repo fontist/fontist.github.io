@@ -12,17 +12,17 @@ const props = defineProps<{
 const data = ref<{ property: string; count: number; characters: any[] } | null>(null)
 
 const valueParam = props.code
-const indexUrl = computed(() => `unicode/indexes/${props.property}/${valueParam.value}.json`)
+const indexUrl = computed(() => `unicode/indexes/${props.property}/${valueParam}.json`)
 
 const blockWithChars = computed(() => {
   if (!data.value) return null
   return {
-    name: `${props.title}: ${valueParam.value}`,
+    name: `${props.title}: ${valueParam}`,
     start: 0,
     end: 0x10FFFF,
     range: '',
     plane: 'bmp' as const,
-    displayName: `${props.title}: ${valueParam.value}`,
+    displayName: `${props.title}: ${valueParam}`,
     scriptGroup: '',
     characters: data.value.characters.map((c: any) => ({
       cp: c.cp,

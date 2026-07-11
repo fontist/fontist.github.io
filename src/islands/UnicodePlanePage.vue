@@ -12,7 +12,7 @@ const planeId = props.planeId
 const allBlocks = ref<UnicodeBlock[]>([])
 
 const plane = computed(() =>
-  PLANES.find(p => p.key === planeId.value || p.shortName.toLowerCase() === planeId.value.toLowerCase())
+  PLANES.find(p => p.key === planeId || p.shortName.toLowerCase() === planeId.toLowerCase())
 )
 
 const VERSION_YEARS: Record<string, number> = {

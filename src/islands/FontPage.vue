@@ -28,14 +28,14 @@ const NUMBER_SPECIMEN = '0123456789'
 
 async function loadData() {
   loading.value = true
-  const s = slug.value
+  const s = slug
   if (!s) { loading.value = false; return }
 
   try {
     formula.value = await findFormula(s)
 
     const { fontId: fid, ensureInjected } = injectFontFace(s, `fonts/${s}.woff2`, true)
-    fontId.value = fid
+    fontId = fid
     fontReady.value = ensureInjected()
     coverage.value = await loadCoverage(s)
 
@@ -52,14 +52,14 @@ await loadData()
 watch(slug, loadData)
 
 
-const familyName = computed(() => formula.value?.name || slug.value)
+const familyName = computed(() => formula.value?.name || slug)
 const licenseName = computed(() => formula.value?.licenseName || 'Unknown')
 const axes = computed<CoverageVariableAxis[]>(() => coverage.value?.variable_axes || [])
 const features = computed<CoverageFeature[]>(() => coverage.value?.opentype_features || [])
 const weightAxis = computed(() => axes.value.find(a => a.tag === 'wght'))
 
 const specimenStyle = computed(() => {
-  const s: Record<string, string> = { fontFamily: `'${fontId.value}', sans-serif` }
+  const s: Record<string, string> = { fontFamily: `'${fontId}', sans-serif` }
   if (variationCSS.value) s.fontVariationSettings = variationCSS.value
   if (featureCSS.value) s.fontFeatureSettings = featureCSS.value
   return s

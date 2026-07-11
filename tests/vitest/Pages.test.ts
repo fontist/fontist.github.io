@@ -28,7 +28,7 @@ vi.mock('@unhead/vue', () => ({
 }))
 
 import { loadParsedMarkdown, clearMarkdownCache } from '../../src/lib/markdown/loader'
-import NotFound from '../../src/pages/NotFound.vue'
+import NotFound from '../../src/islands/NotFound.vue'
 
 describe('NotFound — 404 page structure', () => {
   it('renders 404 hero with display numeral', () => {
@@ -66,11 +66,11 @@ describe('BlogPostPage — markdown + frontmatter integration', () => {
   })
 
   async function mountBlog() {
-    const BlogPostPage = (await import('../../src/pages/BlogPostPage.vue')).default
+    const BlogPostPage = (await import('../../src/islands/BlogPostPage.vue')).default
     const host = defineComponent({
       components: { BlogPostPage },
       render() {
-        return h(Suspense, { suspensible: true }, () => h(BlogPostPage))
+        return h(Suspense, { suspensible: true }, () => h(BlogPostPage, { slug: "ufo-compilation" }))
       },
     })
     const w = mount(host)
