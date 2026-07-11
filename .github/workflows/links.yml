@@ -27,9 +27,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Fetch formulas data
-        run: curl -sL https://raw.githubusercontent.com/fontist/formulas/main/docs/public/formulas-data.json -o public/formulas-data.json || true
-
       - name: Build
         run: npm run build
 

@@ -106,25 +106,33 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 2. formulas-data.json + stats.json (curl from raw.githubusercontent.com)
+# 2. formulas-data.json + stats.json — generated from the formulas repo (v5)
 # ---------------------------------------------------------------------------
-fetch_formulas_json() {
-  local name="$1"
-  local out="$PUBLIC/$name"
-  if [[ -f "$out" && $FORCE -eq 0 ]]; then
-    log "$name present, skipping"
-  elif curl -fsSL "$FORMULAS_RAW/$name" -o "$out"; then
-    log "fetched $name"
-  elif [[ -f "$out" ]]; then
-    log "WARNING: upstream $name unavailable, keeping local copy"
-  else
-    echo "Failed to fetch $name from $FORMULAS_RAW/$name and no local copy exists." >&2
-    echo "Run scripts/generate-formulas-data.mjs against a formulas repo clone" >&2
-    echo "(or copy the file from a previous build) to populate it." >&2
-    exit 1
+# Older versions of this script tried to curl pre-built JSON from
+# raw.githubusercontent.com/fontist/formulas/main/docs/public/. That file
+# is no longer published upstream — the formulas repo's `main` branch is
+# gone, only `v5` exists, and `v5` requires running `node generate.js` to
+# produce the JSON. So clone v5 shallowly, run the generator, and copy
+# the output files into public/.
+generate_formulas_json() {
+  if [[ -f "$PUBLIC/formulas-data.json" && $FORCE -eq 0 ]]; then
+    log "formulas-data.json present, skipping (use --force to regenerate)"
+    return
   fi
+  local tmp
+  tmp="$(mktemp -d)"
+  trap 'rm -rf "$tmp"' RETURN
+  log "cloning fontist/formulas v5 (shallow)…"
+  git clone --depth 1 --branch v5 "$FORMULAS_REPO" "$tmp/formulas"
+  log "installing formulas/docs deps + running generate.js…"
+  (cd "$tmp/formulas/docs" && npm install --silent --no-audit --no-fund && node generate.js)
+  cp "$tmp/formulas/docs/public/formulas-data.json" "$PUBLIC/formulas-data.json"
+  [[ -f "$tmp/formulas/docs/public/stats.json" ]] \
+    && cp "$tmp/formulas/docs/public/stats.json" "$PUBLIC/stats.json" \
+    || true
+  log "generated formulas-data.json ($(wc -c < "$PUBLIC/formulas-data.json" | tr -d ' ') bytes)"
 }
-fetch_formulas_json formulas-data.json
+generate_formulas_json
 
 # ---------------------------------------------------------------------------
 # 3. Optional: full formulas repo (raw YAML)
