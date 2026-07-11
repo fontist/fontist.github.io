@@ -40,27 +40,10 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      - name: Fetch pre-built data from fontist-archive
-        run: |
-          git clone --depth 1 https://github.com/fontist/fontist-archive.git /tmp/archive
-          mkdir -p public/coverage public/fonts
-          cp -r /tmp/archive/coverage/* public/coverage/ 2>/dev/null || true
-          cp /tmp/archive/fonts/*.woff public/fonts/ 2>/dev/null || true
-          cp /tmp/archive/fonts.json public/ 2>/dev/null || true
-          cp /tmp/archive/font-metadata.json public/ 2>/dev/null || true
-          rm -rf /tmp/archive
-
-      - name: Fetch formulas data
-        run: |
-          curl -sL https://raw.githubusercontent.com/fontist/formulas/main/docs/public/formulas-data.json \
-            -o public/formulas-data.json || true
-          curl -sL https://raw.githubusercontent.com/fontist/formulas/main/docs/public/stats.json \
-            -o public/stats.json || true
-
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
+      - name: Build (fetch-data.sh clones the archive + formulas v5, then vite-ssg builds)
         run: npm run build
 
       - name: Upload artifact
