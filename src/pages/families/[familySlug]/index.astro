@@ -1,12 +1,13 @@
 ---
 import DefaultLayout from '../../../layouts/DefaultLayout.astro'
 import FontFamilyPage from '../../../islands/FontFamilyPage.vue'
+import { generateFamilyFontFaces } from '../../../lib/fonts/font-face.mjs'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
 export async function getStaticPaths() {
   const dataPath = resolve(process.cwd(), 'public', 'font-families.json')
-  let index: { families: { slug: string }[] } = { families: [] }
+  let index: { families: { slug: string; files: { slug: string; path: string; redistributable: boolean }[] }[] } = { families: [] }
   try {
     index = JSON.parse(readFileSync(dataPath, 'utf8'))
   } catch {
@@ -16,13 +17,14 @@ export async function getStaticPaths() {
     .filter((f) => f && f.slug)
     .map((f) => ({
       params: { familySlug: f.slug },
-      props: { familySlug: f.slug },
+      props: { familySlug: f.slug, fontFaceCSS: generateFamilyFontFaces(f.files || []) },
     }))
 }
 
-const { familySlug } = Astro.props
+const { familySlug, fontFaceCSS } = Astro.props
 ---
 
 <DefaultLayout title={`Family ${familySlug} — Fontist`}>
+  {fontFaceCSS && <style is:inline set:html={fontFaceCSS} />}
   <FontFamilyPage familySlug={familySlug} client:load />
 </DefaultLayout>

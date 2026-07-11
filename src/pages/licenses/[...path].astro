@@ -1,29 +1,27 @@
 ---
 import DefaultLayout from '../../layouts/DefaultLayout.astro'
-import LicenseDetailPage from '../../islands/LicenseDetailPage.vue'
-import { readFileSync, readdirSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { getCollection, type CollectionEntry } from 'astro:content'
 
 export async function getStaticPaths() {
-  const licDir = resolve(process.cwd(), 'public', 'content', 'licenses')
-  const slugs: string[] = []
-  try {
-    for (const ent of readdirSync(licDir, { withFileTypes: true })) {
-      if (ent.isDirectory()) slugs.push(ent.name)
-      else if (ent.name.endsWith('.md') && ent.name !== 'index.md') {
-        slugs.push(ent.name.replace(/\.md$/, ''))
-      }
-    }
-  } catch {}
-  return slugs.map((s) => ({
-    params: { path: s },
-    props: { path: s },
+  const licenses = await getCollection('licenses')
+  return licenses.map((l) => ({
+    params: { path: l.slug },
+    props: { license: l },
   }))
 }
 
-const { path } = Astro.props
+interface Props { license: CollectionEntry<'licenses'> }
+const { license } = Astro.props
+const { Content } = await license.render()
+const { title, description } = license.data
 ---
 
-<DefaultLayout title={`License ${path} — Fontist`}>
-  <LicenseDetailPage path={path} client:load />
+<DefaultLayout
+  title={`${title} — License — Fontist`}
+  description={description}
+  canonical={`https://www.fontist.org/licenses/${license.slug}`}
+>
+  <article class="page-container md-doc">
+    <Content />
+  </article>
 </DefaultLayout>
