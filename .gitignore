@@ -21,7 +21,6 @@ dist-ssr
 /public/font-families.json
 /public/stats.json
 /public/search-index.json
-/public/ssg-routes.json
 /public/sitemap.xml
 
 # Optional full clone of formulas repo for raw YAML access.

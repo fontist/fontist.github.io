@@ -5,7 +5,7 @@
     "build:no-fetch": "node scripts/gen-font-families.mjs && node scripts/gen-licenses-index.mjs && node scripts/gen-blog-index.mjs && node scripts/gen-guide-index.mjs && astro build && node scripts/gen-sitemap.mjs",
     "preview": "astro preview",
     "fetch-data": "bash scripts/fetch-data.sh",
-    "gen-routes": "node scripts/gen-blog-index.mjs && node scripts/gen-guide-index.mjs && node scripts/gen-routes.mjs",
+    "gen-routes": "node scripts/gen-blog-index.mjs && node scripts/gen-guide-index.mjs ",
     "gen-sitemap": "node scripts/gen-sitemap.mjs",
     "gen-unicode": "node scripts/gen-unicode-data.mjs",
     "gen-font-families": "node scripts/gen-font-families.mjs",
@@ -29,6 +29,7 @@
   "devDependencies": {
     "@astrojs/vue": "^5.1.4",
     "@types/node": "^25.4.0",
+    "@vitejs/plugin-vue": "^6.0.7",
     "@vue/test-utils": "^2.4.11",
     "astro": "^5.18.2",
     "happy-dom": "^20.10.6",
