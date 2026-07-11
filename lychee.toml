@@ -13,12 +13,6 @@ include = [
   "dist/**/*.html"
 ]
 
-# Treat the site's own canonical URLs as local. Without this, every
-# https://www.fontist.org/... URL is checked against the live site,
-# which lags behind this branch and 404s on every newly-added page.
-# With base set, lychee resolves them against dist/ instead.
-base = "https://www.fontist.org"
-
 # Exclude patterns for URLs
 exclude = [
   ".git",
@@ -41,4 +35,12 @@ exclude = [
   # so the new og-image.png is referenced as https://www.fontist.org/og-image.png
   # before it has deployed. Exclude it from live-URL verification.
   "https?://(www\\.)?fontist\\.org/og-image\\.png",
+
+  # Exclude all canonical fontist.org URLs from live verification. The
+  # link checker runs on dist/ but every page's canonical/og:url points
+  # to https://www.fontist.org/<path>, and the live site lags behind
+  # this branch — every newly-added page would 404 until deploy. The
+  # internal-link integrity is already verified by the relative-URL
+  # checks lychee runs against dist/.
+  "https?://(www\\.)?fontist\\.org/",
 ]
