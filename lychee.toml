@@ -13,6 +13,12 @@ include = [
   "dist/**/*.html"
 ]
 
+# Treat the site's own canonical URLs as local. Without this, every
+# https://www.fontist.org/... URL is checked against the live site,
+# which lags behind this branch and 404s on every newly-added page.
+# With base set, lychee resolves them against dist/ instead.
+base = "https://www.fontist.org"
+
 # Exclude patterns for URLs
 exclude = [
   ".git",
