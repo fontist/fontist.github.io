@@ -1,35 +1,40 @@
 ---
 import DefaultLayout from '../../../layouts/DefaultLayout.astro'
 import FontStylePage from '../../../islands/FontStylePage.vue'
+import { generateFontFaceCSS } from '../../../lib/fonts/font-face.mjs'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
 export async function getStaticPaths() {
   const dataPath = resolve(process.cwd(), 'public', 'font-families.json')
-  let index: { families: { files: { slug: string }[] }[] } = { families: [] }
+  let index: { families: { files: { slug: string; path: string; redistributable: boolean }[] }[] } = { families: [] }
   try {
     index = JSON.parse(readFileSync(dataPath, 'utf8'))
   } catch {
     return []
   }
   const seen = new Set<string>()
-  const paths: { params: { fontSlug: string }; props: { fontSlug: string } }[] = []
+  const paths: any[] = []
   for (const fam of index.families) {
     for (const file of fam.files || []) {
       if (!file.slug || seen.has(file.slug)) continue
       seen.add(file.slug)
       paths.push({
         params: { fontSlug: file.slug },
-        props: { fontSlug: file.slug },
+        props: {
+          fontSlug: file.slug,
+          fontFaceCSS: generateFontFaceCSS(file.slug, file.path, file.redistributable) || '',
+        },
       })
     }
   }
   return paths
 }
 
-const { fontSlug } = Astro.props
+const { fontSlug, fontFaceCSS } = Astro.props
 ---
 
 <DefaultLayout title={`Font ${fontSlug} — Fontist`}>
+  {fontFaceCSS && <style is:inline set:html={fontFaceCSS} />}
   <FontStylePage fontSlug={fontSlug} client:load />
 </DefaultLayout>

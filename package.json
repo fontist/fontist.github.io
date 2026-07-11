@@ -27,6 +27,7 @@
     "vue": "^3.5.0"
   },
   "devDependencies": {
+    "@astrojs/mdx": "^4.3.14",
     "@astrojs/vue": "^5.1.4",
     "@types/node": "^25.4.0",
     "@vitejs/plugin-vue": "^6.0.7",
@@ -37,6 +38,7 @@
     "node-html-parser": "^7.0.1",
     "prettier": "^3.8.1",
     "typescript": "^5.9.3",
+    "vite": "^8.1.4",
     "vitest": "^4.1.10"
   }
 }

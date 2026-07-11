@@ -1,28 +1,28 @@
 ---
 import DefaultLayout from '../../layouts/DefaultLayout.astro'
-import GuideTopicPage from '../../islands/GuideTopicPage.vue'
-import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { getCollection, type CollectionEntry } from 'astro:content'
 
 export async function getStaticPaths() {
-  const indexPath = resolve(process.cwd(), 'public', 'content', 'guide', 'index.json')
-  let guides: { slug: string }[] = []
-  try {
-    guides = JSON.parse(readFileSync(indexPath, 'utf8'))
-  } catch {
-    return []
-  }
-  return guides
-    .filter((g) => g && g.slug)
-    .map((g) => ({
-      params: { path: g.slug },
-      props: { path: g.slug },
-    }))
+  const guides = await getCollection('guide')
+  return guides.map((g) => ({
+    params: { path: g.slug },
+    props: { guide: g },
+  }))
 }
 
-const { path } = Astro.props
+interface Props { guide: CollectionEntry<'guide'> }
+const { guide } = Astro.props
+const { Content } = await guide.render()
+const { title, description } = guide.data
 ---
 
-<DefaultLayout title="Guide — Fontist">
-  <GuideTopicPage path={path} client:load />
+<DefaultLayout
+  title={`${title} — Guide — Fontist`}
+  description={description}
+  canonical={`https://www.fontist.org/guide/${guide.slug}`}
+>
+  <article class="page-container md-doc">
+    <h1>{title}</h1>
+    <Content />
+  </article>
 </DefaultLayout>
