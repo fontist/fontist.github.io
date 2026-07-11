@@ -1,0 +1,65 @@
+---
+// fonts/[fontSlug]/unicode/block/[blockSlug].astro
+// Cross-product of fonts × Unicode blocks they cover.
+import DefaultLayout from '../../../../../layouts/DefaultLayout.astro'
+import FontBlockCoveragePage from '../../../../../islands/FontBlockCoveragePage.vue'
+import { readFileSync, existsSync, readdirSync } from 'node:fs'
+import { resolve } from 'node:path'
+
+export async function getStaticPaths() {
+  // For each font with a coverage file, enumerate the blocks it actually
+  // covers. Each coverage JSON lists blocks by name.
+  const famPath = resolve(process.cwd(), 'public', 'font-families.json')
+  let index: { families: { files: { slug: string }[] }[] } = { families: [] }
+  try {
+    index = JSON.parse(readFileSync(famPath, 'utf8'))
+  } catch {
+    return []
+  }
+
+  const seen = new Set<string>()
+  const fontSlugs: string[] = []
+  for (const fam of index.families) {
+    for (const file of fam.files || []) {
+      if (!file.slug || seen.has(file.slug)) continue
+      seen.add(file.slug)
+      fontSlugs.push(file.slug)
+    }
+  }
+
+  const paths: { params: { fontSlug: string; blockSlug: string }; props: { fontSlug: string; blockSlug: string } }[] = []
+  for (const fontSlug of fontSlugs) {
+    // Look up this font's coverage JSON — try flat and namespaced paths
+    const candidates = [
+      resolve(process.cwd(), 'public', 'coverage', `${fontSlug}.json`),
+      resolve(process.cwd(), 'public', `coverage/${fontSlug}.json`),
+    ]
+    // Also try namespaced: find the font's formula path. For now scan all
+    // coverage/<repo>/<slug>/ dirs. This is slow but correct.
+    let cov: { blocks?: { name: string }[] } | null = null
+    for (const p of candidates) {
+      if (existsSync(p)) {
+        try { cov = JSON.parse(readFileSync(p, 'utf8')) } catch {}
+        if (cov) break
+      }
+    }
+    if (!cov || !cov.blocks) continue
+    for (const b of cov.blocks) {
+      if (!b || !b.name) continue
+      const blockSlug = b.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+      if (!blockSlug) continue
+      paths.push({
+        params: { fontSlug, blockSlug },
+        props: { fontSlug, blockSlug },
+      })
+    }
+  }
+  return paths
+}
+
+const { fontSlug, blockSlug } = Astro.props
+---
+
+<DefaultLayout title={`${fontSlug} — ${blockSlug} — Fontist`}>
+  <FontBlockCoveragePage fontSlug={fontSlug} blockSlug={blockSlug} client:load />
+</DefaultLayout>

@@ -1,0 +1,18 @@
+---
+import DefaultLayout from '../../../layouts/DefaultLayout.astro'
+import UnicodePlanePage from '../../../islands/UnicodePlanePage.vue'
+
+export async function getStaticPaths() {
+  const planes = ['bmp', 'smp', 'sip', 'tip', 'ssp', 'pua-a', 'pua-b']
+  return planes.map((planeId) => ({
+    params: { planeId },
+    props: { planeId },
+  }))
+}
+
+const { planeId } = Astro.props
+---
+
+<DefaultLayout title={`Unicode Plane ${planeId.toUpperCase()} — Fontist`}>
+  <UnicodePlanePage planeId={planeId} client:load />
+</DefaultLayout>

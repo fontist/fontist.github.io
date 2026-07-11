@@ -1,0 +1,29 @@
+---
+import DefaultLayout from '../../layouts/DefaultLayout.astro'
+import LicenseDetailPage from '../../islands/LicenseDetailPage.vue'
+import { readFileSync, readdirSync } from 'node:fs'
+import { resolve } from 'node:path'
+
+export async function getStaticPaths() {
+  const licDir = resolve(process.cwd(), 'public', 'content', 'licenses')
+  const slugs: string[] = []
+  try {
+    for (const ent of readdirSync(licDir, { withFileTypes: true })) {
+      if (ent.isDirectory()) slugs.push(ent.name)
+      else if (ent.name.endsWith('.md') && ent.name !== 'index.md') {
+        slugs.push(ent.name.replace(/\.md$/, ''))
+      }
+    }
+  } catch {}
+  return slugs.map((s) => ({
+    params: { path: s },
+    props: { path: s },
+  }))
+}
+
+const { path } = Astro.props
+---
+
+<DefaultLayout title={`License ${path} — Fontist`}>
+  <LicenseDetailPage path={path} client:load />
+</DefaultLayout>

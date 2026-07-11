@@ -1,0 +1,13 @@
+---
+import DefaultLayout from '../../layouts/DefaultLayout.astro'
+import PropertyListPage from '../../islands/PropertyListPage.vue'
+
+const property = 'bidiclass'
+const pageTitle = 'Bidirectional Classes — Fontist'
+const propTitle = 'Bidirectional Classes'
+const label = 'classes'
+---
+
+<DefaultLayout title={pageTitle}>
+  <PropertyListPage property={property} title={propTitle} label={label} client:load />
+</DefaultLayout>

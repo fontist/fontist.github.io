@@ -1,0 +1,28 @@
+---
+import DefaultLayout from '../../layouts/DefaultLayout.astro'
+import GuideTopicPage from '../../islands/GuideTopicPage.vue'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+
+export async function getStaticPaths() {
+  const indexPath = resolve(process.cwd(), 'public', 'content', 'guide', 'index.json')
+  let guides: { slug: string }[] = []
+  try {
+    guides = JSON.parse(readFileSync(indexPath, 'utf8'))
+  } catch {
+    return []
+  }
+  return guides
+    .filter((g) => g && g.slug)
+    .map((g) => ({
+      params: { path: g.slug },
+      props: { path: g.slug },
+    }))
+}
+
+const { path } = Astro.props
+---
+
+<DefaultLayout title="Guide — Fontist">
+  <GuideTopicPage path={path} client:load />
+</DefaultLayout>

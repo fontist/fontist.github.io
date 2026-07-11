@@ -1,0 +1,29 @@
+---
+// formulas/[slug].astro — dynamic route for each formula.
+import DefaultLayout from '../../layouts/DefaultLayout.astro'
+import FormulaPage from '../../islands/FormulaPage.vue'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+
+export async function getStaticPaths() {
+  const dataPath = resolve(process.cwd(), 'public', 'formulas-data.json')
+  let formulas: { slug: string }[] = []
+  try {
+    formulas = JSON.parse(readFileSync(dataPath, 'utf8'))
+  } catch {
+    return []
+  }
+  return formulas
+    .filter((f) => f && f.slug)
+    .map((f) => ({
+      params: { slug: f.slug },
+      props: { slug: f.slug },
+    }))
+}
+
+const slug = Astro.props.slug
+---
+
+<DefaultLayout title={`Formula ${slug} — Fontist`}>
+  <FormulaPage slug={slug} client:load />
+</DefaultLayout>

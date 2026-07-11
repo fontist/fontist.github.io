@@ -1,0 +1,10 @@
+---
+import DefaultLayout from '../layouts/DefaultLayout.astro'
+import FamiliesPage from '../islands/FamiliesPage.vue'
+
+const title = 'Font Families — Fontist'
+---
+
+<DefaultLayout title={title}>
+  <FamiliesPage client:load />
+</DefaultLayout>

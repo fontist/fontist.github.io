@@ -1,0 +1,13 @@
+---
+import DefaultLayout from '../../layouts/DefaultLayout.astro'
+import PropertyListPage from '../../islands/PropertyListPage.vue'
+
+const property = 'category'
+const pageTitle = 'Character Categories — Fontist'
+const propTitle = 'Character Categories'
+const label = 'categories'
+---
+
+<DefaultLayout title={pageTitle}>
+  <PropertyListPage property={property} title={propTitle} label={label} client:load />
+</DefaultLayout>
