@@ -30,8 +30,8 @@ const loading = ref(true)
 
 const activeEntry = computed<FamilyFileEntry | null>(() => {
   if (entries.value.length === 0) return null
-  if (requestedFormula.value) {
-    const hit = entries.value.find(e => e.file.formula_slug === requestedFormula.value)
+  if (requestedFormula) {
+    const hit = entries.value.find(e => e.file.formula_slug === requestedFormula)
     if (hit) return hit
   }
   const pool = entries.value.filter(e => e.file.redistributable)
@@ -42,12 +42,12 @@ const activeFamily = computed<FontFamily | null>(() => activeEntry.value?.family
 const activeFile = computed<FontFamilyFile | null>(() => activeEntry.value?.file ?? null)
 
 const matchedBlock = computed(() => {
-  return allBlocks.value.find(b => blockSlug(b.name) === blockParam.value) ?? null
+  return allBlocks.value.find(b => blockSlug(b.name) === blockParam) ?? null
 })
 
 const matchedCoverageBlock = computed(() => {
   if (!coverage.value || !matchedBlock.value) return null
-  return coverage.value.blocks.find(b => blockSlug(b.name) === blockParam.value) ?? null
+  return coverage.value.blocks.find(b => blockSlug(b.name) === blockParam) ?? null
 })
 
 const completeness = computed(() => {
@@ -70,7 +70,7 @@ async function loadAll() {
   loading.value = true
   try {
     const [entrs, blocksIndex] = await Promise.all([
-      findFilesBySlug(fontSlug.value),
+      findFilesBySlug(fontSlug),
       fetchJson<{ name: string; start: number; end: number }[]>('unicode-blocks.json'),
     ])
     entries.value = entrs

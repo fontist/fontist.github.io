@@ -10,7 +10,6 @@
 // filters) is supporting cast.
 
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { blockSlug } from '../lib/unicode/constants'
 import { normalizeBlockName, coverageBucket as bucketFor } from '../lib/unicode/coverage'
 import type { Coverage } from '../lib/types/domain'
@@ -27,7 +26,6 @@ const props = withDefaults(defineProps<Props>(), {
   unicodeBlocks: () => [],
 })
 
-const router = useRouter()
 const hovered = ref<string | null>(null)
 
 // ---------- Plane classification ----------
@@ -195,10 +193,10 @@ function pctLabel(pct: number): string {
 
 // ---------- Navigation ----------
 function openBlock(tile: Tile) {
-  router.push({
+  window.location.href = {
     path: `/fonts/${props.fontSlug}/unicode/block/${tile.slug}`,
     query: props.formulaSlug ? { formula: props.formulaSlug } : undefined,
-  })
+  }
 }
 </script>
 

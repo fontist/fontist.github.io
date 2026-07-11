@@ -15,7 +15,7 @@ const props = defineProps({
 })
 
 const hex = props.hex
-const cp = computed(() => parseInt(hex.value, 16))
+const cp = computed(() => parseInt(hex, 16))
 
 const allBlocks = ref<UnicodeBlock[]>([])
 const charData = ref<any>(null)
@@ -80,7 +80,7 @@ async function loadForCurrentCp() {
   // Richer per-codepoint JSON (display props, segmentation, Indic/Hangul/
   // Emoji bundles, full binary_properties list, Unihan). Loads via the
   // shared loader so SSG can pre-render.
-  detail.value = await loadCodepointDetail(hex.value)
+  detail.value = await loadCodepointDetail(hex)
 }
 
 allBlocks.value = await loadAllBlocks()

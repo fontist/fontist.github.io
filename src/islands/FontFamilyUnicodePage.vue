@@ -35,7 +35,7 @@ const currentFile = computed<FontFamilyFile | null>(() => {
 async function loadFamily() {
   loading.value = true
   try {
-    family.value = await loadFontFamily(familySlug.value)
+    family.value = await loadFontFamily(familySlug)
     const querySlug = (typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('style') : null)
     if (typeof querySlug === 'string' && family.value?.files.some(f => f.slug === querySlug)) {
       selectedFileSlug.value = querySlug

@@ -33,7 +33,7 @@ const currentFile = computed<FontFamilyFile | null>(() => {
 async function loadFamily() {
   loading.value = true
   try {
-    family.value = await loadFontFamily(familySlug.value)
+    family.value = await loadFontFamily(familySlug)
     const initial = family.value?.files?.find(f => f.redistributable) || family.value?.files?.[0]
     selectedFileSlug.value = initial?.slug || null
   } finally {

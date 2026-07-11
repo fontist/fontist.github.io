@@ -20,9 +20,9 @@ async function loadData() {
   loading.value = true
   try {
     const [f, d, fam] = await Promise.all([
-      findFormula(slug.value),
-      findFormulaDetails(slug.value),
-      findFamilyByFormula(slug.value),
+      findFormula(slug),
+      findFormulaDetails(slug),
+      findFamilyByFormula(slug),
     ])
     formula.value = f
     details.value = d
