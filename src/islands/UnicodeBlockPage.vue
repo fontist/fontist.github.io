@@ -33,7 +33,7 @@ async function loadData() {
   const allBlocks = await loadAllBlocks()
   const found = allBlocks.find(b => {
     const slug = b.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
-    return slug === blockSlugParam.value
+    return slug === blockSlugParam
   })
   if (found) {
     block.value = found
