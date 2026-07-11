@@ -1,0 +1,10 @@
+---
+import DefaultLayout from '../../layouts/DefaultLayout.astro'
+import UnicodePage from '../../islands/UnicodePage.vue'
+
+const title = 'Unicode Browser — Fontist'
+---
+
+<DefaultLayout title={title}>
+  <UnicodePage client:load />
+</DefaultLayout>

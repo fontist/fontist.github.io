@@ -1,0 +1,10 @@
+---
+import DefaultLayout from '../../layouts/DefaultLayout.astro'
+import BrowsePage from '../../islands/BrowsePage.vue'
+
+const title = 'Formulas — Fontist'
+---
+
+<DefaultLayout title={title}>
+  <BrowsePage client:load />
+</DefaultLayout>

@@ -1,0 +1,43 @@
+---
+import DefaultLayout from '../../../layouts/DefaultLayout.astro'
+import UnicodeCharPage from '../../../islands/UnicodeCharPage.vue'
+import { readFileSync, existsSync } from 'node:fs'
+import { resolve } from 'node:path'
+
+export async function getStaticPaths() {
+  // Walk public/codepoints/*.json to enumerate every assigned codepoint
+  // that has at least one font covering it. Each file is a flat list of
+  // hex strings (one codepoint per line, or a JSON array).
+  const cpDir = resolve(process.cwd(), 'public', 'codepoints')
+  if (!existsSync(cpDir)) return []
+  const paths: { params: { hex: string }; props: { hex: string } }[] = []
+  const seen = new Set<string>()
+  function walk(dir: string) {
+    for (const ent of readFileSync ? require('node:fs').readdirSync(dir, { withFileTypes: true }) : []) {
+      const full = resolve(dir, ent.name)
+      if (ent.isDirectory()) {
+        walk(full)
+      } else if (ent.name.endsWith('.json')) {
+        try {
+          const data = JSON.parse(readFileSync(full, 'utf8'))
+          const cps: string[] = Array.isArray(data) ? data : (data.codepoints || [])
+          for (const cp of cps) {
+            const hex = typeof cp === 'number' ? cp.toString(16).toUpperCase().padStart(4, '0') : String(cp)
+            if (seen.has(hex)) continue
+            seen.add(hex)
+            paths.push({ params: { hex }, props: { hex } })
+          }
+        } catch {}
+      }
+    }
+  }
+  try { walk(cpDir) } catch {}
+  return paths
+}
+
+const { hex } = Astro.props
+---
+
+<DefaultLayout title={`Unicode Char U+${hex.toUpperCase()} — Fontist`}>
+  <UnicodeCharPage hex={hex} client:load />
+</DefaultLayout>

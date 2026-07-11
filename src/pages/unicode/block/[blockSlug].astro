@@ -1,0 +1,29 @@
+---
+import DefaultLayout from '../../../layouts/DefaultLayout.astro'
+import UnicodeBlockPage from '../../../islands/UnicodeBlockPage.vue'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+
+export async function getStaticPaths() {
+  const blocksPath = resolve(process.cwd(), 'public', 'unicode-blocks.json')
+  let blocksFile: Record<string, { name: string }> = {}
+  try {
+    blocksFile = JSON.parse(readFileSync(blocksPath, 'utf8'))
+  } catch {
+    return []
+  }
+  return Object.values(blocksFile)
+    .map((b) => b.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))
+    .filter(Boolean)
+    .map((blockSlug) => ({
+      params: { blockSlug },
+      props: { blockSlug },
+    }))
+}
+
+const { blockSlug } = Astro.props
+---
+
+<DefaultLayout title={`Unicode Block ${blockSlug} — Fontist`}>
+  <UnicodeBlockPage blockSlug={blockSlug} client:load />
+</DefaultLayout>

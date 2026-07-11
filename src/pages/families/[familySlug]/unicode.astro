@@ -1,0 +1,28 @@
+---
+import DefaultLayout from '../../../layouts/DefaultLayout.astro'
+import FontFamilyUnicodePage from '../../../islands/FontFamilyUnicodePage.vue'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+
+export async function getStaticPaths() {
+  const dataPath = resolve(process.cwd(), 'public', 'font-families.json')
+  let index: { families: { slug: string }[] } = { families: [] }
+  try {
+    index = JSON.parse(readFileSync(dataPath, 'utf8'))
+  } catch {
+    return []
+  }
+  return index.families
+    .filter((f) => f && f.slug)
+    .map((f) => ({
+      params: { familySlug: f.slug },
+      props: { familySlug: f.slug },
+    }))
+}
+
+const { familySlug } = Astro.props
+---
+
+<DefaultLayout title={`${familySlug} Unicode — Fontist`}>
+  <FontFamilyUnicodePage familySlug={familySlug} client:load />
+</DefaultLayout>

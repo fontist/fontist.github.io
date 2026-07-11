@@ -1,0 +1,10 @@
+---
+import DefaultLayout from '../layouts/DefaultLayout.astro'
+import ComparePage from '../islands/ComparePage.vue'
+
+const title = 'Compare Fonts — Fontist'
+---
+
+<DefaultLayout title={title}>
+  <ComparePage client:load />
+</DefaultLayout>

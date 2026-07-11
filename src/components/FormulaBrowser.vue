@@ -1,9 +1,14 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
 import { loadAllFormulas } from '../lib/formulas/loader'
 
-const route = useRoute()
+// Lightweight query-string reader — works on both SSR (window not available)
+// and client. Vue islands under Astro don't have vue-router, so we read
+// directly from window.location when it exists.
+function getQueryParam(key) {
+  if (typeof window === 'undefined') return null
+  return new URLSearchParams(window.location.search).get(key)
+}
 
 
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
@@ -115,19 +120,19 @@ function getLicenseIcon(icon) {
   return icons[icon] || icon
 }
 
-// Read query params from vue-router (not window.location)
+// Read query params from the URL (Astro islands have no vue-router).
 function initFromQuery() {
-  const q = route.query.q
+  const q = getQueryParam('q')
   if (typeof q === 'string' && q) {
     searchQuery.value = q
   }
 
-  const license = route.query.license
+  const license = getQueryParam('license')
   if (typeof license === 'string' && licenseParamMap[license]) {
     selectedLicenses.value = licenseParamMap[license]
   }
 
-  const source = route.query.source
+  const source = getQueryParam('source')
   if (typeof source === 'string') {
     const srcOpt = sourceOptions.find(o => o.value === source)
     if (srcOpt) {
@@ -251,7 +256,7 @@ function toggleSource(value) {
           <div v-for="letter in activeLetters" :key="letter" :id="'letter-' + letter" class="letter-group">
             <h3 class="letter-heading">{{ letter }}</h3>
             <div class="formula-items">
-              <RouterLink v-for="f in groupedFormulas[letter]" :key="f.slug" :to="`/formulas/${f.slug}`" class="formula-item">
+              <a v-for="f in groupedFormulas[letter]" :key="f.slug" :href="`/formulas/${f.slug}`" class="formula-item">
                 <div class="formula-main">
                   <span class="formula-name">{{ f.name }}</span>
                   <span class="formula-key">{{ f.formulaName }}</span>
@@ -260,7 +265,7 @@ function toggleSource(value) {
                   <span class="formula-badges"><span :title="f.licenseName" v-html="getLicenseBadge(f)"></span> <span :title="f.sourceType" v-html="getSourceBadge(f)"></span></span>
                   <span class="formula-counts">{{ f.familyCount }} {{ f.familyCount === 1 ? 'family' : 'families' }}, {{ f.styleCount }} {{ f.styleCount === 1 ? 'style' : 'styles' }}</span>
                 </div>
-              </RouterLink>
+              </a>
             </div>
           </div>
         </div>
