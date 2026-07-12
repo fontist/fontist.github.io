@@ -21,8 +21,155 @@ const { title, description } = guide.data
   description={description}
   canonical={`https://www.fontist.org/guide/${guide.slug}`}
 >
-  <article class="page-container md-doc">
-    <h1>{title}</h1>
-    <Content />
+  <article class="guide-article">
+    <nav class="guide-crumbs" aria-label="Breadcrumb">
+      <a href="/guide">Guide</a>
+      <span class="guide-crumbs-sep" aria-hidden="true">›</span>
+      <span class="guide-crumbs-here">{title}</span>
+    </nav>
+
+    <header class="guide-masthead">
+      <p class="guide-kicker">Guide</p>
+      <h1 class="guide-display">{title}</h1>
+      {description && <p class="guide-deck">{description}</p>}
+      <div class="guide-rule-mark" aria-hidden="true"></div>
+    </header>
+
+    <div class="guide-content md-doc">
+      <Content />
+    </div>
   </article>
 </DefaultLayout>
+
+<style>
+  @reference "../../styles/main.css";
+
+  .guide-article {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: clamp(2rem, 4vw, 3rem) 1.5rem 6rem;
+  }
+
+  .guide-crumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    @apply font-mono;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-mute);
+    margin-bottom: 3rem;
+  }
+
+  .guide-crumbs a {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .guide-crumbs a:hover {
+    color: var(--color-accent-soft);
+  }
+
+  .guide-crumbs-sep {
+    opacity: 0.5;
+  }
+
+  .guide-crumbs-here {
+    color: var(--color-ink-soft);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 40ch;
+  }
+
+  .guide-masthead {
+    margin-bottom: 3rem;
+  }
+
+  .guide-kicker {
+    @apply font-mono;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--color-accent);
+    font-weight: 600;
+    margin: 0 0 1rem;
+  }
+
+  .guide-display {
+    @apply font-display;
+    font-size: clamp(2.2rem, 5.5vw, 3.4rem);
+    font-weight: 360;
+    font-style: italic;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    color: var(--color-ink);
+    margin: 0 0 1.25rem;
+  }
+
+  .guide-deck {
+    @apply font-display;
+    font-style: italic;
+    font-weight: 380;
+    font-size: clamp(1.1rem, 1.8vw, 1.3rem);
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+    max-width: 36em;
+    margin: 0;
+  }
+
+  .guide-rule-mark {
+    width: 2.5rem;
+    height: 2px;
+    background: var(--color-accent);
+    margin-top: 2.5rem;
+  }
+
+  /* Prose body — .md-doc handles base typography. Scoped rules add
+     refinements specific to the guide reading experience. */
+  .guide-content {
+    font-size: 16.5px;
+    line-height: 1.7;
+  }
+
+  .guide-content :global(h2) {
+    margin-top: 2.8em;
+    margin-bottom: 0.8em;
+    font-style: italic;
+    font-weight: 380;
+  }
+
+  .guide-content :global(h3) {
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+  }
+
+  .guide-content :global(p) {
+    margin-bottom: 1.1em;
+  }
+
+  .guide-content :global(strong) {
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+
+  .guide-content :global(em) {
+    font-style: italic;
+  }
+
+  .guide-content :global(ul),
+  .guide-content :global(ol) {
+    margin: 0 0 1.25em;
+    padding-left: 1.25em;
+  }
+
+  .guide-content :global(li) {
+    margin-bottom: 0.35em;
+  }
+
+  .guide-content :global(li::marker) {
+    color: var(--color-accent);
+  }
+</style>

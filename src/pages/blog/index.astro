@@ -5,6 +5,13 @@ import { getCollection } from 'astro:content'
 const posts = (await getCollection('blog')).sort(
   (a, b) => (b.data.date || '').localeCompare(a.data.date || '')
 )
+
+function formatDate(dateStr) {
+  if (!dateStr) return ''
+  const d = new Date(dateStr)
+  if (isNaN(d.getTime())) return dateStr
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+}
 ---
 
 <DefaultLayout
@@ -12,24 +19,163 @@ const posts = (await getCollection('blog')).sort(
   description="Field notes from the Fontist project — releases, type discoveries, and engineering notes."
   canonical="https://www.fontist.org/blog"
 >
-  <div class="specimen">
-    <div style="max-width: 920px; margin: 0 auto; padding: 3rem 1.5rem;">
-      <header class="blog-head">
-        <h1>Field Notes from the Pressroom</h1>
-        <p class="lede">Releases, type discoveries, and engineering notes from the Fontist project.</p>
-      </header>
-      <ul class="blog-list">
-        {posts.map((post) => (
-          <li class="blog-item">
-            <a href={`/blog/${post.slug}`} class="blog-link">
-              <span class="blog-date">{post.data.date}</span>
-              <span class="blog-title">{post.data.title}</span>
-              {post.data.description && <span class="blog-desc">{post.data.description}</span>}
-              <span class="blog-arrow" aria-hidden="true">→</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </div>
+  <div class="journal">
+    <header class="journal-masthead">
+      <p class="journal-kicker">Journal</p>
+      <h1 class="journal-display">Field Notes from the Pressroom</h1>
+      <p class="journal-deck">
+        Releases, type discoveries, and engineering notes from the Fontist project.
+      </p>
+    </header>
+
+    <ul class="journal-list">
+      {posts.map((post) => (
+        <li class="journal-item">
+          <a href={`/blog/${post.slug}`} class="journal-entry">
+            <time class="journal-date" datetime={post.data.date}>
+              {formatDate(post.data.date)}
+            </time>
+            <div class="journal-body">
+              <span class="journal-title">{post.data.title}</span>
+              {post.data.description && (
+                <span class="journal-desc">{post.data.description}</span>
+              )}
+            </div>
+            <span class="journal-arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+      ))}
+    </ul>
   </div>
 </DefaultLayout>
+
+<style>
+  @reference "../../styles/main.css";
+
+  .journal {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 6vw, 5rem) 1.5rem 6rem;
+  }
+
+  .journal-masthead {
+    margin-bottom: 3.5rem;
+  }
+
+  .journal-kicker {
+    @apply font-mono;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--color-accent);
+    font-weight: 600;
+    margin: 0 0 1rem;
+  }
+
+  .journal-display {
+    @apply font-display;
+    font-size: clamp(2.4rem, 6vw, 3.8rem);
+    font-weight: 360;
+    font-style: italic;
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+    color: var(--color-ink);
+    margin: 0 0 1.25rem;
+    max-width: 16ch;
+  }
+
+  .journal-deck {
+    @apply font-body;
+    font-size: 1.05rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+    max-width: 48ch;
+    margin: 0;
+  }
+
+  .journal-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--color-rule);
+  }
+
+  .journal-item {
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  .journal-entry {
+    display: grid;
+    grid-template-columns: 140px 1fr 24px;
+    gap: 1.5rem;
+    align-items: baseline;
+    padding: 1.5rem 0;
+    text-decoration: none;
+    transition: padding 0.25s ease;
+  }
+
+  .journal-entry:hover {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .journal-date {
+    @apply font-mono;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--color-mute);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .journal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .journal-title {
+    @apply font-display;
+    font-weight: 400;
+    font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+    line-height: 1.2;
+    letter-spacing: -0.005em;
+    color: var(--color-ink);
+    transition: color 0.2s ease;
+  }
+
+  .journal-entry:hover .journal-title {
+    color: var(--color-accent);
+  }
+
+  .journal-desc {
+    @apply font-body;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+    max-width: 58ch;
+  }
+
+  .journal-arrow {
+    @apply font-mono;
+    font-size: 0.95rem;
+    color: var(--color-mute);
+    align-self: center;
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+
+  .journal-entry:hover .journal-arrow {
+    color: var(--color-accent);
+    transform: translateX(4px);
+  }
+
+  @media (max-width: 640px) {
+    .journal-entry {
+      grid-template-columns: 1fr;
+      gap: 0.4rem;
+      padding: 1.25rem 0;
+    }
+    .journal-arrow { display: none; }
+    .journal-date { font-size: 0.65rem; }
+  }
+</style>

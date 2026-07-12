@@ -36,32 +36,209 @@ const authorsDisplay = !authors || authors.length === 0
   description={description}
   canonical={`https://www.fontist.org/blog/${post.slug}`}
 >
-  <article class="blog">
-    <nav class="blog-crumbs" aria-label="Breadcrumb">
+  <article class="post">
+    <nav class="post-crumbs" aria-label="Breadcrumb">
       <a href="/blog">Journal</a>
-      <span class="blog-crumbs-sep" aria-hidden="true">›</span>
-      <span class="blog-crumbs-here">{title}</span>
+      <span class="post-crumbs-sep" aria-hidden="true">›</span>
+      <span class="post-crumbs-here">{title}</span>
     </nav>
 
-    <header class="blog-head">
+    <header class="post-masthead">
       {(formattedDate || authorsDisplay) && (
-        <div class="blog-eyebrow">
+        <div class="post-byline">
           {formattedDate && <time datetime={isoDate}>{formattedDate}</time>}
-          {formattedDate && authorsDisplay && <span class="blog-eyebrow-sep" aria-hidden="true">·</span>}
-          {authorsDisplay && <span class="blog-author">{authorsDisplay}</span>}
+          {formattedDate && authorsDisplay && (
+            <span class="post-byline-sep" aria-hidden="true">·</span>
+          )}
+          {authorsDisplay && <span class="post-author">{authorsDisplay}</span>}
         </div>
       )}
-      <h1 class="blog-title">{title}</h1>
-      {description && <p class="blog-lede">{description}</p>}
-      <hr class="blog-rule" aria-hidden="true" />
+      <h1 class="post-display">{title}</h1>
+      {description && <p class="post-deck">{description}</p>}
+      <div class="post-rule-mark" aria-hidden="true"></div>
     </header>
 
-    <div class="blog-body md-doc">
+    <div class="post-content md-doc">
       <Content />
     </div>
 
-    <footer class="blog-foot">
-      <a href="/blog" class="blog-back">← Back to the journal</a>
+    <footer class="post-foot">
+      <a href="/blog" class="post-back">← Back to the journal</a>
     </footer>
   </article>
 </DefaultLayout>
+
+<style>
+  @reference "../../styles/main.css";
+
+  .post {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: clamp(2rem, 4vw, 3rem) 1.5rem 6rem;
+  }
+
+  .post-crumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    @apply font-mono;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-mute);
+    margin-bottom: 3rem;
+  }
+
+  .post-crumbs a {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .post-crumbs a:hover {
+    color: var(--color-accent-soft);
+  }
+
+  .post-crumbs-sep {
+    opacity: 0.5;
+  }
+
+  .post-crumbs-here {
+    color: var(--color-ink-soft);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 40ch;
+  }
+
+  .post-masthead {
+    margin-bottom: 3rem;
+  }
+
+  .post-byline {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    @apply font-mono;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--color-accent);
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+  }
+
+  .post-byline time,
+  .post-author {
+    color: var(--color-ink-soft);
+    font-weight: 500;
+  }
+
+  .post-byline-sep {
+    color: var(--color-mute);
+  }
+
+  .post-display {
+    @apply font-display;
+    font-size: clamp(2.2rem, 5.5vw, 3.4rem);
+    font-weight: 360;
+    font-style: italic;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    color: var(--color-ink);
+    margin: 0 0 1.25rem;
+  }
+
+  .post-deck {
+    @apply font-display;
+    font-style: italic;
+    font-weight: 380;
+    font-size: clamp(1.1rem, 1.8vw, 1.3rem);
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+    max-width: 36em;
+    margin: 0;
+  }
+
+  .post-rule-mark {
+    width: 2.5rem;
+    height: 2px;
+    background: var(--color-accent);
+    margin-top: 2.5rem;
+  }
+
+  /* Prose body — .md-doc handles base typography. Scoped rules add
+     refinements specific to the blog post reading experience. */
+  .post-content {
+    font-size: 16.5px;
+    line-height: 1.7;
+  }
+
+  .post-content :global(h2) {
+    margin-top: 2.8em;
+    margin-bottom: 0.8em;
+    font-style: italic;
+    font-weight: 380;
+  }
+
+  .post-content :global(h3) {
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+  }
+
+  .post-content :global(p) {
+    margin-bottom: 1.1em;
+  }
+
+  .post-content :global(strong) {
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+
+  .post-content :global(em) {
+    font-style: italic;
+  }
+
+  .post-content :global(ul),
+  .post-content :global(ol) {
+    margin: 0 0 1.25em;
+    padding-left: 1.25em;
+  }
+
+  .post-content :global(li) {
+    margin-bottom: 0.35em;
+  }
+
+  .post-content :global(li::marker) {
+    color: var(--color-accent);
+  }
+
+  .post-content :global(img) {
+    display: block;
+    margin: 2rem auto;
+    border-radius: 3px;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .post-foot {
+    margin-top: 3.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-rule);
+  }
+
+  .post-back {
+    @apply font-mono;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .post-back:hover {
+    color: var(--color-accent-soft);
+  }
+</style>
