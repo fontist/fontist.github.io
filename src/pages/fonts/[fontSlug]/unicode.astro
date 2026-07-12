@@ -1,35 +1,12 @@
 ---
 import DefaultLayout from '../../../layouts/DefaultLayout.astro'
 import FontStyleUnicodePage from '../../../islands/FontStyleUnicodePage.vue'
-import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
 
 export async function getStaticPaths() {
-  const dataPath = resolve(process.cwd(), 'public', 'font-families.json')
-  let index: { families: { files: { slug: string }[] }[] } = { families: [] }
-  try {
-    index = JSON.parse(readFileSync(dataPath, 'utf8'))
-  } catch {
-    return []
-  }
-  const seen = new Set<string>()
-  const paths: { params: { fontSlug: string }; props: { fontSlug: string } }[] = []
-  for (const fam of index.families) {
-    for (const file of fam.files || []) {
-      if (!file.slug || seen.has(file.slug)) continue
-      seen.add(file.slug)
-      paths.push({
-        params: { fontSlug: file.slug },
-        props: { fontSlug: file.slug },
-      })
-    }
-  }
-  return paths
+  return []
 }
-
-const { fontSlug } = Astro.props
 ---
 
-<DefaultLayout title={`${fontSlug} Unicode — Fontist`}>
-  <FontStyleUnicodePage fontSlug={fontSlug} client:load />
+<DefaultLayout title="Fontist">
+  <FontStyleUnicodePage client:only="vue" />
 </DefaultLayout>

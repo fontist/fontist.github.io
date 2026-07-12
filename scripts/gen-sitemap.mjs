@@ -1,20 +1,15 @@
 #!/usr/bin/env node
-// gen-sitemap — post-processes dist/ into public/sitemap.xml.
-// Walks the built HTML files to enumerate URLs (more reliable than guessing
-// from route definitions, because empty pages still appear in dist/).
-//
-// Run AFTER vite-ssg build in package.json's build script.
+// gen-sitemap — walks dist/ after astro build to produce dist/sitemap.xml.
+// MUST run AFTER astro build (the pages must exist in dist/).
 
-import { readdirSync, statSync, writeFileSync, existsSync } from 'node:fs'
-import { resolve, dirname, join, relative } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { readdirSync, writeFileSync, existsSync } from 'node:fs'
+import { resolve, join } from 'node:path'
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const pub = resolve(root, 'public')
+const root = process.cwd()
 const dist = resolve(root, 'dist')
 
 if (!existsSync(dist)) {
-  console.warn('sitemap: dist/ does not exist; run vite-ssg build first')
+  console.warn('sitemap: dist/ does not exist; run astro build first')
   process.exit(0)
 }
 
@@ -27,7 +22,7 @@ function* walkHtml(dir, base = '') {
     if (ent.isDirectory()) {
       yield* walkHtml(abs, base ? `${base}/${ent.name}` : ent.name)
     } else if (ent.name === 'index.html') {
-      yield base || '/'
+      yield base ? `/${base}` : '/'
     }
   }
 }
@@ -45,14 +40,13 @@ function priorityFor(route) {
 const routes = [...walkHtml(dist)].sort()
 const urlset = routes
   .map((r) => {
-    const loc = `https://www.fontist.org${r === '/' ? '' : r}`
+    const loc = `https://www.fontist.org${r}`
     return `  <url><loc>${loc}</loc><lastmod>${today}</lastmod><priority>${priorityFor(r)}</priority></url>`
   })
   .join('\n')
 
-const out = resolve(pub, 'sitemap.xml')
 writeFileSync(
-  out,
+  resolve(dist, 'sitemap.xml'),
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urlset}\n</urlset>\n`,
 )
-console.log(`sitemap: wrote ${routes.length} URLs to ${out}`)
+console.log(`sitemap: wrote ${routes.length} URLs to dist/sitemap.xml`)

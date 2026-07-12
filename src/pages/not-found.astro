@@ -1,201 +1,206 @@
 ---
-// NotFound.astro — canonical Astro page pattern with scoped styles.
-//
-// This page demonstrates the migration target shape for every page:
-//   1. Co-located scoped <style> block (no global CSS for page-specific rules)
-//   2. Scoped styles use @apply with Tailwind tokens — same idiom as
-//      main.css, but scoped to this page only
-//   3. <head> + <body> managed by the page itself (no DefaultLayout needed
-//      until the layout migrates — see TODO.astro/02)
-//   4. Markdown-rendered routes use Astro's content collections instead of
-//      useMarkdownPage composable (see TODO.astro/03)
-//
-// Astro auto-applies a unique data attribute to every element so the scoped
-// rules can't leak. Inline utility classes handle the one-off layout bits.
 import '../styles/main.css'
+import SiteFooter from '../components/SiteFooter.astro'
 
-const suggestions: { label: string; to: string; hint: string }[] = [
-  { label: 'Formulas', to: '/formulas', hint: 'Browse the registry' },
-  { label: 'Families', to: '/families', hint: 'Type families in the archive' },
-  { label: 'Unicode',  to: '/unicode',  hint: 'Unicode planes & blocks' },
-  { label: 'Licenses', to: '/licenses', hint: 'Font license reference' },
-  { label: 'Guide',    to: '/guide',    hint: 'Practical typography guide' },
-  { label: 'About',    to: '/about',    hint: 'About the project' },
-]
+// The 404 page doubles as the SPA fallback for dynamic routes.
+// GitHub Pages serves 404.html for any URL without a matching HTML file.
+// The client-side script reads the URL and renders the right Vue island.
 ---
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>404 — Not Found — Fontist</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Fontist</title>
+    <link rel="stylesheet" href="/_astro/about.CweEUo5o.css" />
+    <script is:inline>
+      (function () {
+        try {
+          var k = 'fontist-theme';
+          var s = localStorage.getItem(k);
+          var t = s === 'light' || s === 'dark'
+            ? s
+            : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          if (t === 'dark') document.documentElement.classList.add('dark');
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
-    <main class="nf">
-      <div class="nf-rule" aria-hidden="true">
-        <span class="nf-rule-line"></span>
-        <span class="nf-rule-diamond">◆</span>
-        <span class="nf-rule-line"></span>
-      </div>
+    <div class="layout">
+      <nav class="nav">
+        <div class="nav-inner">
+          <a href="/" class="nav-logo">
+            <img src="/favicon.svg" alt="Fontist" class="nav-logo-img" />
+            Fontist
+          </a>
+          <div id="nav-menu" class="nav-links" role="navigation" aria-label="Main">
+            <a href="/formulas" class="nav-link">Formulas</a>
+            <a href="/families" class="nav-link">Families</a>
+            <a href="/licenses" class="nav-link">Licenses</a>
+            <a href="/guide" class="nav-link">Guide</a>
+            <a href="/unicode" class="nav-link">Unicode</a>
+            <a href="/blog" class="nav-link">Blog</a>
+            <a href="/about" class="nav-link">About</a>
+          </div>
+          <div class="nav-utility">
+            <button type="button" class="nav-icon-btn theme-toggle" data-theme-toggle aria-label="Switch theme">
+              <svg class="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                <circle cx="12" cy="12" r="4.4" fill="currentColor"/>
+                <g stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                  <line x1="12" y1="2.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21.5"/>
+                  <line x1="2.5" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21.5" y2="12"/>
+                  <line x1="5.2" y1="5.2" x2="6.9" y2="6.9"/><line x1="17.1" y1="17.1" x2="18.8" y2="18.8"/>
+                  <line x1="5.2" y1="18.8" x2="6.9" y2="17.1"/><line x1="17.1" y1="6.9" x2="18.8" y2="5.2"/>
+                </g>
+              </svg>
+              <svg class="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                <path d="M20.5 14.3A8.6 8.6 0 0 1 9.7 3.5a8.6 8.6 0 1 0 10.8 10.8z" fill="currentColor"/>
+              </svg>
+            </button>
+            <button type="button" class="nav-icon-btn nav-burger" data-nav-burger aria-label="Open menu" aria-expanded="false">
+              <svg class="burger-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                <line x1="4" y1="7" x2="20" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                <line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                <line x1="4" y1="17" x2="20" y2="17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </nav>
 
-      <header class="nf-head">
-        <h1 class="nf-title">
-          <span class="nf-title-num">404</span>
-          <span class="nf-title-em">page not found</span>
-        </h1>
-        <p class="nf-lede">
-          The page you're looking for doesn't exist — maybe it was renamed, removed,
-          or the URL is mistyped.
-        </p>
-      </header>
+      <main class="main">
+        <div id="spa-root" class="site-loading">
+          <p class="site-loading-text">Loading…</p>
+        </div>
+      </main>
 
-      <section class="nf-suggestions">
-        <p class="nf-suggestions-label">Looking for one of these?</p>
-        <ul class="nf-suggestions-list">
-          {suggestions.map((s) => (
-            <li class="nf-suggestion">
-              <a href={s.to} class="nf-suggestion-link">
-                <span class="nf-suggestion-label">{s.label}</span>
-                <span class="nf-suggestion-hint">{s.hint}</span>
-                <span class="nf-suggestion-arrow" aria-hidden="true">→</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <SiteFooter />
+    </div>
 
-      <footer class="nf-foot">
-        <a href="/" class="nf-back">← Back to Home</a>
-      </footer>
-    </main>
+    <script>
+      // Theme toggle + burger (same as DefaultLayout)
+      (function () {
+        var toggle = document.querySelector('[data-theme-toggle]')
+        if (toggle) {
+          toggle.addEventListener('click', function () {
+            var isDark = document.documentElement.classList.toggle('dark')
+            try { localStorage.setItem('fontist-theme', isDark ? 'dark' : 'light') } catch (e) {}
+          })
+        }
+        var burger = document.querySelector('[data-nav-burger]')
+        var menu = document.getElementById('nav-menu')
+        if (burger && menu) {
+          burger.addEventListener('click', function () {
+            menu.classList.toggle('nav-links--open')
+          })
+        }
+      })()
+    </script>
+
+    <!-- SPA router: detect URL pattern and dynamically import the right Vue island -->
+    <script type="module">
+      import { createApp } from 'vue'
+
+      const path = window.location.pathname
+      const root = document.getElementById('spa-root')
+
+      async function mount(component, props = {}) {
+        root.innerHTML = ''
+        const app = createApp(component, props)
+        app.mount(root)
+      }
+
+      try {
+        // /formulas/<slug>
+        let m = path.match(/^\/formulas\/(.+)\/?$/)
+        if (m) {
+          const mod = await import('/_astro/FormulaPage.CawPvY21.js')
+          root.innerHTML = ''
+          const app = (await import('vue')).createApp(mod.default, { slug: m[1] })
+          app.mount(root)
+        }
+
+        // /fonts/<slug>
+        else if ((m = path.match(/^\/fonts\/([^/]+)\/?$/))) {
+          const mod = await import('/_astro/FontStylePage.B8xc37_y.js')
+          root.innerHTML = ''
+          const app = (await import('vue')).createApp(mod.default, { fontSlug: m[1] })
+          app.mount(root)
+        }
+
+        // /fonts/<slug>/unicode
+        else if ((m = path.match(/^\/fonts\/([^/]+)\/unicode\/?$/))) {
+          const mod = await import('/_astro/FontStyleUnicodePage.DrQ7lHfN.js')
+          root.innerHTML = ''
+          const app = (await import('vue')).createApp(mod.default, { fontSlug: m[1] })
+          app.mount(root)
+        }
+
+        // /families/<slug>
+        else if ((m = path.match(/^\/families\/([^/]+)\/?$/))) {
+          const mod = await import('/_astro/FontFamilyPage.CawPvY21.js')
+          root.innerHTML = ''
+          const app = (await import('vue')).createApp(mod.default, { familySlug: m[1] })
+          app.mount(root)
+        }
+
+        // /families/<slug>/unicode
+        else if ((m = path.match(/^\/families\/([^/]+)\/unicode\/?$/))) {
+          const mod = await import('/_astro/FontFamilyUnicodePage.CawPvY21.js')
+          root.innerHTML = ''
+          const app = (await import('vue')).createApp(mod.default, { familySlug: m[1] })
+          app.mount(root)
+        }
+
+        // /unicode/char/<hex>
+        else if ((m = path.match(/^\/unicode\/char\/([^/]+)\/?$/))) {
+          const mod = await import('/_astro/UnicodeCharPage.CawPvY21.js')
+          root.innerHTML = ''
+          const app = (await import('vue')).createApp(mod.default, { hex: m[1] })
+          app.mount(root)
+        }
+
+        // /fonts/<slug>/unicode/block/<block>
+        else if ((m = path.match(/^\/fonts\/([^/]+)\/unicode\/block\/([^/]+)\/?$/))) {
+          const mod = await import('/_astro/FontBlockCoveragePage.CawPvY21.js')
+          root.innerHTML = ''
+          const app = (await import('vue')).createApp(mod.default, { fontSlug: m[1], blockSlug: m[2] })
+          app.mount(root)
+        }
+
+        // /unicode/<prop>/<code>
+        else if ((m = path.match(/^\/unicode\/(scripts|category|combining|bidiclass)\/([^/]+)\/?$/))) {
+          const prop = m[1]
+          const titles = { scripts: 'Script', category: 'Category', combining: 'Combining Class', bidiclass: 'Bidirectional Class' }
+          const mod = await import('/_astro/PropertyDetailPage.CawPvY21.js')
+          root.innerHTML = ''
+          const app = (await import('vue')).createApp(mod.default, { property: prop, title: titles[prop], code: m[2] })
+          app.mount(root)
+        }
+
+        // True 404
+        else {
+          root.innerHTML = `
+            <div style="max-width:720px;margin:0 auto;padding:3rem 1.5rem 5rem;font-family:var(--font-body);">
+              <h1 style="font-family:var(--font-display);font-size:clamp(3rem,8vw,5rem);font-weight:400;color:var(--color-ink);">404</h1>
+              <p style="color:var(--color-ink-soft);">Page not found. <a href="/" style="color:var(--color-accent);">Return home →</a></p>
+            </div>`
+        }
+      } catch (e) {
+        root.innerHTML = '<div style="padding:3rem;text-align:center;color:var(--color-mute);">Failed to load page.</div>'
+        console.error('SPA route error:', e)
+      }
+    </script>
   </body>
 </html>
 
 <style>
-  /* Page-specific styles — scoped to this .astro file by Astro's compiler.
-     `@reference` tells Tailwind "main.css is already loaded by the page,
-     don't re-include its CSS but DO make its @theme tokens available to
-     @apply." Without this, Tailwind 4 can't resolve token-derived utility
-     classes (text-ink, font-body, etc.) inside Astro scoped <style> blocks. */
   @reference "../styles/main.css"
-
-  /* Token colors/fonts come from @theme in main.css. @apply works the same
-     way it does in main.css; the only difference is the rules don't leak
-     to other pages. */
-  .nf {
-    @apply max-w-[720px] mx-auto;
-    padding: 3rem 1.5rem 5rem;
-    @apply font-body;
-  }
-
-  /* Decorative top rule with rose diamond */
-  .nf-rule {
-    @apply flex items-center;
-    gap: 0.75rem;
-    margin-bottom: 2.5rem;
-  }
-  .nf-rule-line { @apply flex-1 h-px; background: var(--spec-rule); }
-  .nf-rule-diamond { @apply text-rose; font-size: 0.65rem; opacity: 0.7; }
-
-  /* Header */
-  .nf-head { margin-bottom: 3rem; }
-  .nf-title {
-    @apply font-display font-normal flex flex-col;
-    margin: 0 0 1rem;
-    @apply text-ink;
-    gap: 0.2rem;
-    line-height: 1.05;
-  }
-  .nf-title-num {
-    font-size: clamp(4rem, 12vw, 7rem);
-    font-weight: 400;
-    letter-spacing: -0.03em;
-    font-variant-numeric: tabular-nums;
-    line-height: 0.9;
-  }
-  .nf-title-em {
-    @apply italic;
-    font-size: clamp(1.4rem, 3vw, 2rem);
-    @apply text-ink-soft;
-    letter-spacing: -0.01em;
-  }
-  .nf-lede {
-    @apply font-body;
-    font-size: 1rem;
-    line-height: 1.55;
-    @apply text-ink-soft;
-    margin: 0;
-    max-width: 50ch;
-  }
-
-  /* Suggestions grid */
-  .nf-suggestions { margin-bottom: 2.5rem; }
-  .nf-suggestions-label {
-    @apply font-mono;
-    font-size: 0.65rem;
-    @apply uppercase;
-    letter-spacing: 0.14em;
-    @apply text-mute;
-    margin: 0 0 1rem;
-  }
-  .nf-suggestions-list {
-    @apply list-none grid;
-    margin: 0; padding: 0;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 0.6rem;
-  }
-  .nf-suggestion { margin: 0; padding: 0; }
-  .nf-suggestion-link {
-    @apply flex flex-col no-underline text-ink;
-    gap: 0.15rem;
-    padding: 0.85rem 1rem;
-    @apply bg-paper;
-    border: 1px solid var(--spec-rule);
-    border-radius: 3px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-    position: relative;
-  }
-  .nf-suggestion-link:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(28,26,24,0.08);
-    border-color: var(--color-rose);
-  }
-  .nf-suggestion-label {
-    @apply font-display italic text-ink;
-    font-size: 1.05rem;
-  }
-  .nf-suggestion-hint {
-    @apply font-mono text-mute;
-    font-size: 0.7rem;
-    letter-spacing: 0.02em;
-  }
-  .nf-suggestion-arrow {
-    @apply absolute;
-    top: 0.85rem;
-    right: 0.85rem;
-    font-size: 0.9rem;
-    @apply text-mute;
-    transition: color 0.2s ease, transform 0.2s ease;
-  }
-  .nf-suggestion-link:hover .nf-suggestion-arrow {
-    @apply text-rose;
-    transform: translateX(3px);
-  }
-
-  /* Footer link */
-  .nf-foot {
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--spec-rule);
-  }
-  .nf-back {
-    @apply font-mono no-underline text-rose;
-    font-size: 0.78rem;
-    @apply uppercase;
-    letter-spacing: 0.12em;
-  }
-  .nf-back:hover { text-decoration: underline; }
-
-  @media (max-width: 540px) {
-    .nf-suggestions-list { grid-template-columns: 1fr; }
-  }
+  .theme-icon-moon { display: none; }
+  .theme-icon-sun { display: inline; }
+  :global(html.dark) .theme-icon-moon { display: inline; }
+  :global(html.dark) .theme-icon-sun { display: none; }
+  .burger-close { display: none; }
 </style>
