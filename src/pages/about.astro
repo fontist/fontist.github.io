@@ -12,14 +12,122 @@ const { title, description } = about.data
   description={description}
   canonical="https://www.fontist.org/about"
 >
-  <article class="about page-container">
-    <header class="about-head">
-      <h1 class="about-title">{title}</h1>
-      {description && <p class="about-lede">{description}</p>}
-      <hr class="about-rule" />
+  <article class="about-page">
+    <header class="about-masthead">
+      <p class="about-kicker">About</p>
+      <h1 class="about-display">{title}</h1>
+      {description && <p class="about-deck">{description}</p>}
+      <div class="about-rule-mark" aria-hidden="true"></div>
     </header>
-    <div class="about-body md-doc">
+
+    <div class="about-content md-doc">
       <Content />
     </div>
   </article>
 </DefaultLayout>
+
+<style>
+  @reference "../styles/main.css";
+
+  .about-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 6vw, 5rem) 1.5rem 6rem;
+  }
+
+  .about-masthead {
+    margin-bottom: 3.5rem;
+  }
+
+  .about-kicker {
+    @apply font-mono;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--color-accent);
+    font-weight: 600;
+    margin: 0 0 1rem;
+  }
+
+  .about-display {
+    @apply font-display;
+    font-size: clamp(2.4rem, 6vw, 3.8rem);
+    font-weight: 360;
+    font-style: italic;
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+    color: var(--color-ink);
+    margin: 0 0 1.25rem;
+  }
+
+  .about-deck {
+    @apply font-display;
+    font-style: italic;
+    font-weight: 380;
+    font-size: clamp(1.1rem, 1.8vw, 1.3rem);
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+    max-width: 36em;
+    margin: 0;
+  }
+
+  .about-rule-mark {
+    width: 2.5rem;
+    height: 2px;
+    background: var(--color-accent);
+    margin-top: 2.5rem;
+  }
+
+  /* Prose body — .md-doc handles base typography (h2, h3, p, a, code,
+     pre, blockquote, table). These scoped rules add editorial refinements
+     that are specific to the about page's visual language. */
+  .about-content {
+    font-size: 16.5px;
+    line-height: 1.7;
+  }
+
+  .about-content :global(h2) {
+    margin-top: 3em;
+    margin-bottom: 0.8em;
+    font-style: italic;
+    font-weight: 380;
+  }
+
+  .about-content :global(h3) {
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+  }
+
+  .about-content :global(p) {
+    margin-bottom: 1.1em;
+  }
+
+  .about-content :global(hr) {
+    border: none;
+    border-top: 1px solid var(--color-rule);
+    margin: 3rem 0;
+  }
+
+  .about-content :global(strong) {
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+
+  .about-content :global(em) {
+    font-style: italic;
+  }
+
+  .about-content :global(ul),
+  .about-content :global(ol) {
+    margin: 0 0 1.25em;
+    padding-left: 1.25em;
+  }
+
+  .about-content :global(li) {
+    margin-bottom: 0.35em;
+  }
+
+  .about-content :global(li::marker) {
+    color: var(--color-accent);
+  }
+</style>
