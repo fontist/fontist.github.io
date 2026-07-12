@@ -1,10 +1,6 @@
 ---
 import '../styles/main.css'
 import SiteFooter from '../components/SiteFooter.astro'
-
-// The 404 page doubles as the SPA fallback for dynamic routes.
-// GitHub Pages serves 404.html for any URL without a matching HTML file.
-// The client-side script reads the URL and renders the right Vue island.
 ---
 
 <html lang="en">
@@ -13,28 +9,15 @@ import SiteFooter from '../components/SiteFooter.astro'
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Fontist</title>
-    <link rel="stylesheet" href="/_astro/about.CweEUo5o.css" />
     <script is:inline>
-      (function () {
-        try {
-          var k = 'fontist-theme';
-          var s = localStorage.getItem(k);
-          var t = s === 'light' || s === 'dark'
-            ? s
-            : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-          if (t === 'dark') document.documentElement.classList.add('dark');
-        } catch (e) {}
-      })();
+      (function(){try{var k='fontist-theme';var s=localStorage.getItem(k);var t=s==='light'||s==='dark'?s:(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}})();
     </script>
   </head>
   <body>
     <div class="layout">
       <nav class="nav">
         <div class="nav-inner">
-          <a href="/" class="nav-logo">
-            <img src="/favicon.svg" alt="Fontist" class="nav-logo-img" />
-            Fontist
-          </a>
+          <a href="/" class="nav-logo"><img src="/favicon.svg" alt="Fontist" class="nav-logo-img" />Fontist</a>
           <div id="nav-menu" class="nav-links" role="navigation" aria-label="Main">
             <a href="/formulas" class="nav-link">Formulas</a>
             <a href="/families" class="nav-link">Families</a>
@@ -46,151 +29,56 @@ import SiteFooter from '../components/SiteFooter.astro'
           </div>
           <div class="nav-utility">
             <button type="button" class="nav-icon-btn theme-toggle" data-theme-toggle aria-label="Switch theme">
-              <svg class="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-                <circle cx="12" cy="12" r="4.4" fill="currentColor"/>
-                <g stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
-                  <line x1="12" y1="2.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21.5"/>
-                  <line x1="2.5" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21.5" y2="12"/>
-                  <line x1="5.2" y1="5.2" x2="6.9" y2="6.9"/><line x1="17.1" y1="17.1" x2="18.8" y2="18.8"/>
-                  <line x1="5.2" y1="18.8" x2="6.9" y2="17.1"/><line x1="17.1" y1="6.9" x2="18.8" y2="5.2"/>
-                </g>
-              </svg>
-              <svg class="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-                <path d="M20.5 14.3A8.6 8.6 0 0 1 9.7 3.5a8.6 8.6 0 1 0 10.8 10.8z" fill="currentColor"/>
-              </svg>
-            </button>
-            <button type="button" class="nav-icon-btn nav-burger" data-nav-burger aria-label="Open menu" aria-expanded="false">
-              <svg class="burger-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-                <line x1="4" y1="7" x2="20" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-                <line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-                <line x1="4" y1="17" x2="20" y2="17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-              </svg>
+              <svg class="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.4" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="12" y1="2.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21.5"/><line x1="2.5" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21.5" y2="12"/><line x1="5.2" y1="5.2" x2="6.9" y2="6.9"/><line x1="17.1" y1="17.1" x2="18.8" y2="18.8"/><line x1="5.2" y1="18.8" x2="6.9" y2="17.1"/><line x1="17.1" y1="6.9" x2="18.8" y2="5.2"/></g></svg>
+              <svg class="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20.5 14.3A8.6 8.6 0 0 1 9.7 3.5a8.6 8.6 0 1 0 10.8 10.8z" fill="currentColor"/></svg>
             </button>
           </div>
         </div>
       </nav>
-
-      <main class="main">
-        <div id="spa-root" class="site-loading">
-          <p class="site-loading-text">Loading…</p>
-        </div>
-      </main>
-
+      <main class="main"><div id="spa-root" class="site-loading"><p class="site-loading-text">Loading…</p></div></main>
       <SiteFooter />
     </div>
-
     <script>
-      // Theme toggle + burger (same as DefaultLayout)
-      (function () {
-        var toggle = document.querySelector('[data-theme-toggle]')
-        if (toggle) {
-          toggle.addEventListener('click', function () {
-            var isDark = document.documentElement.classList.toggle('dark')
-            try { localStorage.setItem('fontist-theme', isDark ? 'dark' : 'light') } catch (e) {}
-          })
-        }
-        var burger = document.querySelector('[data-nav-burger]')
-        var menu = document.getElementById('nav-menu')
-        if (burger && menu) {
-          burger.addEventListener('click', function () {
-            menu.classList.toggle('nav-links--open')
-          })
-        }
-      })()
+      var t=document.querySelector('[data-theme-toggle]');if(t){t.addEventListener('click',function(){var d=document.documentElement.classList.toggle('dark');try{localStorage.setItem('fontist-theme',d?'dark':'light')}catch(e){}})}
     </script>
-
-    <!-- SPA router: detect URL pattern and dynamically import the right Vue island -->
-    <script type="module">
+    <script>
       import { createApp } from 'vue'
+      import FormulaPage from '../islands/FormulaPage.vue'
+      import FontStylePage from '../islands/FontStylePage.vue'
+      import FontStyleUnicodePage from '../islands/FontStyleUnicodePage.vue'
+      import FontFamilyPage from '../islands/FontFamilyPage.vue'
+      import FontFamilyUnicodePage from '../islands/FontFamilyUnicodePage.vue'
+      import UnicodeCharPage from '../islands/UnicodeCharPage.vue'
+      import FontBlockCoveragePage from '../islands/FontBlockCoveragePage.vue'
+      import PropertyDetailPage from '../islands/PropertyDetailPage.vue'
 
       const path = window.location.pathname
       const root = document.getElementById('spa-root')
 
-      async function mount(component, props = {}) {
-        root.innerHTML = ''
-        const app = createApp(component, props)
-        app.mount(root)
+      const ROUTES = [
+        { match: /^\/formulas\/(.+)\/?$/,         Comp: FormulaPage,           getProps: m => ({ slug: m[1] }) },
+        { match: /^\/fonts\/([^/]+)\/?$/,          Comp: FontStylePage,         getProps: m => ({ fontSlug: m[1] }) },
+        { match: /^\/fonts\/([^/]+)\/unicode\/?$/, Comp: FontStyleUnicodePage,  getProps: m => ({ fontSlug: m[1] }) },
+        { match: /^\/families\/([^/]+)\/?$/,       Comp: FontFamilyPage,        getProps: m => ({ familySlug: m[1] }) },
+        { match: /^\/families\/([^/]+)\/unicode\/?$/, Comp: FontFamilyUnicodePage, getProps: m => ({ familySlug: m[1] }) },
+        { match: /^\/unicode\/char\/([^/]+)\/?$/,  Comp: UnicodeCharPage,       getProps: m => ({ hex: m[1] }) },
+        { match: /^\/fonts\/([^/]+)\/unicode\/block\/([^/]+)\/?$/, Comp: FontBlockCoveragePage, getProps: m => ({ fontSlug: m[1], blockSlug: m[2] }) },
+        { match: /^\/unicode\/(scripts|category|combining|bidiclass)\/([^/]+)\/?$/, Comp: PropertyDetailPage, getProps: m => ({ property: m[1], title: {scripts:'Script',category:'Category',combining:'Combining Class',bidiclass:'Bidirectional Class'}[m[1]], code: m[2] }) },
+      ]
+
+      let matched = false
+      for (const route of ROUTES) {
+        const m = path.match(route.match)
+        if (m) {
+          root.innerHTML = ''
+          createApp(route.Comp, route.getProps(m)).mount(root)
+          matched = true
+          break
+        }
       }
 
-      try {
-        // /formulas/<slug>
-        let m = path.match(/^\/formulas\/(.+)\/?$/)
-        if (m) {
-          const mod = await import('/_astro/FormulaPage.CawPvY21.js')
-          root.innerHTML = ''
-          const app = (await import('vue')).createApp(mod.default, { slug: m[1] })
-          app.mount(root)
-        }
-
-        // /fonts/<slug>
-        else if ((m = path.match(/^\/fonts\/([^/]+)\/?$/))) {
-          const mod = await import('/_astro/FontStylePage.B8xc37_y.js')
-          root.innerHTML = ''
-          const app = (await import('vue')).createApp(mod.default, { fontSlug: m[1] })
-          app.mount(root)
-        }
-
-        // /fonts/<slug>/unicode
-        else if ((m = path.match(/^\/fonts\/([^/]+)\/unicode\/?$/))) {
-          const mod = await import('/_astro/FontStyleUnicodePage.DrQ7lHfN.js')
-          root.innerHTML = ''
-          const app = (await import('vue')).createApp(mod.default, { fontSlug: m[1] })
-          app.mount(root)
-        }
-
-        // /families/<slug>
-        else if ((m = path.match(/^\/families\/([^/]+)\/?$/))) {
-          const mod = await import('/_astro/FontFamilyPage.CawPvY21.js')
-          root.innerHTML = ''
-          const app = (await import('vue')).createApp(mod.default, { familySlug: m[1] })
-          app.mount(root)
-        }
-
-        // /families/<slug>/unicode
-        else if ((m = path.match(/^\/families\/([^/]+)\/unicode\/?$/))) {
-          const mod = await import('/_astro/FontFamilyUnicodePage.CawPvY21.js')
-          root.innerHTML = ''
-          const app = (await import('vue')).createApp(mod.default, { familySlug: m[1] })
-          app.mount(root)
-        }
-
-        // /unicode/char/<hex>
-        else if ((m = path.match(/^\/unicode\/char\/([^/]+)\/?$/))) {
-          const mod = await import('/_astro/UnicodeCharPage.CawPvY21.js')
-          root.innerHTML = ''
-          const app = (await import('vue')).createApp(mod.default, { hex: m[1] })
-          app.mount(root)
-        }
-
-        // /fonts/<slug>/unicode/block/<block>
-        else if ((m = path.match(/^\/fonts\/([^/]+)\/unicode\/block\/([^/]+)\/?$/))) {
-          const mod = await import('/_astro/FontBlockCoveragePage.CawPvY21.js')
-          root.innerHTML = ''
-          const app = (await import('vue')).createApp(mod.default, { fontSlug: m[1], blockSlug: m[2] })
-          app.mount(root)
-        }
-
-        // /unicode/<prop>/<code>
-        else if ((m = path.match(/^\/unicode\/(scripts|category|combining|bidiclass)\/([^/]+)\/?$/))) {
-          const prop = m[1]
-          const titles = { scripts: 'Script', category: 'Category', combining: 'Combining Class', bidiclass: 'Bidirectional Class' }
-          const mod = await import('/_astro/PropertyDetailPage.CawPvY21.js')
-          root.innerHTML = ''
-          const app = (await import('vue')).createApp(mod.default, { property: prop, title: titles[prop], code: m[2] })
-          app.mount(root)
-        }
-
-        // True 404
-        else {
-          root.innerHTML = `
-            <div style="max-width:720px;margin:0 auto;padding:3rem 1.5rem 5rem;font-family:var(--font-body);">
-              <h1 style="font-family:var(--font-display);font-size:clamp(3rem,8vw,5rem);font-weight:400;color:var(--color-ink);">404</h1>
-              <p style="color:var(--color-ink-soft);">Page not found. <a href="/" style="color:var(--color-accent);">Return home →</a></p>
-            </div>`
-        }
-      } catch (e) {
-        root.innerHTML = '<div style="padding:3rem;text-align:center;color:var(--color-mute);">Failed to load page.</div>'
-        console.error('SPA route error:', e)
+      if (!matched) {
+        root.innerHTML = '<div style="max-width:720px;margin:0 auto;padding:3rem 1.5rem 5rem"><h1 style="font-family:var(--font-display);font-size:clamp(3rem,8vw,5rem);font-weight:400;color:var(--color-ink)">404</h1><p style="color:var(--color-ink-soft)">Page not found. <a href="/" style="color:var(--color-accent)">Return home →</a></p></div>'
       }
     </script>
   </body>
@@ -202,5 +90,4 @@ import SiteFooter from '../components/SiteFooter.astro'
   .theme-icon-sun { display: inline; }
   :global(html.dark) .theme-icon-moon { display: inline; }
   :global(html.dark) .theme-icon-sun { display: none; }
-  .burger-close { display: none; }
 </style>
