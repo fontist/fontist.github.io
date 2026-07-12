@@ -50,6 +50,9 @@ exclude = [
   "https?://www\\.adobe\\.com/type/legal\\.html",
   # Unicode surrogate blocks (U+D800–U+DFFF) have no published chart PDFs.
   "https?://www\\.unicode\\.org/charts/PDF/UD[89A-F]",
+  # gnu.org blocks/throttles CI bot requests, causing consistent timeouts.
+  # The license URLs are well-known and valid.
+  "https?://www\\.gnu\\.org/",
   # og:image must be an absolute URL (social crawlers ignore relative ones),
   # so the new og-image.png is referenced as https://www.fontist.org/og-image.png
   # before it has deployed. Exclude it from live-URL verification.
