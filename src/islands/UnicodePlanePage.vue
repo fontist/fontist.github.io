@@ -43,7 +43,7 @@ function versionEra(v: string): string {
 
 function chartUrl(block: UnicodeBlock): string {
   const hex = block.start.toString(16).toUpperCase().padStart(4, '0')
-  return `https://www.unicode.org/charts/PDF/U${hex}.html`
+  return `https://www.unicode.org/charts/PDF/U${hex}.pdf`
 }
 
 const blocks = computed(() =>
