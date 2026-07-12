@@ -1,26 +1,12 @@
 ---
 import DefaultLayout from '../../../layouts/DefaultLayout.astro'
 import PropertyDetailPage from '../../../islands/PropertyDetailPage.vue'
-import { readFileSync, readdirSync } from 'node:fs'
-import { resolve } from 'node:path'
 
 export async function getStaticPaths() {
-  const dir = resolve(process.cwd(), 'public', 'unicode', 'indexes', 'bidiclass')
-  let files: string[] = []
-  try { files = readdirSync(dir) } catch { return [] }
-  return files
-    .filter(f => f.endsWith('.json'))
-    .map(f => {
-      const code = f.replace(/\.json$/, '')
-      return { params: { code }, props: { code } }
-    })
+  return []
 }
-
-const { code } = Astro.props
-const property = 'bidiclass'
-const propTitle = 'Bidirectional Class'
 ---
 
-<DefaultLayout title={`Unicode ${propTitle} ${code} — Fontist`}>
-  <PropertyDetailPage property={property} title={propTitle} code={code} client:load />
+<DefaultLayout title="Fontist">
+  <PropertyDetailPage client:only="vue" />
 </DefaultLayout>
