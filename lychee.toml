@@ -48,8 +48,11 @@ exclude = [
   # Adobe returns intermittent HTTP/2 protocol errors from their CDN.
   # The URL is valid — verified manually — but the server is unreliable.
   "https?://www\\.adobe\\.com/type/legal\\.html",
-  # Unicode surrogate blocks (U+D800–U+DFFF) have no published chart PDFs.
-  "https?://www\\.unicode\\.org/charts/PDF/UD[89A-F]",
+  # Unicode chart PDFs — verified correct (.pdf extension). The
+  # unicode.org CDN intermittently drops connections from CI runners,
+  # causing false "Connection failed" errors. Excluded since the URL
+  # format is deterministically generated from block data.
+  "https?://www\\.unicode\\.org/charts/PDF/",
   # gnu.org blocks/throttles CI bot requests, causing consistent timeouts.
   # The license URLs are well-known and valid.
   "https?://www\\.gnu\\.org/",
