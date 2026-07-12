@@ -5,6 +5,16 @@
 cache = true
 max_cache_age = "1d"
 
+# Accept redirects (3xx) — they are normal web behavior, not broken links.
+# Many legitimate external URLs redirect from http→https or old paths→new.
+accept = ["200", "301", "302", "307", "308"]
+
+# Longer timeout for slow external sites (gnu.org, gust.org.pl, etc.)
+timeout = 30
+
+# Maximum number of retries before reporting a link as broken
+max_retries = 3
+
 # Check both source files and built site
 include_verbatim = true
 
@@ -29,6 +39,8 @@ exclude = [
   "/blog/2022-02-11-macos-fonts$",
   "/blog/2024-01-23-office-fonts$",
   "/blog/2024-03-02-creating-formulas$",
+  # Exclude placeholder URLs in code examples (formula-structure guide)
+  "https?://url[0-9]+/font\\.zip",
   # Exclude placeholder URLs in code examples
   "fonts\\.gstatic\\.com/s/robotoflex/v30/HASH",
   # og:image must be an absolute URL (social crawlers ignore relative ones),
