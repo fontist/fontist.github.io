@@ -1,0 +1,23 @@
+slug: cc-by-sa
+name: Creative Commons Attribution-ShareAlike 4.0
+short_name: CC BY-SA
+spdx: CC-BY-SA-4.0
+category: copyleft
+blurb: Free to use, modify, and redistribute — with attribution, and derivatives must use the same license.
+matchers:
+- cc by-sa
+- creative commons attribution-sharealike
+- cc-by-sa
+permissions:
+  commercial-static: 'yes'
+  commercial-web: 'yes'
+  commercial-app: 'yes'
+  commercial-server: 'yes'
+  open-source: 'yes'
+  modification: 'conditional'
+  redistribute: 'conditional'
+  standalone-sale: 'no'
+  embed-document: 'yes'
+  subsetting: 'conditional'
+  rename: 'conditional'
+  attribution: 'conditional'

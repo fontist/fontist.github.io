@@ -1,0 +1,21 @@
+slug: unknown
+name: Unknown License
+short_name: Unknown
+spdx: null
+category: special
+blurb: License terms not specified or could not be determined — treat as all rights reserved.
+matchers:
+- unknown
+permissions:
+  commercial-static: 'conditional'
+  commercial-web: 'conditional'
+  commercial-app: 'conditional'
+  commercial-server: 'conditional'
+  open-source: 'conditional'
+  modification: 'conditional'
+  redistribute: 'conditional'
+  standalone-sale: 'conditional'
+  embed-document: 'conditional'
+  subsetting: 'conditional'
+  rename: 'conditional'
+  attribution: 'conditional'

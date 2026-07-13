@@ -1,0 +1,21 @@
+slug: bundled
+name: Bundled Software License
+short_name: Bundled
+spdx: null
+category: special
+blurb: Fonts bundled with commercial software — usage rights depend on the host software license.
+matchers:
+- bundled
+permissions:
+  commercial-static: 'conditional'
+  commercial-web: 'no'
+  commercial-app: 'no'
+  commercial-server: 'conditional'
+  open-source: 'no'
+  modification: 'no'
+  redistribute: 'no'
+  standalone-sale: 'no'
+  embed-document: 'conditional'
+  subsetting: 'no'
+  rename: 'no'
+  attribution: 'no'

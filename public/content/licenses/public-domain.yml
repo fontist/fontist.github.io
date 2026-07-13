@@ -1,0 +1,24 @@
+slug: public-domain
+name: Public Domain
+short_name: PD
+spdx: CC-PDDC
+category: public-domain
+blurb: No copyright restrictions — free for any purpose, including commercial use, modification, and redistribution.
+matchers:
+- public domain
+- pd
+- unlicensed
+- copyright-free
+permissions:
+  commercial-static: 'yes'
+  commercial-web: 'yes'
+  commercial-app: 'yes'
+  commercial-server: 'yes'
+  open-source: 'yes'
+  modification: 'yes'
+  redistribute: 'yes'
+  standalone-sale: 'yes'
+  embed-document: 'yes'
+  subsetting: 'yes'
+  rename: 'yes'
+  attribution: 'yes'

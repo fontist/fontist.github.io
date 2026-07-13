@@ -153,6 +153,57 @@
     "examples": []
   },
   {
+    "slug": "free-use",
+    "name": "Free Use License",
+    "short_name": "Free Use",
+    "spdx": null,
+    "category": "permissive",
+    "blurb": "Free for personal and commercial use — typically no modification or redistribution rights.",
+    "matchers": [
+      "free use",
+      "free-for-use"
+    ],
+    "permissions": {
+      "commercial-static": "yes",
+      "commercial-web": "yes",
+      "commercial-app": "conditional",
+      "commercial-server": "conditional",
+      "open-source": "no",
+      "modification": "no",
+      "redistribute": "no",
+      "standalone-sale": "no",
+      "embed-document": "yes",
+      "subsetting": "conditional",
+      "rename": "no",
+      "attribution": "conditional"
+    }
+  },
+  {
+    "slug": "freeware",
+    "name": "Freeware License",
+    "short_name": "Freeware",
+    "spdx": null,
+    "category": "permissive",
+    "blurb": "Free to download and use — but not open source. Modification and redistribution typically prohibited.",
+    "matchers": [
+      "freeware"
+    ],
+    "permissions": {
+      "commercial-static": "conditional",
+      "commercial-web": "conditional",
+      "commercial-app": "no",
+      "commercial-server": "no",
+      "open-source": "no",
+      "modification": "no",
+      "redistribute": "no",
+      "standalone-sale": "no",
+      "embed-document": "conditional",
+      "subsetting": "no",
+      "rename": "no",
+      "attribution": "conditional"
+    }
+  },
+  {
     "slug": "gust",
     "name": "GUST Font Source License",
     "short_name": "GUST",
@@ -427,6 +478,61 @@
     ]
   },
   {
+    "slug": "public-domain",
+    "name": "Public Domain",
+    "short_name": "PD",
+    "spdx": "CC-PDDC",
+    "category": "public-domain",
+    "blurb": "No copyright restrictions — free for any purpose, including commercial use, modification, and redistribution.",
+    "matchers": [
+      "public domain",
+      "pd",
+      "unlicensed",
+      "copyright-free"
+    ],
+    "permissions": {
+      "commercial-static": "yes",
+      "commercial-web": "yes",
+      "commercial-app": "yes",
+      "commercial-server": "yes",
+      "open-source": "yes",
+      "modification": "yes",
+      "redistribute": "yes",
+      "standalone-sale": "yes",
+      "embed-document": "yes",
+      "subsetting": "yes",
+      "rename": "yes",
+      "attribution": "yes"
+    }
+  },
+  {
+    "slug": "cc-by-sa",
+    "name": "Creative Commons Attribution-ShareAlike 4.0",
+    "short_name": "CC BY-SA",
+    "spdx": "CC-BY-SA-4.0",
+    "category": "copyleft",
+    "blurb": "Free to use, modify, and redistribute — with attribution, and derivatives must use the same license.",
+    "matchers": [
+      "cc by-sa",
+      "creative commons attribution-sharealike",
+      "cc-by-sa"
+    ],
+    "permissions": {
+      "commercial-static": "yes",
+      "commercial-web": "yes",
+      "commercial-app": "yes",
+      "commercial-server": "yes",
+      "open-source": "yes",
+      "modification": "conditional",
+      "redistribute": "conditional",
+      "standalone-sale": "no",
+      "embed-document": "yes",
+      "subsetting": "conditional",
+      "rename": "conditional",
+      "attribution": "conditional"
+    }
+  },
+  {
     "slug": "gpl",
     "name": "GNU GPL (with font exception)",
     "short_name": "GPL",
@@ -499,5 +605,160 @@
         "note": "Red Hat's metrics-compatible Arial substitute"
       }
     ]
+  },
+  {
+    "slug": "adobe",
+    "name": "Adobe Software License",
+    "short_name": "Adobe",
+    "spdx": null,
+    "category": "special",
+    "blurb": "Fonts bundled with Adobe software — usable on any computer where the Adobe software is installed.",
+    "matchers": [
+      "adobe",
+      "acrobat"
+    ],
+    "permissions": {
+      "commercial-static": "conditional",
+      "commercial-web": "no",
+      "commercial-app": "no",
+      "commercial-server": "conditional",
+      "open-source": "no",
+      "modification": "no",
+      "redistribute": "no",
+      "standalone-sale": "no",
+      "embed-document": "conditional",
+      "subsetting": "no",
+      "rename": "no",
+      "attribution": "no"
+    }
+  },
+  {
+    "slug": "apple-only",
+    "name": "Apple Proprietary License",
+    "short_name": "Apple",
+    "spdx": null,
+    "category": "special",
+    "blurb": "Fonts bundled with macOS — may be used on macOS but not redistributed to other platforms.",
+    "matchers": [
+      "apple",
+      "macos"
+    ],
+    "permissions": {
+      "commercial-static": "conditional",
+      "commercial-web": "no",
+      "commercial-app": "no",
+      "commercial-server": "no",
+      "open-source": "no",
+      "modification": "no",
+      "redistribute": "no",
+      "standalone-sale": "no",
+      "embed-document": "conditional",
+      "subsetting": "no",
+      "rename": "no",
+      "attribution": "no"
+    }
+  },
+  {
+    "slug": "bundled",
+    "name": "Bundled Software License",
+    "short_name": "Bundled",
+    "spdx": null,
+    "category": "special",
+    "blurb": "Fonts bundled with commercial software — usage rights depend on the host software license.",
+    "matchers": [
+      "bundled"
+    ],
+    "permissions": {
+      "commercial-static": "conditional",
+      "commercial-web": "no",
+      "commercial-app": "no",
+      "commercial-server": "conditional",
+      "open-source": "no",
+      "modification": "no",
+      "redistribute": "no",
+      "standalone-sale": "no",
+      "embed-document": "conditional",
+      "subsetting": "no",
+      "rename": "no",
+      "attribution": "no"
+    }
+  },
+  {
+    "slug": "ms-office",
+    "name": "Microsoft Office Font License",
+    "short_name": "MS Office",
+    "spdx": null,
+    "category": "special",
+    "blurb": "Fonts bundled with Microsoft Office — usable on machines with a valid Office license.",
+    "matchers": [
+      "microsoft office",
+      "ms office",
+      "office fonts"
+    ],
+    "permissions": {
+      "commercial-static": "conditional",
+      "commercial-web": "no",
+      "commercial-app": "no",
+      "commercial-server": "conditional",
+      "open-source": "no",
+      "modification": "no",
+      "redistribute": "no",
+      "standalone-sale": "no",
+      "embed-document": "conditional",
+      "subsetting": "no",
+      "rename": "no",
+      "attribution": "no"
+    }
+  },
+  {
+    "slug": "microsoft-web",
+    "name": "Microsoft Web Fonts License",
+    "short_name": "MS Web",
+    "spdx": null,
+    "category": "special",
+    "blurb": "Microsoft web fonts — licensed for web embedding via CSS @font-face, not for desktop installation.",
+    "matchers": [
+      "microsoft web",
+      "ms web fonts"
+    ],
+    "permissions": {
+      "commercial-static": "no",
+      "commercial-web": "conditional",
+      "commercial-app": "no",
+      "commercial-server": "no",
+      "open-source": "no",
+      "modification": "no",
+      "redistribute": "no",
+      "standalone-sale": "no",
+      "embed-document": "conditional",
+      "subsetting": "no",
+      "rename": "no",
+      "attribution": "no"
+    }
+  },
+  {
+    "slug": "unknown",
+    "name": "Unknown License",
+    "short_name": "Unknown",
+    "spdx": null,
+    "category": "special",
+    "blurb": "License terms not specified or could not be determined — treat as all rights reserved.",
+    "matchers": [
+      "unknown"
+    ],
+    "permissions": {
+      "commercial-static": "conditional",
+      "commercial-web": "conditional",
+      "commercial-app": "conditional",
+      "commercial-server": "conditional",
+      "open-source": "conditional",
+      "modification": "conditional",
+      "redistribute": "conditional",
+      "standalone-sale": "conditional",
+      "embed-document": "conditional",
+      "subsetting": "conditional",
+      "rename": "conditional",
+      "attribution": "conditional"
+    }
   }
 ]

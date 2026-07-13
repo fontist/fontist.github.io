@@ -1,0 +1,21 @@
+slug: freeware
+name: Freeware License
+short_name: Freeware
+spdx: null
+category: permissive
+blurb: Free to download and use — but not open source. Modification and redistribution typically prohibited.
+matchers:
+- freeware
+permissions:
+  commercial-static: 'conditional'
+  commercial-web: 'conditional'
+  commercial-app: 'no'
+  commercial-server: 'no'
+  open-source: 'no'
+  modification: 'no'
+  redistribute: 'no'
+  standalone-sale: 'no'
+  embed-document: 'conditional'
+  subsetting: 'no'
+  rename: 'no'
+  attribution: 'conditional'

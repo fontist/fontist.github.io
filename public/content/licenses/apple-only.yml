@@ -1,0 +1,22 @@
+slug: apple-only
+name: Apple Proprietary License
+short_name: Apple
+spdx: null
+category: special
+blurb: Fonts bundled with macOS — may be used on macOS but not redistributed to other platforms.
+matchers:
+- apple
+- macos
+permissions:
+  commercial-static: 'conditional'
+  commercial-web: 'no'
+  commercial-app: 'no'
+  commercial-server: 'no'
+  open-source: 'no'
+  modification: 'no'
+  redistribute: 'no'
+  standalone-sale: 'no'
+  embed-document: 'conditional'
+  subsetting: 'no'
+  rename: 'no'
+  attribution: 'no'
