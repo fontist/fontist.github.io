@@ -56,6 +56,9 @@ exclude = [
   # gnu.org blocks/throttles CI bot requests, causing consistent timeouts.
   # The license URLs are well-known and valid.
   "https?://www\\.gnu\\.org/",
+  # gust.org.pl consistently times out from CI runners (slow European
+  # academic server). The GUST font license URLs are well-known and valid.
+  "https?://(www\\.)?gust\\.org\\.pl/",
   # og:image must be an absolute URL (social crawlers ignore relative ones),
   # so the new og-image.png is referenced as https://www.fontist.org/og-image.png
   # before it has deployed. Exclude it from live-URL verification.
