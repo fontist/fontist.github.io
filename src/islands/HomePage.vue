@@ -15,8 +15,8 @@ import { fetchJson } from '../lib/ssr-fetch'
 
 const formulaCount = ref(0)
 const openSourceCount = ref(0)
-const openLicenseBuckets = ref<{ label: string; count: number; score: number }[]>([])
-const propLicenseBuckets = ref<{ label: string; count: number; score: number }[]>([])
+const openLicenseBuckets = ref<{ label: string; count: number; score: number; slug: string | null }[]>([])
+const propLicenseBuckets = ref<{ label: string; count: number; score: number; slug: string | null }[]>([])
 const recentPosts = ref<{ slug: string; title: string; date: string; description?: string }[]>([])
 
 async function loadStats() {
@@ -29,9 +29,9 @@ async function loadStats() {
     // backed by the YAML matchers in public/content/licenses/*.yml.
     const { open, proprietary } = await bucketFormulas(all)
 
-    const withScore = (list: { bucket: string; count: number }[]) => {
+    const withScore = (list: { bucket: string; count: number; slug: string | null }[]) => {
       const max = Math.max(...list.map(b => b.count), 1)
-      return list.map(b => ({ label: b.bucket, count: b.count, score: Math.round((b.count / max) * 100) }))
+      return list.map(b => ({ label: b.bucket, count: b.count, score: Math.round((b.count / max) * 100), slug: b.slug }))
     }
     openLicenseBuckets.value = withScore(open)
     propLicenseBuckets.value = withScore(proprietary)
@@ -275,19 +275,37 @@ onUnmounted(() => { if (typeTimer) clearTimeout(typeTimer) })
 
         <ul class="ll-list">
           <li v-for="b in openLicenseBuckets" :key="'open-' + b.label" class="ll-row ll-row--open">
-            <span class="ll-label">{{ b.label }}</span>
-            <span class="ll-bar-track" aria-hidden="true">
-              <span class="ll-bar-fill ll-bar-fill--open" :style="{ width: Math.max(2, b.score) + '%' }"></span>
-            </span>
-            <span class="ll-count">{{ b.count.toLocaleString() }}</span>
+            <a v-if="b.slug" :href="`/licenses/${b.slug}`" class="ll-link">
+              <span class="ll-label">{{ b.label }}</span>
+              <span class="ll-bar-track" aria-hidden="true">
+                <span class="ll-bar-fill ll-bar-fill--open" :style="{ width: Math.max(2, b.score) + '%' }"></span>
+              </span>
+              <span class="ll-count">{{ b.count.toLocaleString() }}</span>
+            </a>
+            <template v-else>
+              <span class="ll-label">{{ b.label }}</span>
+              <span class="ll-bar-track" aria-hidden="true">
+                <span class="ll-bar-fill ll-bar-fill--open" :style="{ width: Math.max(2, b.score) + '%' }"></span>
+              </span>
+              <span class="ll-count">{{ b.count.toLocaleString() }}</span>
+            </template>
           </li>
           <li class="ll-separator" aria-hidden="true"></li>
           <li v-for="b in propLicenseBuckets" :key="'prop-' + b.label" class="ll-row ll-row--prop">
-            <span class="ll-label">{{ b.label }}</span>
-            <span class="ll-bar-track" aria-hidden="true">
-              <span class="ll-bar-fill ll-bar-fill--prop" :style="{ width: Math.max(2, b.score) + '%' }"></span>
-            </span>
-            <span class="ll-count">{{ b.count.toLocaleString() }}</span>
+            <a v-if="b.slug" :href="`/licenses/${b.slug}`" class="ll-link">
+              <span class="ll-label">{{ b.label }}</span>
+              <span class="ll-bar-track" aria-hidden="true">
+                <span class="ll-bar-fill ll-bar-fill--prop" :style="{ width: Math.max(2, b.score) + '%' }"></span>
+              </span>
+              <span class="ll-count">{{ b.count.toLocaleString() }}</span>
+            </a>
+            <template v-else>
+              <span class="ll-label">{{ b.label }}</span>
+              <span class="ll-bar-track" aria-hidden="true">
+                <span class="ll-bar-fill ll-bar-fill--prop" :style="{ width: Math.max(2, b.score) + '%' }"></span>
+              </span>
+              <span class="ll-count">{{ b.count.toLocaleString() }}</span>
+            </template>
           </li>
         </ul>
 

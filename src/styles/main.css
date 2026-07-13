@@ -882,6 +882,16 @@
     gap: 0.75rem;
     padding: 0.4rem 0;
   }
+  .ll-link {
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) minmax(120px, 2fr) 64px;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    transition: opacity 0.15s ease;
+  }
+  .ll-link:hover .ll-label { color: var(--color-accent); }
+  .ll-link:hover .ll-bar-fill { opacity: 1; }
   .ll-row--open  { border-bottom: 1px solid var(--color-rule); }
   .ll-row--prop  { border-bottom: 1px solid var(--color-rule); opacity: 0.78; }
   .ll-row--prop:last-of-type { border-bottom: none; }
