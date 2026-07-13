@@ -160,6 +160,8 @@
   .layout {
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
+    background: var(--color-paper);
   .layout {
     @apply flex flex-col bg-paper;
     min-height: 100vh;
