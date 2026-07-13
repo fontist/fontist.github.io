@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { loadAllFormulas } from '../lib/formulas/loader'
 
 // Lightweight query-string reader — works on both SSR (window not available)
@@ -184,7 +184,7 @@ const filteredFormulas = computed(() => {
 
 const groupedFormulas = computed(() => {
   const groups = {}
-  filteredFormulas.value.forEach(f => {
+  pagedFormulas.value.forEach(f => {
     if (!f || !f.name) return
     const letter = f.name.charAt(0).toUpperCase()
     if (!groups[letter]) groups[letter] = []
@@ -192,6 +192,41 @@ const groupedFormulas = computed(() => {
   })
   return groups
 })
+
+const PAGE_SIZE = 50
+const currentPage = ref(1)
+
+const totalPages = computed(() => Math.max(1, Math.ceil(filteredFormulas.value.length / PAGE_SIZE)))
+
+const pagedFormulas = computed(() => {
+  const start = (currentPage.value - 1) * PAGE_SIZE
+  return filteredFormulas.value.slice(start, start + PAGE_SIZE)
+})
+
+const showingFrom = computed(() =>
+  filteredFormulas.value.length === 0 ? 0 : (currentPage.value - 1) * PAGE_SIZE + 1,
+)
+const showingTo = computed(() =>
+  Math.min(currentPage.value * PAGE_SIZE, filteredFormulas.value.length),
+)
+
+watch([searchQuery, selectedLicenses, selectedSources], () => {
+  currentPage.value = 1
+})
+
+const pageWindow = computed(() => {
+  const pages = []
+  const start = Math.max(1, currentPage.value - 2)
+  const end = Math.min(totalPages.value, currentPage.value + 2)
+  for (let i = start; i <= end; i++) pages.push(i)
+  return pages
+})
+
+function goToPage(page) {
+  currentPage.value = page
+  const el = document.querySelector('.formulas-browser')
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
 
 const activeLetters = computed(() => {
   return alphabet.filter(letter => {
@@ -256,6 +291,10 @@ function toggleSource(value) {
           <button v-for="letter in alphabet" :key="letter" @click="scrollToLetter(letter)" :class="{ 'has-content': groupedFormulas[letter] }" :disabled="!groupedFormulas[letter]">{{ letter }}</button>
         </nav>
 
+        <div class="showing-info">
+          Showing {{ showingFrom.toLocaleString() }}–{{ showingTo.toLocaleString() }} of {{ filteredFormulas.length.toLocaleString() }} formulas
+        </div>
+
         <div class="formula-list">
           <div v-for="letter in activeLetters" :key="letter" :id="'letter-' + letter" class="letter-group">
             <h3 class="letter-heading">{{ letter }}</h3>
@@ -272,6 +311,21 @@ function toggleSource(value) {
             </div>
           </div>
         </div>
+
+        <nav v-if="totalPages > 1" class="pagination">
+          <button class="page-btn" :disabled="currentPage === 1" @click="goToPage(currentPage - 1)">← Prev</button>
+          <button v-if="pageWindow[0] > 1" class="page-btn" @click="goToPage(1)">1</button>
+          <span v-if="pageWindow[0] > 2" class="page-ellipsis">…</span>
+          <button
+            v-for="page in pageWindow"
+            :key="page"
+            :class="['page-btn', { on: page === currentPage }]"
+            @click="goToPage(page)"
+          >{{ page }}</button>
+          <span v-if="pageWindow[pageWindow.length - 1] < totalPages - 1" class="page-ellipsis">…</span>
+          <button v-if="pageWindow[pageWindow.length - 1] < totalPages" class="page-btn" @click="goToPage(totalPages)">{{ totalPages }}</button>
+          <button class="page-btn" :disabled="currentPage === totalPages" @click="goToPage(currentPage + 1)">Next →</button>
+        </nav>
       </main>
     </div>
   </div>
@@ -506,6 +560,57 @@ function toggleSource(value) {
   font-size: 0.68rem;
   color: var(--color-mute);
   white-space: nowrap;
+}
+
+.showing-info {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--color-mute);
+  margin: 1rem 0;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 2rem 0;
+  border-top: 1px solid var(--color-rule);
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  background: transparent;
+  border: 1px solid var(--color-rule);
+  border-radius: 2px;
+  padding: 0.35rem 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-ink-soft);
+  cursor: pointer;
+  transition: all 0.15s;
+  min-width: 32px;
+}
+.page-btn:hover:not(:disabled):not(.on) {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.page-btn.on {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-paper);
+}
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.page-ellipsis {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-mute);
+  padding: 0 0.3rem;
 }
 
 @media (max-width: 800px) {
