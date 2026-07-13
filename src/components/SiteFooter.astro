@@ -1,7 +1,7 @@
 ---
-// SiteFooter.astro — multi-column footer with editorial polish.
-// Astro version of SiteFooter.vue. Plain HTML, no interactivity, no
-// vue-router dependency. Styling comes from .sf-* rules in main.css.
+// SiteFooter.astro — editorial specimen-book footer.
+// Self-contained: all styles are scoped Tailwind utilities.
+// No dependency on main.css .sf-* rules.
 const year = new Date().getFullYear()
 
 const COLUMNS: { title: string; links: { label: string; to: string; external?: boolean }[] }[] = [
@@ -20,7 +20,7 @@ const COLUMNS: { title: string; links: { label: string; to: string; external?: b
       { label: 'License guide',   to: '/licenses' },
       { label: 'Practical guide', to: '/guide' },
       { label: 'About Fontist',   to: '/about' },
-      { label: 'Blog',            to: '/blog' },
+      { label: 'News',            to: '/blog' },
     ],
   },
   {
@@ -35,36 +35,38 @@ const COLUMNS: { title: string; links: { label: string; to: string; external?: b
 ]
 ---
 
-<footer class="sf">
+<footer class="sf-footer">
   <div class="sf-rule" aria-hidden="true">
     <span class="sf-rule-line"></span>
-    <span class="sf-rule-diamond">◆</span>
+    <span class="sf-rule-mark">◆</span>
     <span class="sf-rule-line"></span>
   </div>
 
   <div class="sf-inner">
     <div class="sf-brand">
       <a href="/" class="sf-brand-logo">
-        <img src="/logo.svg" alt="" class="sf-brand-img" />
-        <span class="sf-brand-name">Fontist</span>
+        <img src="/logo-full.svg" alt="Fontist" class="sf-brand-img" />
       </a>
       <p class="sf-brand-tag">
         Install, manage, and explore openly-licensed fonts across Windows, Linux, and macOS.
       </p>
-      <p class="sf-brand-credit">
-        A <a href="https://github.com/fontist" class="sf-brand-link">Fontist org</a> project · Open source · MIT
-      </p>
-      <a href="https://github.com/fontist/fontist" class="sf-brand-github" aria-label="Fontist on GitHub" title="GitHub">
+      <a
+        href="https://github.com/fontist/fontist"
+        class="sf-github"
+        aria-label="Fontist on GitHub"
+        title="GitHub"
+        rel="noopener noreferrer"
+      >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="20" height="20" aria-hidden="true">
           <path
             fill="currentColor"
-            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0  016 8c0-4.42-3.58-8-8-8z"
           />
         </svg>
       </a>
     </div>
 
-    <nav class="sf-cols" aria-label="Footer">
+    <nav class="sf-cols" aria-label="Footer navigation">
       {COLUMNS.map((col) => (
         <section class="sf-col">
           <h2 class="sf-col-title">{col.title}</h2>
@@ -90,6 +92,187 @@ const COLUMNS: { title: string; links: { label: string; to: string; external?: b
   <div class="sf-base">
     <span class="sf-base-copy">© {year} Fontist · Ribose Ltd.</span>
     <span class="sf-base-sep" aria-hidden="true">·</span>
-    <a href="https://github.com/fontist/fontist.org" class="sf-base-link">Source on GitHub</a>
+    <a href="https://github.com/fontist/fontist.org" class="sf-base-link" rel="noopener noreferrer">Source on GitHub</a>
   </div>
 </footer>
+
+<style>
+  .sf-footer {
+    flex-shrink: 0;
+    width: 100%;
+    overflow: hidden;
+    border-top: 1px solid var(--color-rule);
+    background: var(--color-paper);
+  }
+
+  .sf-rule {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 0;
+  }
+  .sf-rule-line {
+    flex: 1;
+    height: 1px;
+    background: var(--color-rule);
+  }
+  .sf-rule-mark {
+    color: var(--color-accent);
+    font-size: 0.6rem;
+    opacity: 0.6;
+  }
+
+  .sf-inner {
+    display: grid;
+    grid-template-columns: minmax(240px, 1fr) auto;
+    gap: 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 2rem;
+  }
+
+  .sf-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .sf-brand-logo {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+  }
+  .sf-brand-img {
+    height: 1.75rem;
+    width: auto;
+  }
+  :global(html.dark) .sf-brand-img {
+    filter: brightness(1.6) saturate(0.85);
+  }
+  .sf-brand-tag {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--color-mute);
+    max-width: 28ch;
+    margin: 0;
+  }
+  .sf-github {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: var(--color-ink-soft);
+    border: 1px solid var(--color-rule);
+    border-radius: 4px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .sf-github:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .sf-cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  .sf-col-title {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--color-accent);
+    margin: 0 0 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-rule);
+    font-weight: 600;
+  }
+
+  .sf-col-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .sf-col-item {
+    margin: 0;
+    padding: 0;
+  }
+
+  .sf-col-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-ink-soft);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .sf-col-link:hover {
+    color: var(--color-accent);
+  }
+
+  .sf-col-arrow {
+    font-size: 0.7em;
+    opacity: 0.6;
+  }
+
+  .sf-base {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.5rem 1.5rem 2rem;
+    border-top: 1px solid var(--color-rule);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--color-mute);
+    letter-spacing: 0.04em;
+  }
+  .sf-base-sep {
+    opacity: 0.5;
+  }
+  .sf-base-link {
+    color: var(--color-ink-soft);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .sf-base-link:hover {
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 768px) {
+    .sf-inner {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .sf-cols {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .sf-cols {
+      grid-template-columns: 1fr;
+    }
+    .sf-base {
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .sf-base-sep {
+      display: none;
+    }
+  }
+</style>
