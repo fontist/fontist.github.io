@@ -37,12 +37,12 @@ function onKey(e: KeyboardEvent) {
 }
 
 const navLinks = [
+  { href: '/blog', label: 'News' },
   { href: '/formulas', label: 'Formulas' },
   { href: '/families', label: 'Families' },
   { href: '/licenses', label: 'Licenses' },
   { href: '/guide', label: 'Guide' },
   { href: '/unicode', label: 'Unicode' },
-  { href: '/blog', label: 'Blog' },
   { href: '/about', label: 'About' },
 ]
 
@@ -75,8 +75,6 @@ onBeforeUnmount(() => {
         role="navigation"
         aria-label="Main"
       >
-        <DocsDropdown />
-
         <a
           v-for="link in navLinks"
           :key="link.href"
@@ -87,6 +85,9 @@ onBeforeUnmount(() => {
         >
           {{ link.label }}
         </a>
+
+        <span class="mx-1 h-4 w-px bg-rule" aria-hidden="true"></span>
+        <DocsDropdown />
       </div>
 
       <div class="flex flex-shrink-0 items-center gap-1">
