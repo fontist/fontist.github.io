@@ -1,0 +1,23 @@
+slug: ms-office
+name: Microsoft Office Font License
+short_name: MS Office
+spdx: null
+category: special
+blurb: Fonts bundled with Microsoft Office — usable on machines with a valid Office license.
+matchers:
+- microsoft office
+- ms office
+- office fonts
+permissions:
+  commercial-static: 'conditional'
+  commercial-web: 'no'
+  commercial-app: 'no'
+  commercial-server: 'conditional'
+  open-source: 'no'
+  modification: 'no'
+  redistribute: 'no'
+  standalone-sale: 'no'
+  embed-document: 'conditional'
+  subsetting: 'no'
+  rename: 'no'
+  attribution: 'no'

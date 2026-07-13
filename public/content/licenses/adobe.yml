@@ -1,0 +1,22 @@
+slug: adobe
+name: Adobe Software License
+short_name: Adobe
+spdx: null
+category: special
+blurb: Fonts bundled with Adobe software — usable on any computer where the Adobe software is installed.
+matchers:
+- adobe
+- acrobat
+permissions:
+  commercial-static: 'conditional'
+  commercial-web: 'no'
+  commercial-app: 'no'
+  commercial-server: 'conditional'
+  open-source: 'no'
+  modification: 'no'
+  redistribute: 'no'
+  standalone-sale: 'no'
+  embed-document: 'conditional'
+  subsetting: 'no'
+  rename: 'no'
+  attribution: 'no'

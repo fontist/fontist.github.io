@@ -1,0 +1,22 @@
+slug: microsoft-web
+name: Microsoft Web Fonts License
+short_name: MS Web
+spdx: null
+category: special
+blurb: Microsoft web fonts — licensed for web embedding via CSS @font-face, not for desktop installation.
+matchers:
+- microsoft web
+- ms web fonts
+permissions:
+  commercial-static: 'no'
+  commercial-web: 'conditional'
+  commercial-app: 'no'
+  commercial-server: 'no'
+  open-source: 'no'
+  modification: 'no'
+  redistribute: 'no'
+  standalone-sale: 'no'
+  embed-document: 'conditional'
+  subsetting: 'no'
+  rename: 'no'
+  attribution: 'no'

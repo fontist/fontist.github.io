@@ -1,0 +1,22 @@
+slug: free-use
+name: Free Use License
+short_name: Free Use
+spdx: null
+category: permissive
+blurb: Free for personal and commercial use — typically no modification or redistribution rights.
+matchers:
+- free use
+- free-for-use
+permissions:
+  commercial-static: 'yes'
+  commercial-web: 'yes'
+  commercial-app: 'conditional'
+  commercial-server: 'conditional'
+  open-source: 'no'
+  modification: 'no'
+  redistribute: 'no'
+  standalone-sale: 'no'
+  embed-document: 'yes'
+  subsetting: 'conditional'
+  rename: 'no'
+  attribution: 'conditional'
