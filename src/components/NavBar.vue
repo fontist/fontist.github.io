@@ -64,9 +64,8 @@ onBeforeUnmount(() => {
 <template>
   <nav class="sticky top-0 z-[100] border-b border-rule bg-paper">
     <div class="mx-auto flex h-14 max-w-[1320px] items-center justify-between gap-6 px-[clamp(20px,4vw,56px)]">
-      <a href="/" class="flex flex-shrink-0 items-center gap-2 font-display text-lg font-normal text-ink no-underline">
-        <img src="/logo.svg" alt="Fontist" class="h-8 w-8" />
-        Fontist
+      <a href="/" class="flex flex-shrink-0 items-center no-underline">
+        <img src="/logo-full.svg" alt="Fontist" class="nav-logo-img h-7 w-auto" />
       </a>
 
       <div
@@ -171,5 +170,10 @@ onBeforeUnmount(() => {
     opacity: 1;
     pointer-events: auto;
   }
+}
+
+/* Dark mode: lighten the logo so the gray wordmark is visible on dark bg */
+:global(html.dark) .nav-logo-img {
+  filter: brightness(1.6) saturate(0.85);
 }
 </style>
