@@ -1,6 +1,6 @@
 ---
 import DefaultLayout from '../../layouts/DefaultLayout.astro'
-import BrowsePage from '../../islands/BrowsePage.vue'
+import FormulaBrowser from '../../components/FormulaBrowser.vue'
 
 const title = 'Formulas — Fontist'
 const description = 'Browse the full registry of Fontist formulas — installation recipes for thousands of openly-licensed and platform-specific font packages.'
@@ -17,6 +17,6 @@ const description = 'Browse the full registry of Fontist formulas — installati
       <div class="mt-10 h-[2px] w-10 bg-accent" aria-hidden="true"></div>
     </header>
 
-    <BrowsePage client:load />
+    <FormulaBrowser client:load />
   </article>
 </DefaultLayout>

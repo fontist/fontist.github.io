@@ -284,7 +284,7 @@ function toggleSource(value) {
   gap: 1rem;
   padding-bottom: 1.5rem;
   border-bottom: 1px solid var(--color-rule);
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .search-input {
@@ -304,6 +304,7 @@ function toggleSource(value) {
 }
 .search-input::placeholder {
   color: var(--color-mute);
+  font-style: italic;
 }
 
 .result-count {
@@ -317,8 +318,8 @@ function toggleSource(value) {
 
 .browser-layout {
   display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 2rem;
+  grid-template-columns: 240px 1fr;
+  gap: 3rem;
 }
 
 .filters-sidebar {
@@ -327,15 +328,15 @@ function toggleSource(value) {
   align-self: start;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2rem;
   max-height: calc(100vh - 100px);
   overflow-y: auto;
+  padding-right: 0.5rem;
 }
 
 .filter-section {
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
 }
 
 .filter-heading {
@@ -344,19 +345,19 @@ function toggleSource(value) {
   text-transform: uppercase;
   letter-spacing: 0.16em;
   color: var(--color-accent);
-  margin: 0 0 0.5rem;
-  padding-bottom: 0.4rem;
+  margin: 0 0 0.75rem;
+  padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--color-rule);
 }
 
 .filter-checkbox {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.3rem 0.4rem;
+  gap: 0.6rem;
+  padding: 0.4rem 0.5rem;
   cursor: pointer;
   border-radius: 2px;
-  transition: background 0.15s;
+  transition: background 0.15s, color 0.15s;
 }
 .filter-checkbox:hover {
   background: var(--color-paper-deep);
@@ -374,6 +375,12 @@ function toggleSource(value) {
   flex-shrink: 0;
   width: 16px;
   height: 16px;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+.filter-checkbox.on .filter-icon,
+.filter-checkbox:hover .filter-icon {
+  opacity: 1;
 }
 .filter-icon :deep(img) {
   width: 16px;
@@ -384,6 +391,7 @@ function toggleSource(value) {
   font-size: 0.82rem;
   color: var(--color-ink-soft);
   flex: 1;
+  transition: color 0.15s;
 }
 .filter-checkbox.on .filter-text {
   color: var(--color-ink);
@@ -401,7 +409,6 @@ function toggleSource(value) {
   gap: 0.15rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--color-rule);
-  margin-bottom: 1rem;
 }
 
 .alpha-nav button {
@@ -451,9 +458,9 @@ function toggleSource(value) {
 .formula-item {
   display: grid;
   grid-template-columns: 1fr auto auto auto;
-  align-items: center;
+  align-items: baseline;
   gap: 0.75rem;
-  padding: 0.45rem 0;
+  padding: 0.55rem 0;
   text-decoration: none;
   transition: padding 0.15s;
 }
@@ -483,6 +490,11 @@ function toggleSource(value) {
   display: flex;
   align-items: center;
   gap: 0.3rem;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.formula-item:hover .formula-badges {
+  opacity: 1;
 }
 .formula-badges :deep(img) {
   width: 18px;
@@ -499,14 +511,15 @@ function toggleSource(value) {
 @media (max-width: 800px) {
   .browser-layout {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 1.5rem;
   }
   .filters-sidebar {
     position: static;
     max-height: none;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 1.5rem;
+    padding-right: 0;
   }
   .filter-section {
     flex: 1;
