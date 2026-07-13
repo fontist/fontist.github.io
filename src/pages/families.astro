@@ -1,10 +1,22 @@
 ---
 import DefaultLayout from '../layouts/DefaultLayout.astro'
-import FamiliesPage from '../islands/FamiliesPage.vue'
+import FamiliesBrowser from '../islands/FamiliesPage.vue'
 
 const title = 'Font Families — Fontist'
+const description = 'Every font family indexed by Fontist — search, filter, and browse the full catalog of openly-licensed and platform-specific typefaces.'
 ---
 
-<DefaultLayout title={title}>
-  <FamiliesPage client:load />
+<DefaultLayout title={title} description={description} canonical="https://www.fontist.org/families">
+  <article class="mx-auto max-w-[1000px] px-6 pb-24 pt-[clamp(2.5rem,6vw,5rem)]">
+    <header class="mb-10">
+      <p class="mb-4 font-mono text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-accent">Families</p>
+      <h1 class="font-display text-[clamp(2.4rem,6vw,3.8rem)] font-[360] italic leading-[1.02] tracking-[-0.025em] text-ink">Font Families</h1>
+      <p class="mt-5 max-w-[44em] font-display text-[clamp(1.1rem,1.8vw,1.3rem)] italic font-[380] leading-[1.5] text-ink-soft">
+        Every font family indexed by Fontist. One family may be shipped by multiple formulas — this view groups them into a single canonical entry.
+      </p>
+      <div class="mt-10 h-[2px] w-10 bg-accent" aria-hidden="true"></div>
+    </header>
+
+    <FamiliesBrowser client:load />
+  </article>
 </DefaultLayout>

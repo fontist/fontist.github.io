@@ -224,25 +224,29 @@ function toggleSource(value) {
 
 <template>
   <div class="formulas-browser">
-    <div class="search-container">
-      <input v-model="searchQuery" type="text" placeholder="Search fonts by name, family, or formula key..." class="search-input" />
-      <span class="result-count">{{ filteredFormulas.length }} formulas</span>
+    <div class="search-bar">
+      <input v-model="searchQuery" type="text" placeholder="Search fonts by name, family, or formula key…" class="search-input" />
+      <span class="result-count">{{ filteredFormulas.length.toLocaleString() }} formulas</span>
     </div>
 
     <div class="browser-layout">
       <aside class="filters-sidebar">
         <div class="filter-section">
-          <h4>License</h4>
-          <label v-for="opt in licenseOptions" :key="opt.value" class="filter-checkbox">
+          <h4 class="filter-heading">License</h4>
+          <label v-for="opt in licenseOptions" :key="opt.value" class="filter-checkbox" :class="{ on: selectedLicenses.includes(opt.value) }">
             <input type="checkbox" :checked="selectedLicenses.includes(opt.value)" @change="toggleLicense(opt.value)" />
-            <span class="filter-label"><span class="filter-icon" v-html="getLicenseIcon(opt.icon)"></span> {{ opt.label }} <span class="filter-count">({{ opt.count }})</span></span>
+            <span class="filter-icon" v-html="getLicenseIcon(opt.icon)"></span>
+            <span class="filter-text">{{ opt.label }}</span>
+            <span class="filter-count">{{ opt.count }}</span>
           </label>
         </div>
         <div class="filter-section">
-          <h4>Source</h4>
-          <label v-for="opt in sourceOptions" :key="opt.value" class="filter-checkbox">
+          <h4 class="filter-heading">Source</h4>
+          <label v-for="opt in sourceOptions" :key="opt.value" class="filter-checkbox" :class="{ on: selectedSources.includes(opt.value) }">
             <input type="checkbox" :checked="selectedSources.includes(opt.value)" @change="toggleSource(opt.value)" />
-            <span class="filter-label"><span class="filter-icon" v-html="getSourceIcon(opt.icon)"></span> {{ opt.label }} <span class="filter-count">({{ opt.count }})</span></span>
+            <span class="filter-icon" v-html="getSourceIcon(opt.icon)"></span>
+            <span class="filter-text">{{ opt.label }}</span>
+            <span class="filter-count">{{ opt.count }}</span>
           </label>
         </div>
       </aside>
@@ -257,14 +261,13 @@ function toggleSource(value) {
             <h3 class="letter-heading">{{ letter }}</h3>
             <div class="formula-items">
               <a v-for="f in groupedFormulas[letter]" :key="f.slug" :href="`/formulas/${f.slug}`" class="formula-item">
-                <div class="formula-main">
-                  <span class="formula-name">{{ f.name }}</span>
-                  <span class="formula-key">{{ f.formulaName }}</span>
-                </div>
-                <div class="formula-meta">
-                  <span class="formula-badges"><span :title="f.licenseName" v-html="getLicenseBadge(f)"></span> <span :title="f.sourceType" v-html="getSourceBadge(f)"></span></span>
-                  <span class="formula-counts">{{ f.familyCount }} {{ f.familyCount === 1 ? 'family' : 'families' }}, {{ f.styleCount }} {{ f.styleCount === 1 ? 'style' : 'styles' }}</span>
-                </div>
+                <span class="formula-name">{{ f.name }}</span>
+                <span class="formula-key">{{ f.formulaName }}</span>
+                <span class="formula-badges">
+                  <span :title="f.licenseName" v-html="getLicenseBadge(f)"></span>
+                  <span :title="f.sourceType" v-html="getSourceBadge(f)"></span>
+                </span>
+                <span class="formula-counts">{{ f.familyCount }} {{ f.familyCount === 1 ? 'family' : 'families' }} · {{ f.styleCount }} {{ f.styleCount === 1 ? 'style' : 'styles' }}</span>
               </a>
             </div>
           </div>
@@ -275,5 +278,248 @@ function toggleSource(value) {
 </template>
 
 <style scoped>
-/* All styles migrated to src/styles/main.css (@layer components). */
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-rule);
+  margin-bottom: 1.5rem;
+}
+
+.search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-rule);
+  padding: 0.5rem 0;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-ink);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-input:focus {
+  border-bottom-color: var(--color-accent);
+}
+.search-input::placeholder {
+  color: var(--color-mute);
+}
+
+.result-count {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-mute);
+  white-space: nowrap;
+}
+
+.browser-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 2rem;
+}
+
+.filters-sidebar {
+  position: sticky;
+  top: 80px;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+.filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.filter-heading {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--color-accent);
+  margin: 0 0 0.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--color-rule);
+}
+
+.filter-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.4rem;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background 0.15s;
+}
+.filter-checkbox:hover {
+  background: var(--color-paper-deep);
+}
+.filter-checkbox.on {
+  background: var(--color-paper-deep);
+}
+.filter-checkbox input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.filter-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+.filter-icon :deep(img) {
+  width: 16px;
+  height: 16px;
+}
+.filter-text {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--color-ink-soft);
+  flex: 1;
+}
+.filter-checkbox.on .filter-text {
+  color: var(--color-ink);
+  font-weight: 500;
+}
+.filter-count {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--color-mute);
+}
+
+.alpha-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-rule);
+  margin-bottom: 1rem;
+}
+
+.alpha-nav button {
+  background: transparent;
+  border: none;
+  width: 26px;
+  height: 26px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--color-mute);
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.15s;
+}
+.alpha-nav button.has-content {
+  color: var(--color-ink-soft);
+}
+.alpha-nav button.has-content:hover {
+  background: var(--color-paper-deep);
+  color: var(--color-accent);
+}
+.alpha-nav button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.letter-group {
+  margin-bottom: 1.5rem;
+}
+
+.letter-heading {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 380;
+  font-style: italic;
+  color: var(--color-accent);
+  margin: 0 0 0.3rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--color-rule);
+}
+
+.formula-items {
+  display: flex;
+  flex-direction: column;
+}
+
+.formula-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.45rem 0;
+  text-decoration: none;
+  transition: padding 0.15s;
+}
+.formula-item:hover {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.formula-name {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--color-ink);
+  transition: color 0.2s;
+}
+.formula-item:hover .formula-name {
+  color: var(--color-accent);
+}
+
+.formula-key {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--color-mute);
+}
+
+.formula-badges {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.formula-badges :deep(img) {
+  width: 18px;
+  height: 18px;
+}
+
+.formula-counts {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--color-mute);
+  white-space: nowrap;
+}
+
+@media (max-width: 800px) {
+  .browser-layout {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .filters-sidebar {
+    position: static;
+    max-height: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .filter-section {
+    flex: 1;
+    min-width: 200px;
+  }
+  .formula-item {
+    grid-template-columns: 1fr auto;
+    gap: 0.2rem 0.5rem;
+  }
+  .formula-key,
+  .formula-counts {
+    grid-column: 1 / -1;
+    font-size: 0.62rem;
+  }
+}
 </style>
