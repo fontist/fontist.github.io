@@ -7,22 +7,22 @@ import UnicodeBlockGrid from '../lib/unicode/components/UnicodeBlockGrid.vue'
 const props = defineProps<{
   property: 'scripts' | 'category' | 'combining' | 'bidiclass'
   title: string
+  code: string
 }>()
 
 const data = ref<{ property: string; count: number; characters: any[] } | null>(null)
 
-const valueParam = props.code
-const indexUrl = computed(() => `unicode/indexes/${props.property}/${valueParam}.json`)
+const indexUrl = computed(() => `unicode/indexes/${props.property}/${props.code}.json`)
 
 const blockWithChars = computed(() => {
   if (!data.value) return null
   return {
-    name: `${props.title}: ${valueParam}`,
+    name: `${props.title}: ${props.code}`,
     start: 0,
     end: 0x10FFFF,
     range: '',
     plane: 'bmp' as const,
-    displayName: `${props.title}: ${valueParam}`,
+    displayName: `${props.title}: ${props.code}`,
     scriptGroup: '',
     characters: data.value.characters.map((c: any) => ({
       cp: c.cp,
@@ -45,7 +45,7 @@ async function loadData() {
 }
 
 await loadData()
-watch([valueParam, () => props.property], loadData)
+watch(() => props.code, loadData)
 
 
 function goToChar(cp: number) {
@@ -58,7 +58,7 @@ function goToChar(cp: number) {
     <header class="pdp-head">
       <a href="/unicode" class="pdp-back">← Unicode</a>
       <a :href="`/unicode/${property}`" class="pdp-up">{{ title }} ↑</a>
-      <h1>{{ valueParam }}</h1>
+      <h1>{{ code }}</h1>
       <span class="pdp-count">{{ data.count.toLocaleString() }} characters</span>
     </header>
 
@@ -71,7 +71,7 @@ function goToChar(cp: number) {
     />
   </div>
 
-  <div v-else class="pdp-loading">No characters found for "{{ valueParam }}".</div>
+  <div v-else class="pdp-loading">No characters found for "{{ code }}".</div>
 </template>
 
 <style scoped>
