@@ -3,6 +3,7 @@ import { ref, computed, watch } from 'vue'
 import { findFormula, type FormulaData } from '../lib/formulas/loader'
 import { findFormulaDetails, type FormulaDetails } from '../lib/formulas/details-loader'
 import { findFamilyByFormula, type FontFamily } from '../lib/fonts/families-loader'
+import { injectFontFace } from '../composables/useFontFace'
 
 const props = defineProps({
   slug: { type: String, required: true }
@@ -36,6 +37,29 @@ async function loadData() {
 
 await loadData()
 watch(slug, loadData)
+
+const woffPath = computed(() => {
+  if (!formula.value || !formula.value.licenseCategory?.includes('open')) return ''
+  return `woff/${slug}.woff`
+})
+
+const { fontId: specimenFontId, ensureInjected: ensureSpecimenFont } = injectFontFace(
+  `specimen-${slug}`,
+  woffPath.value,
+  !!woffPath.value,
+)
+const specimenLoaded = ref(false)
+if (typeof window !== 'undefined' && woffPath.value) {
+  ensureSpecimenFont()
+  const test = document.fonts.check(`12px "${specimenFontId}"`)
+  if (!test) {
+    document.fonts.ready.then(() => { specimenLoaded.value = true })
+  } else {
+    specimenLoaded.value = true
+  }
+}
+
+const specimenFamilyName = computed(() => formula.value?.familyNames?.[0] || formula.value?.name || '')
 
 const descriptionForHead = computed(() => {
   if (details.value?.description) {
@@ -83,6 +107,14 @@ const resourceEntries = computed(() => {
           Detailed metadata not yet available for this formula. Showing summary only.
         </p>
       </header>
+
+      <section v-if="woffPath" class="formula-specimen">
+        <div class="specimen-display" :style="{ fontFamily: `'${specimenFontId}', serif` }">
+          <div class="specimen-name">{{ specimenFamilyName }}</div>
+          <div class="specimen-alphabet">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br />abcdefghijklmnopqrstuvwxyz<br />0123456789 &amp;.,:;?!@#$%</div>
+          <div class="specimen-pangram">The quick brown fox jumps over the lazy dog.</div>
+        </div>
+      </section>
 
       <section class="formula-info">
         <h2 class="section-title">Summary</h2>
@@ -247,5 +279,32 @@ const resourceEntries = computed(() => {
 </template>
 
 <style scoped>
-/* All styles migrated to src/styles/main.css (@layer components). */
+.formula-specimen {
+  margin: 1.5rem 0 2.5rem;
+  padding: 2rem 1.5rem;
+  background: var(--color-paper-deep);
+  border-left: 3px solid var(--color-accent);
+  border-radius: 2px;
+}
+.specimen-display {
+  line-height: 1.15;
+}
+.specimen-name {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+  color: var(--color-ink);
+}
+.specimen-alphabet {
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  line-height: 1.8;
+  color: var(--color-ink-soft);
+  margin-bottom: 0.75rem;
+}
+.specimen-pangram {
+  font-size: clamp(0.9rem, 1.4vw, 1.1rem);
+  font-style: italic;
+  color: var(--color-mute);
+}
 </style>
