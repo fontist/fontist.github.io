@@ -1,15 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { loadFontFamilies, type FontFamily } from '../lib/fonts/families-loader'
-
-const PAGE_SIZE = 50
-const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
-
-const allFamilies = ref<FontFamily[]>([])
-const searchQuery = ref('')
-const selectedCategory = ref('all')
-const selectedRedist = ref<'all' | 'redist' | 'proprietary'>('all')
-const currentPage = ref(1)
+import { useAlphabetPaginatedBrowse } from '../composables/useAlphabetPaginatedBrowse'
 
 const CATEGORIES = [
   { value: 'all', label: 'All' },
@@ -32,104 +24,55 @@ function deriveCategory(f: FontFamily): string {
   return 'other'
 }
 
-const index = await loadFontFamilies()
-allFamilies.value = index.families
-
-const q = (typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('q') : null)
-if (typeof q === 'string' && q) searchQuery.value = q
-
-const redist = (typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('redist') : null)
-if (redist === 'redist' || redist === 'proprietary') selectedRedist.value = redist
+const allFamilies = ref<FontFamily[]>([])
+const selectedCategory = ref('all')
+const selectedRedist = ref<'all' | 'redist' | 'proprietary'>('all')
 
 const categoryCounts = computed(() => {
   const counts: Record<string, number> = { all: allFamilies.value.length, open: 0, free: 0, platform: 0, other: 0 }
-  for (const f of allFamilies.value) {
-    counts[deriveCategory(f)]++
-  }
+  for (const f of allFamilies.value) counts[deriveCategory(f)]++
   return counts
 })
 
+const redistCounts = computed(() => ({
+  all: allFamilies.value.length,
+  redist: allFamilies.value.filter(f => f.redistributable).length,
+  proprietary: allFamilies.value.filter(f => !f.redistributable).length,
+}))
+
 const filteredFamilies = computed(() => {
   let result = allFamilies.value
-  if (searchQuery.value) {
-    const q = searchQuery.value.toLowerCase()
-    result = result.filter(
-      f =>
-        f.name.toLowerCase().includes(q) ||
-        f.slug.toLowerCase().includes(q) ||
-        f.formula_slugs.some(s => s.toLowerCase().includes(q)),
-    )
-  }
   if (selectedCategory.value !== 'all') {
     result = result.filter(f => deriveCategory(f) === selectedCategory.value)
   }
   if (selectedRedist.value === 'redist') result = result.filter(f => f.redistributable)
   else if (selectedRedist.value === 'proprietary') result = result.filter(f => !f.redistributable)
-  return [...result].sort((a, b) => a.name.localeCompare(b.name))
+  return result
 })
 
-const totalPages = computed(() => Math.max(1, Math.ceil(filteredFamilies.value.length / PAGE_SIZE)))
-
-const pagedFamilies = computed(() => {
-  const start = (currentPage.value - 1) * PAGE_SIZE
-  return filteredFamilies.value.slice(start, start + PAGE_SIZE)
+const browse = useAlphabetPaginatedBrowse<FontFamily>(filteredFamilies, {
+  pageSize: 50,
+  nameAccessor: f => f.name,
+  searchAccessor: f => [f.name, f.slug, ...f.formula_slugs],
+  scrollSelector: '.families-browser',
 })
 
-const groupedPaged = computed(() => {
-  const groups: Record<string, FontFamily[]> = {}
-  for (const f of pagedFamilies.value) {
-    const letter = f.name.charAt(0).toUpperCase()
-    if (!groups[letter]) groups[letter] = []
-    groups[letter].push(f)
-  }
-  return groups
-})
+watch([selectedCategory, selectedRedist], () => browse.resetPage())
 
-const activeLetters = computed(() =>
-  alphabet.filter(letter => (groupedPaged.value[letter]?.length ?? 0) > 0),
-)
-
-const showingFrom = computed(() =>
-  filteredFamilies.value.length === 0 ? 0 : (currentPage.value - 1) * PAGE_SIZE + 1,
-)
-const showingTo = computed(() =>
-  Math.min(currentPage.value * PAGE_SIZE, filteredFamilies.value.length),
-)
-
-watch([searchQuery, selectedCategory, selectedRedist], () => {
-  currentPage.value = 1
-})
-
-function scrollToLetter(letter: string) {
-  const el = document.getElementById('letter-' + letter)
-  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-}
-
-function goToPage(page: number) {
-  currentPage.value = page
-  const el = document.querySelector('.families-browser')
-  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-}
-
-const pageWindow = computed(() => {
-  const pages: number[] = []
-  const start = Math.max(1, currentPage.value - 2)
-  const end = Math.min(totalPages.value, currentPage.value + 2)
-  for (let i = start; i <= end; i++) pages.push(i)
-  return pages
-})
+const index = await loadFontFamilies()
+allFamilies.value = index.families
 </script>
 
 <template>
-  <div class="families-browser">
+  <div class="families-browser browse-root">
     <div class="search-bar">
       <input
-        v-model="searchQuery"
+        v-model="browse.searchQuery.value"
         type="text"
         placeholder="Search by family name, slug, or formula…"
         class="search-input"
       />
-      <span class="result-count">{{ filteredFamilies.length.toLocaleString() }} families</span>
+      <span class="result-count">{{ browse.filteredItems.value.length.toLocaleString() }} families</span>
     </div>
 
     <div class="filters">
@@ -150,30 +93,30 @@ const pageWindow = computed(() => {
       <div class="filter-row">
         <span class="filter-label">Redistributable</span>
         <div class="filter-chips">
-          <button :class="['chip', { on: selectedRedist === 'all' }]" @click="selectedRedist = 'all'">All</button>
-          <button :class="['chip', { on: selectedRedist === 'redist' }]" @click="selectedRedist = 'redist'">Yes</button>
-          <button :class="['chip', { on: selectedRedist === 'proprietary' }]" @click="selectedRedist = 'proprietary'">No</button>
+          <button :class="['chip', { on: selectedRedist === 'all' }]" @click="selectedRedist = 'all'">All <span class="chip-count">{{ redistCounts.all }}</span></button>
+          <button :class="['chip', { on: selectedRedist === 'redist' }]" @click="selectedRedist = 'redist'">Yes <span class="chip-count">{{ redistCounts.redist }}</span></button>
+          <button :class="['chip', { on: selectedRedist === 'proprietary' }]" @click="selectedRedist = 'proprietary'">No <span class="chip-count">{{ redistCounts.proprietary }}</span></button>
         </div>
       </div>
     </div>
 
-    <div class="alpha-nav">
+    <nav class="alpha-nav">
       <button
-        v-for="letter in alphabet"
+        v-for="letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')"
         :key="letter"
-        :disabled="!groupedPaged[letter]"
-        :class="{ 'has-content': groupedPaged[letter] }"
-        @click="scrollToLetter(letter)"
+        :disabled="!browse.groupedByLetter.value[letter]"
+        :class="{ 'has-content': browse.groupedByLetter.value[letter] }"
+        @click="browse.scrollToLetter(letter)"
       >{{ letter }}</button>
-    </div>
+    </nav>
 
     <div class="showing-info">
-      Showing {{ showingFrom.toLocaleString() }}–{{ showingTo.toLocaleString() }} of {{ filteredFamilies.length.toLocaleString() }} families
+      Showing {{ browse.showingFrom.value.toLocaleString() }}–{{ browse.showingTo.value.toLocaleString() }} of {{ browse.filteredItems.value.length.toLocaleString() }} families
     </div>
 
     <div class="family-list">
       <div
-        v-for="letter in activeLetters"
+        v-for="letter in browse.activeLetters.value"
         :key="letter"
         :id="'letter-' + letter"
         class="letter-group"
@@ -181,23 +124,17 @@ const pageWindow = computed(() => {
         <h3 class="letter-heading">{{ letter }}</h3>
         <div class="family-items">
           <a
-            v-for="f in groupedPaged[letter]"
+            v-for="f in browse.groupedByLetter.value[letter]"
             :key="f.slug"
             :href="`/families/${f.slug}`"
             class="family-item"
           >
             <div class="family-line1">
               <span class="family-name">{{ f.name }}</span>
-              <span
-                :class="['family-redist', { yes: f.redistributable }]"
-                :title="f.redistributable ? 'Redistributable' : 'Proprietary'"
-              >{{ f.redistributable ? '↯' : '⊘' }}</span>
+              <span :class="['family-redist', { yes: f.redistributable }]" :title="f.redistributable ? 'Redistributable' : 'Proprietary'">{{ f.redistributable ? '↯' : '⊘' }}</span>
             </div>
             <div class="family-line2">
-              <span class="family-meta">
-                {{ f.style_count }} {{ f.style_count === 1 ? 'style' : 'styles' }}
-                · {{ f.formula_slugs.length }} {{ f.formula_slugs.length === 1 ? 'formula' : 'formulas' }}
-              </span>
+              <span class="family-meta">{{ f.style_count }} {{ f.style_count === 1 ? 'style' : 'styles' }} · {{ f.formula_slugs.length }} {{ f.formula_slugs.length === 1 ? 'formula' : 'formulas' }}</span>
               <span class="family-license" :title="f.license_name">{{ f.license_name }}</span>
             </div>
           </a>
@@ -205,19 +142,19 @@ const pageWindow = computed(() => {
       </div>
     </div>
 
-    <nav v-if="totalPages > 1" class="pagination">
-      <button class="page-btn" :disabled="currentPage === 1" @click="goToPage(currentPage - 1)">← Prev</button>
-      <button v-if="pageWindow[0] > 1" class="page-btn" @click="goToPage(1)">1</button>
-      <span v-if="pageWindow[0] > 2" class="page-ellipsis">…</span>
+    <nav v-if="browse.totalPages.value > 1" class="pagination">
+      <button class="page-btn" :disabled="browse.currentPage.value === 1" @click="browse.goToPage(browse.currentPage.value - 1)">← Prev</button>
+      <button v-if="browse.pageWindow.value[0] > 1" class="page-btn" @click="browse.goToPage(1)">1</button>
+      <span v-if="browse.pageWindow.value[0] > 2" class="page-ellipsis">…</span>
       <button
-        v-for="page in pageWindow"
+        v-for="page in browse.pageWindow.value"
         :key="page"
-        :class="['page-btn', { on: page === currentPage }]"
-        @click="goToPage(page)"
+        :class="['page-btn', { on: page === browse.currentPage.value }]"
+        @click="browse.goToPage(page)"
       >{{ page }}</button>
-      <span v-if="pageWindow[pageWindow.length - 1] < totalPages - 1" class="page-ellipsis">…</span>
-      <button v-if="pageWindow[pageWindow.length - 1] < totalPages" class="page-btn" @click="goToPage(totalPages)">{{ totalPages }}</button>
-      <button class="page-btn" :disabled="currentPage === totalPages" @click="goToPage(currentPage + 1)">Next →</button>
+      <span v-if="browse.pageWindow.value[browse.pageWindow.value.length - 1] < browse.totalPages.value - 1" class="page-ellipsis">…</span>
+      <button v-if="browse.pageWindow.value[browse.pageWindow.value.length - 1] < browse.totalPages.value" class="page-btn" @click="browse.goToPage(browse.totalPages.value)">{{ browse.totalPages.value }}</button>
+      <button class="page-btn" :disabled="browse.currentPage.value === browse.totalPages.value" @click="browse.goToPage(browse.currentPage.value + 1)">Next →</button>
     </nav>
   </div>
 </template>
@@ -231,7 +168,6 @@ const pageWindow = computed(() => {
   border-bottom: 1px solid var(--color-rule);
   margin-bottom: 1.5rem;
 }
-
 .search-input {
   flex: 1;
   background: transparent;
@@ -244,13 +180,8 @@ const pageWindow = computed(() => {
   outline: none;
   transition: border-color 0.2s;
 }
-.search-input:focus {
-  border-bottom-color: var(--color-accent);
-}
-.search-input::placeholder {
-  color: var(--color-mute);
-}
-
+.search-input:focus { border-bottom-color: var(--color-accent); }
+.search-input::placeholder { color: var(--color-mute); font-style: italic; }
 .result-count {
   font-family: var(--font-mono);
   font-size: 0.72rem;
@@ -260,20 +191,8 @@ const pageWindow = computed(() => {
   white-space: nowrap;
 }
 
-.filters {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.filter-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
+.filters { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
+.filter-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
 .filter-label {
   font-family: var(--font-mono);
   font-size: 0.68rem;
@@ -282,13 +201,7 @@ const pageWindow = computed(() => {
   color: var(--color-mute);
   min-width: 90px;
 }
-
-.filter-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.3rem;
-}
-
+.filter-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; }
 .chip {
   display: inline-flex;
   align-items: center;
@@ -305,20 +218,9 @@ const pageWindow = computed(() => {
   cursor: pointer;
   transition: all 0.2s;
 }
-.chip:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-.chip.on {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-  color: var(--color-paper);
-}
-
-.chip-count {
-  font-size: 0.6rem;
-  opacity: 0.7;
-}
+.chip:hover { border-color: var(--color-accent); color: var(--color-accent); }
+.chip.on { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-paper); }
+.chip-count { font-size: 0.6rem; opacity: 0.7; }
 
 .alpha-nav {
   display: flex;
@@ -327,7 +229,6 @@ const pageWindow = computed(() => {
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--color-rule);
 }
-
 .alpha-nav button {
   background: transparent;
   border: none;
@@ -340,17 +241,9 @@ const pageWindow = computed(() => {
   border-radius: 2px;
   transition: all 0.15s;
 }
-.alpha-nav button.has-content {
-  color: var(--color-ink-soft);
-}
-.alpha-nav button.has-content:hover {
-  background: var(--color-paper-deep);
-  color: var(--color-accent);
-}
-.alpha-nav button:disabled {
-  opacity: 0.3;
-  cursor: default;
-}
+.alpha-nav button.has-content { color: var(--color-ink-soft); }
+.alpha-nav button.has-content:hover { background: var(--color-paper-deep); color: var(--color-accent); }
+.alpha-nav button:disabled { opacity: 0.3; cursor: default; }
 
 .showing-info {
   font-family: var(--font-mono);
@@ -359,14 +252,7 @@ const pageWindow = computed(() => {
   margin: 1rem 0;
 }
 
-.family-list {
-  min-height: 200px;
-}
-
-.letter-group {
-  margin-bottom: 1.5rem;
-}
-
+.letter-group { margin-bottom: 1.5rem; }
 .letter-heading {
   font-family: var(--font-display);
   font-size: 1.3rem;
@@ -378,11 +264,7 @@ const pageWindow = computed(() => {
   border-bottom: 1px solid var(--color-rule);
 }
 
-.family-items {
-  display: flex;
-  flex-direction: column;
-}
-
+.family-items { display: flex; flex-direction: column; }
 .family-item {
   display: flex;
   flex-direction: column;
@@ -392,24 +274,10 @@ const pageWindow = computed(() => {
   transition: padding 0.15s;
   border-bottom: 1px solid transparent;
 }
-.family-item:hover {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  border-bottom-color: var(--color-rule);
-}
+.family-item:hover { padding-left: 0.5rem; padding-right: 0.5rem; border-bottom-color: var(--color-rule); }
 
-.family-line1 {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-}
-
-.family-line2 {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding-left: 0.1rem;
-}
+.family-line1 { display: flex; align-items: center; gap: 0.6rem; }
+.family-line2 { display: flex; align-items: center; gap: 0.6rem; padding-left: 0.1rem; }
 
 .family-name {
   font-family: var(--font-display);
@@ -419,9 +287,7 @@ const pageWindow = computed(() => {
   transition: color 0.2s;
   flex: 1;
 }
-.family-item:hover .family-name {
-  color: var(--color-accent);
-}
+.family-item:hover .family-name { color: var(--color-accent); }
 
 .family-meta {
   font-family: var(--font-mono);
@@ -443,14 +309,8 @@ const pageWindow = computed(() => {
   white-space: nowrap;
 }
 
-.family-redist {
-  font-size: 0.9rem;
-  color: var(--color-mute);
-  flex-shrink: 0;
-}
-.family-redist.yes {
-  color: var(--color-accent);
-}
+.family-redist { font-size: 0.9rem; color: var(--color-mute); flex-shrink: 0; }
+.family-redist.yes { color: var(--color-accent); }
 
 .pagination {
   display: flex;
@@ -462,7 +322,6 @@ const pageWindow = computed(() => {
   margin-top: 1rem;
   flex-wrap: wrap;
 }
-
 .page-btn {
   background: transparent;
   border: 1px solid var(--color-rule);
@@ -475,42 +334,15 @@ const pageWindow = computed(() => {
   transition: all 0.15s;
   min-width: 32px;
 }
-.page-btn:hover:not(:disabled):not(.on) {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-.page-btn.on {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-  color: var(--color-paper);
-}
-.page-btn:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-
-.page-ellipsis {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--color-mute);
-  padding: 0 0.3rem;
-}
+.page-btn:hover:not(:disabled):not(.on) { border-color: var(--color-accent); color: var(--color-accent); }
+.page-btn.on { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-paper); }
+.page-btn:disabled { opacity: 0.4; cursor: default; }
+.page-ellipsis { font-family: var(--font-mono); font-size: 0.72rem; color: var(--color-mute); padding: 0 0.3rem; }
 
 @media (max-width: 700px) {
-  .family-item {
-    padding: 0.5rem 0;
-  }
-  .family-name {
-    font-size: 0.95rem;
-  }
-  .family-meta {
-    font-size: 0.62rem;
-  }
-  .family-license {
-    display: none;
-  }
-  .filter-label {
-    min-width: auto;
-  }
+  .filter-label { min-width: auto; }
+  .family-name { font-size: 0.95rem; }
+  .family-meta { font-size: 0.62rem; }
+  .family-license { display: none; }
 }
 </style>
