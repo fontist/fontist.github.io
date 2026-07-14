@@ -21,6 +21,11 @@ const metaPath = resolve(PUBLIC, 'font-metadata.json')
 const woffDir = resolve(PUBLIC, 'woff')
 const coverageDir = resolve(PUBLIC, 'coverage')
 
+if (!existsSync(metaPath)) {
+  console.log('font-metadata.json not found — skipping enrichment')
+  process.exit(0)
+}
+
 const meta = JSON.parse(readFileSync(metaPath, 'utf8'))
 const fonts = meta.fonts || []
 console.log(`font-metadata: ${fonts.length} entries`)
