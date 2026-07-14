@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch, onMounted } from 'vue'
 import type { UnicodeBlock, UnicodeCharacter, GridMode } from '..'
 import type { FontContext } from '../../types/domain'
-import { isControlChar, controlAbbrev, controlName, displayChar } from '..'
+import { isControlChar, controlAbbrev, controlName, displayChar, hexCp } from '..'
 import { fontFormatForPath } from '../../fonts/format.ts'
 
 const props = withDefaults(defineProps<{
@@ -10,18 +10,71 @@ const props = withDefaults(defineProps<{
   fonts?: FontContext[]
   mode?: GridMode
   showMissing?: boolean
-  maxChars?: number
+  pageSize?: number
 }>(), {
   fonts: () => [],
   mode: 'standalone',
   showMissing: true,
-  maxChars: 512,
+  pageSize: 512,
 })
 
 const emit = defineEmits<{
   (e: 'select', cp: number): void
 }>()
 
+// ── Pagination (internal — consumers never need to handle this) ──
+const currentPage = ref(1)
+
+const totalPages = computed(() =>
+  Math.max(1, Math.ceil(props.block.characters.length / props.pageSize))
+)
+
+const pagedCharacters = computed(() => {
+  const start = (currentPage.value - 1) * props.pageSize
+  return props.block.characters.slice(start, start + props.pageSize)
+})
+
+// Reset to page 1 when block changes
+watch(() => props.block, () => { currentPage.value = 1 })
+
+// Sync with ?page= URL param
+onMounted(() => {
+  if (typeof window === 'undefined') return
+  const p = new URLSearchParams(window.location.search).get('page')
+  if (p) {
+    const n = parseInt(p, 10)
+    if (!isNaN(n) && n >= 1) currentPage.value = Math.min(n, totalPages.value)
+  }
+})
+
+function goToPage(page: number) {
+  currentPage.value = page
+  const el = document.querySelector('.ub-container')
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  if (typeof window !== 'undefined') {
+    const url = new URL(window.location.href)
+    if (page > 1) url.searchParams.set('page', String(page))
+    else url.searchParams.delete('page')
+    window.history.replaceState({}, '', url)
+  }
+}
+
+const pageWindow = computed(() => {
+  const pages: number[] = []
+  const start = Math.max(1, currentPage.value - 2)
+  const end = Math.min(totalPages.value, currentPage.value + 2)
+  for (let i = start; i <= end; i++) pages.push(i)
+  return pages
+})
+
+const pageStartHex = computed(() =>
+  pagedCharacters.value.length > 0 ? hexCp(pagedCharacters.value[0].cp) : ''
+)
+const pageEndHex = computed(() =>
+  pagedCharacters.value.length > 0 ? hexCp(pagedCharacters.value[pagedCharacters.value.length - 1].cp) : ''
+)
+
+// ── Cell computation (operates on paged characters only) ──
 interface Cell {
   char: UnicodeCharacter
   renders: { font: FontContext; supported: boolean }[]
@@ -30,8 +83,7 @@ interface Cell {
 }
 
 const cells = computed<Cell[]>(() => {
-  const chars = props.block.characters.slice(0, props.maxChars)
-  return chars.map(c => {
+  return pagedCharacters.value.map(c => {
     const renders = props.fonts.map(f => ({ font: f, supported: f.coverage.has(c.cp) }))
     const hasAny = renders.some(r => r.supported)
     const hasAll = renders.length > 0 && renders.every(r => r.supported)
@@ -53,7 +105,7 @@ const gridStyles = computed(() => {
   props.fonts.forEach((f, i) => {
     if (f.fontPath && f.redistributable) {
       const id = `ub-${f.slug.replace(/[^a-z0-9]/gi, '-')}`
-      if (!document.getElementById(`ub-style-${id}`)) {
+      if (document.getElementById(`ub-style-${id}`)) {
         const s = document.createElement('style')
         s.id = `ub-style-${id}`
         s.textContent = `@font-face{font-family:'${id}';src:url('${f.fontPath}') format('${fontFormatForPath(f.fontPath)}');font-weight:100 900;font-display:swap;}`
@@ -91,6 +143,11 @@ function displayName(char: UnicodeCharacter): string {
         <span>Not in font</span>
       </div>
       <span class="ub-legend-hint">Click any character for full details →</span>
+    </div>
+
+    <!-- Page info -->
+    <div v-if="totalPages > 1" class="ub-page-info">
+      Page {{ currentPage }} of {{ totalPages }} · U+{{ pageStartHex }}–U+{{ pageEndHex }}
     </div>
 
     <div class="ub-grid">
@@ -162,6 +219,22 @@ function displayName(char: UnicodeCharacter): string {
       <span class="ub-name">{{ displayName(cell.char) }}</span>
     </button>
     </div>
+
+    <!-- Pagination controls -->
+    <nav v-if="totalPages > 1" class="ub-pagination">
+      <button class="ub-page-btn" :disabled="currentPage === 1" @click="goToPage(currentPage - 1)">← Prev</button>
+      <button v-if="pageWindow[0] > 1" class="ub-page-btn" @click="goToPage(1)">1</button>
+      <span v-if="pageWindow[0] > 2" class="ub-page-ellipsis">…</span>
+      <button
+        v-for="page in pageWindow"
+        :key="page"
+        :class="['ub-page-btn', { on: page === currentPage }]"
+        @click="goToPage(page)"
+      >{{ page }}</button>
+      <span v-if="pageWindow[pageWindow.length - 1] < totalPages - 1" class="ub-page-ellipsis">…</span>
+      <button v-if="pageWindow[pageWindow.length - 1] < totalPages" class="ub-page-btn" @click="goToPage(totalPages)">{{ totalPages }}</button>
+      <button class="ub-page-btn" :disabled="currentPage === totalPages" @click="goToPage(currentPage + 1)">Next →</button>
+    </nav>
   </div>
 </template>
 
@@ -188,83 +261,74 @@ function displayName(char: UnicodeCharacter): string {
 }
 .ub-legend-swatch {
   display: inline-block;
-  width: 28px;
-  height: 20px;
-  border-radius: 3px;
-  border: 1px solid var(--spec-rule);
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
 }
-.ub-legend-swatch--ok {
-  background: var(--color-paper);
-  border-style: solid;
-  border-color: var(--spec-rule);
-}
-.ub-legend-swatch--no {
-  background: repeating-linear-gradient(
-    135deg,
-    transparent,
-    transparent 3px,
-    rgba(0,0,0,0.08) 3px,
-    rgba(0,0,0,0.08) 5px
-  ), var(--color-paper-deep);
-  border-style: dashed;
-  border-color: var(--color-mute);
-}
+.ub-legend-swatch--ok { background: #5b8; }
+.ub-legend-swatch--no { background: #c44; opacity: 0.5; }
 .ub-legend-hint {
   margin-left: auto;
-  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
   color: var(--color-mute);
-  font-style: italic;
 }
 
+/* Page info */
+.ub-page-info {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-mute);
+  margin-bottom: 1rem;
+  padding: 0.5rem 0;
+}
+
+/* Grid */
 .ub-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 158px);
-  gap: 6px;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 1px;
+  background: var(--spec-rule);
+  border: 1px solid var(--spec-rule);
 }
+
 .ub-cell {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 158px;
-  min-height: 120px;
-  padding: 6px;
-  background: var(--color-paper);
-  border: 1px solid var(--spec-rule);
-  border-radius: 6px;
+  justify-content: flex-end;
+  background: var(--spec-bg);
+  border: none;
   cursor: pointer;
-  overflow: hidden;
-  gap: 3px;
-  transition: border-color 0.12s, box-shadow 0.12s;
+  padding: 0.3rem 0.2rem 0.25rem;
+  min-height: 80px;
+  transition: background 0.15s;
+  position: relative;
 }
 .ub-cell:hover {
-  border-color: var(--fontist-rose, #bf4e6a);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  background: var(--spec-bg-hover);
 }
 .ub-cell.missing {
-  background: repeating-linear-gradient(
-    135deg,
-    var(--color-paper-deep),
-    var(--color-paper-deep) 3px,
-    var(--color-paper-deep) 3px,
-    var(--color-paper-deep) 6px
-  );
-  border-style: dashed;
-  border-color: var(--color-mute);
-  opacity: 0.55;
+  background: var(--spec-bg-missing);
 }
-.ub-missing-badge {
+
+.ub-cp {
+  font-size: 0.55rem;
+  font-family: var(--font-mono);
+  color: var(--color-mute);
   position: absolute;
   top: 3px;
+  left: 4px;
+}
+
+.ub-missing-badge {
+  position: absolute;
+  top: 2px;
   right: 4px;
   font-size: 0.6rem;
   color: #c44;
   font-weight: 700;
   line-height: 1;
-}
-.ub-cp {
-  font-size: 0.55rem;
-  font-family: var(--font-mono);
-  color: var(--color-mute);
 }
 
 /* Glyph box with typographic guide lines */
@@ -352,5 +416,57 @@ function displayName(char: UnicodeCharacter): string {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+}
+
+/* Pagination */
+.ub-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 2rem 0;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.ub-page-btn {
+  background: transparent;
+  border: 1px solid var(--color-rule);
+  border-radius: 2px;
+  padding: 0.35rem 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-ink-soft);
+  cursor: pointer;
+  transition: all 0.15s;
+  min-width: 32px;
+}
+.ub-page-btn:hover:not(:disabled):not(.on) {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.ub-page-btn.on {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-paper);
+}
+.ub-page-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.ub-page-ellipsis {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-mute);
+  padding: 0 0.3rem;
+}
+
+@media (max-width: 600px) {
+  .ub-grid {
+    grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+  }
+  .ub-glyph { font-size: 1.4rem; }
+  .ub-name { font-size: 0.45rem; }
 }
 </style>
