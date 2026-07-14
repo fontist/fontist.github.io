@@ -179,53 +179,58 @@ const filteredFormulas = computed(() => {
   if (!selectedSources.value.includes('all')) {
     result = result.filter(f => selectedSources.value.includes(f.sourceType))
   }
-  result = result.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
-
-  // Deduplicate by name: many formulas (different macOS font packages)
-  // share the same font name. Group them, pick the primary formula
-  // (most styles), and track how many formulas provide this font.
-  const byName = new Map()
-  for (const f of result) {
-    const key = (f.name || '').toLowerCase()
-    if (!byName.has(key)) {
-      byName.set(key, { ...f, _formulaCount: 1 })
-    } else {
-      const existing = byName.get(key)
-      existing._formulaCount++
-      if ((f.styleCount || 0) > (existing.styleCount || 0)) {
-        byName.set(key, { ...f, _formulaCount: existing._formulaCount })
-      }
-    }
-  }
-  return [...byName.values()]
+  return result
 })
 
-const groupedFormulas = computed(() => {
-  const groups = {}
-  pagedFormulas.value.forEach(f => {
-    if (!f || !f.name) return
-    const letter = f.name.charAt(0).toUpperCase()
-    if (!groups[letter]) groups[letter] = []
-    groups[letter].push(f)
-  })
-  return groups
+// Group formulas by font family name. Multiple formulas can provide the
+// same font family (e.g. 6 macOS formulas for "Al Bayan"). Grouping
+// reveals the font → faces → versions → formulas hierarchy.
+const familyGroups = computed(() => {
+  const map = new Map()
+  for (const f of filteredFormulas.value) {
+    const key = (f.name || '').toLowerCase()
+    if (!map.has(key)) {
+      map.set(key, {
+        name: f.name || f.formulaName,
+        formulas: [],
+        maxStyles: 0,
+        licenseName: f.licenseName,
+        licenseType: f.licenseType,
+        sourceType: f.sourceType,
+      })
+    }
+    const group = map.get(key)
+    group.formulas.push(f)
+    if ((f.styleCount || 0) > group.maxStyles) group.maxStyles = f.styleCount
+  }
+  return [...map.values()].sort((a, b) => a.name.localeCompare(b.name))
 })
 
 const PAGE_SIZE = 50
 const currentPage = ref(1)
 
-const totalPages = computed(() => Math.max(1, Math.ceil(filteredFormulas.value.length / PAGE_SIZE)))
+const totalPages = computed(() => Math.max(1, Math.ceil(familyGroups.value.length / PAGE_SIZE)))
 
-const pagedFormulas = computed(() => {
+const pagedGroups = computed(() => {
   const start = (currentPage.value - 1) * PAGE_SIZE
-  return filteredFormulas.value.slice(start, start + PAGE_SIZE)
+  return familyGroups.value.slice(start, start + PAGE_SIZE)
+})
+
+const groupedByLetter = computed(() => {
+  const groups = {}
+  for (const fam of pagedGroups.value) {
+    const letter = fam.name.charAt(0).toUpperCase()
+    if (!groups[letter]) groups[letter] = []
+    groups[letter].push(fam)
+  }
+  return groups
 })
 
 const showingFrom = computed(() =>
-  filteredFormulas.value.length === 0 ? 0 : (currentPage.value - 1) * PAGE_SIZE + 1,
+  familyGroups.value.length === 0 ? 0 : (currentPage.value - 1) * PAGE_SIZE + 1,
 )
 const showingTo = computed(() =>
-  Math.min(currentPage.value * PAGE_SIZE, filteredFormulas.value.length),
+  Math.min(currentPage.value * PAGE_SIZE, familyGroups.value.length),
 )
 
 watch([searchQuery, selectedLicenses, selectedSources], () => {
@@ -248,7 +253,7 @@ function goToPage(page) {
 
 const activeLetters = computed(() => {
   return alphabet.filter(letter => {
-    const group = groupedFormulas.value[letter]
+    const group = groupedByLetter.value[letter]
     return group && group.length > 0
   })
 })
@@ -306,31 +311,42 @@ function toggleSource(value) {
 
       <main class="results-main">
         <nav class="alpha-nav">
-          <button v-for="letter in alphabet" :key="letter" @click="scrollToLetter(letter)" :class="{ 'has-content': groupedFormulas[letter] }" :disabled="!groupedFormulas[letter]">{{ letter }}</button>
+          <button v-for="letter in alphabet" :key="letter" @click="scrollToLetter(letter)" :class="{ 'has-content': groupedByLetter[letter] }" :disabled="!groupedByLetter[letter]">{{ letter }}</button>
         </nav>
 
         <div class="showing-info">
-          Showing {{ showingFrom.toLocaleString() }}–{{ showingTo.toLocaleString() }} of {{ filteredFormulas.length.toLocaleString() }} formulas
+          Showing {{ showingFrom.toLocaleString() }}–{{ showingTo.toLocaleString() }} of {{ familyGroups.length.toLocaleString() }} font families ({{ filteredFormulas.length.toLocaleString() }} formulas)
         </div>
 
         <div class="formula-list">
           <div v-for="letter in activeLetters" :key="letter" :id="'letter-' + letter" class="letter-group">
             <h3 class="letter-heading">{{ letter }}</h3>
-            <div class="formula-items">
-              <a v-for="f in groupedFormulas[letter]" :key="f.slug" :href="`/formulas/${f.slug}`" class="formula-item">
-                <div class="formula-line1">
-                  <span class="formula-name">{{ f.name }}</span>
-                  <span v-if="f._formulaCount > 1" class="formula-dupe" :title="f._formulaCount + ' formulas provide this font'">+{{ f._formulaCount - 1 }}</span>
-                  <span class="formula-badges">
-                    <span :title="f.licenseName" v-html="getLicenseBadge(f)"></span>
-                    <span :title="f.sourceType" v-html="getSourceBadge(f)"></span>
+            <div class="family-groups">
+              <div
+                v-for="fam in groupedByLetter[letter]"
+                :key="fam.name"
+                class="family-group"
+              >
+                <div class="family-group-head">
+                  <span class="family-group-name">{{ fam.name }}</span>
+                  <span class="family-group-meta">{{ fam.formulas.length }} {{ fam.formulas.length === 1 ? 'formula' : 'formulas' }} · {{ fam.maxStyles }} styles</span>
+                  <span class="family-group-badges">
+                    <span :title="fam.licenseName" v-html="getLicenseBadge({ licenseType: fam.licenseType, licenseName: fam.licenseName })"></span>
+                    <span :title="fam.sourceType" v-html="getSourceBadge({ sourceType: fam.sourceType })"></span>
                   </span>
                 </div>
-                <div class="formula-line2">
-                  <span class="formula-key">{{ f.formulaName }}</span>
-                  <span class="formula-counts">{{ f.familyCount }} {{ f.familyCount === 1 ? 'family' : 'families' }} · {{ f.styleCount }} {{ f.styleCount === 1 ? 'style' : 'styles' }}</span>
+                <div class="family-group-items">
+                  <a
+                    v-for="f in fam.formulas"
+                    :key="f.slug"
+                    :href="`/formulas/${f.slug}`"
+                    class="formula-sub-item"
+                  >
+                    <span class="formula-sub-key">{{ f.formulaName }}</span>
+                    <span class="formula-sub-meta">{{ f.familyCount }} {{ f.familyCount === 1 ? 'family' : 'families' }} · {{ f.styleCount }} {{ f.styleCount === 1 ? 'style' : 'styles' }}</span>
+                  </a>
                 </div>
-              </a>
+              </div>
             </div>
           </div>
         </div>
@@ -527,40 +543,30 @@ function toggleSource(value) {
   border-bottom: 1px solid var(--color-rule);
 }
 
-.formula-items {
+.family-groups {
   display: flex;
   flex-direction: column;
 }
 
-.formula-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
+.family-group {
   padding: 0.6rem 0;
-  text-decoration: none;
-  transition: padding 0.15s;
   border-bottom: 1px solid transparent;
+  transition: padding 0.15s;
 }
-.formula-item:hover {
+.family-group:hover {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
   border-bottom-color: var(--color-rule);
 }
 
-.formula-line1 {
+.family-group-head {
   display: flex;
   align-items: center;
   gap: 0.6rem;
+  margin-bottom: 0.15rem;
 }
 
-.formula-line2 {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding-left: 0.1rem;
-}
-
-.formula-name {
+.family-group-name {
   font-family: var(--font-display);
   font-size: 1.05rem;
   font-weight: 400;
@@ -568,23 +574,18 @@ function toggleSource(value) {
   transition: color 0.2s;
   flex: 1;
 }
-.formula-item:hover .formula-name {
+.family-group:hover .family-group-name {
   color: var(--color-accent);
 }
 
-.formula-dupe {
+.family-group-meta {
   font-family: var(--font-mono);
-  font-size: 0.6rem;
-  font-weight: 600;
-  color: var(--color-accent);
-  background: var(--color-paper-deep);
-  padding: 0.1rem 0.35rem;
-  border-radius: 2px;
-  line-height: 1.2;
-  flex-shrink: 0;
+  font-size: 0.68rem;
+  color: var(--color-mute);
+  white-space: nowrap;
 }
 
-.formula-badges {
+.family-group-badges {
   display: flex;
   align-items: center;
   gap: 0.3rem;
@@ -592,25 +593,53 @@ function toggleSource(value) {
   transition: opacity 0.2s;
   flex-shrink: 0;
 }
-.formula-item:hover .formula-badges {
+.family-group:hover .family-group-badges {
   opacity: 1;
 }
-.formula-badges :deep(img) {
+.family-group-badges :deep(img) {
   width: 16px;
   height: 16px;
 }
 
-.formula-key {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  color: var(--color-mute);
+.family-group-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--color-rule);
+  margin-left: 0.25rem;
+  margin-top: 0.3rem;
 }
 
-.formula-counts {
+.formula-sub-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.2rem 0 0.2rem 0.5rem;
+  text-decoration: none;
+  transition: background 0.15s, padding 0.15s;
+  border-radius: 2px;
+}
+.formula-sub-item:hover {
+  background: var(--color-paper-deep);
+  padding-left: 0.75rem;
+}
+
+.formula-sub-key {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.7rem;
+  color: var(--color-ink-soft);
+  transition: color 0.15s;
+  flex: 1;
+}
+.formula-sub-item:hover .formula-sub-key {
+  color: var(--color-accent);
+}
+
+.formula-sub-meta {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
   color: var(--color-mute);
-  margin-left: auto;
   white-space: nowrap;
 }
 
@@ -682,18 +711,17 @@ function toggleSource(value) {
     flex: 1;
     min-width: 200px;
   }
-  .formula-item {
-    padding: 0.5rem 0;
-  }
-  .formula-name {
+  .family-group-name {
     font-size: 0.95rem;
   }
-  .formula-key,
-  .formula-counts {
+  .formula-sub-key {
     font-size: 0.62rem;
   }
-  .formula-dupe {
-    font-size: 0.55rem;
+  .formula-sub-meta {
+    font-size: 0.58rem;
+  }
+  .family-group-items {
+    padding-left: 0.5rem;
   }
 }
 </style>
