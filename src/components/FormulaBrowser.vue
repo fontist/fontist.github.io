@@ -179,7 +179,25 @@ const filteredFormulas = computed(() => {
   if (!selectedSources.value.includes('all')) {
     result = result.filter(f => selectedSources.value.includes(f.sourceType))
   }
-  return result.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
+  result = result.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
+
+  // Deduplicate by name: many formulas (different macOS font packages)
+  // share the same font name. Group them, pick the primary formula
+  // (most styles), and track how many formulas provide this font.
+  const byName = new Map()
+  for (const f of result) {
+    const key = (f.name || '').toLowerCase()
+    if (!byName.has(key)) {
+      byName.set(key, { ...f, _formulaCount: 1 })
+    } else {
+      const existing = byName.get(key)
+      existing._formulaCount++
+      if ((f.styleCount || 0) > (existing.styleCount || 0)) {
+        byName.set(key, { ...f, _formulaCount: existing._formulaCount })
+      }
+    }
+  }
+  return [...byName.values()]
 })
 
 const groupedFormulas = computed(() => {
@@ -300,13 +318,18 @@ function toggleSource(value) {
             <h3 class="letter-heading">{{ letter }}</h3>
             <div class="formula-items">
               <a v-for="f in groupedFormulas[letter]" :key="f.slug" :href="`/formulas/${f.slug}`" class="formula-item">
-                <span class="formula-name">{{ f.name }}</span>
-                <span class="formula-key">{{ f.formulaName }}</span>
-                <span class="formula-badges">
-                  <span :title="f.licenseName" v-html="getLicenseBadge(f)"></span>
-                  <span :title="f.sourceType" v-html="getSourceBadge(f)"></span>
-                </span>
-                <span class="formula-counts">{{ f.familyCount }} {{ f.familyCount === 1 ? 'family' : 'families' }} · {{ f.styleCount }} {{ f.styleCount === 1 ? 'style' : 'styles' }}</span>
+                <div class="formula-line1">
+                  <span class="formula-name">{{ f.name }}</span>
+                  <span v-if="f._formulaCount > 1" class="formula-dupe" :title="f._formulaCount + ' formulas provide this font'">+{{ f._formulaCount - 1 }}</span>
+                  <span class="formula-badges">
+                    <span :title="f.licenseName" v-html="getLicenseBadge(f)"></span>
+                    <span :title="f.sourceType" v-html="getSourceBadge(f)"></span>
+                  </span>
+                </div>
+                <div class="formula-line2">
+                  <span class="formula-key">{{ f.formulaName }}</span>
+                  <span class="formula-counts">{{ f.familyCount }} {{ f.familyCount === 1 ? 'family' : 'families' }} · {{ f.styleCount }} {{ f.styleCount === 1 ? 'style' : 'styles' }}</span>
+                </div>
               </a>
             </div>
           </div>
@@ -510,28 +533,71 @@ function toggleSource(value) {
 }
 
 .formula-item {
-  display: grid;
-  grid-template-columns: 1fr auto auto auto;
-  align-items: baseline;
-  gap: 0.75rem;
-  padding: 0.55rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.6rem 0;
   text-decoration: none;
   transition: padding 0.15s;
+  border-bottom: 1px solid transparent;
 }
 .formula-item:hover {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
+  border-bottom-color: var(--color-rule);
+}
+
+.formula-line1 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.formula-line2 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding-left: 0.1rem;
 }
 
 .formula-name {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 400;
   color: var(--color-ink);
   transition: color 0.2s;
+  flex: 1;
 }
 .formula-item:hover .formula-name {
   color: var(--color-accent);
+}
+
+.formula-dupe {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  background: var(--color-paper-deep);
+  padding: 0.1rem 0.35rem;
+  border-radius: 2px;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+
+.formula-badges {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  opacity: 0.65;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+}
+.formula-item:hover .formula-badges {
+  opacity: 1;
+}
+.formula-badges :deep(img) {
+  width: 16px;
+  height: 16px;
 }
 
 .formula-key {
@@ -540,25 +606,11 @@ function toggleSource(value) {
   color: var(--color-mute);
 }
 
-.formula-badges {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  opacity: 0.7;
-  transition: opacity 0.2s;
-}
-.formula-item:hover .formula-badges {
-  opacity: 1;
-}
-.formula-badges :deep(img) {
-  width: 18px;
-  height: 18px;
-}
-
 .formula-counts {
   font-family: var(--font-mono);
   font-size: 0.68rem;
   color: var(--color-mute);
+  margin-left: auto;
   white-space: nowrap;
 }
 
@@ -631,13 +683,17 @@ function toggleSource(value) {
     min-width: 200px;
   }
   .formula-item {
-    grid-template-columns: 1fr auto;
-    gap: 0.2rem 0.5rem;
+    padding: 0.5rem 0;
+  }
+  .formula-name {
+    font-size: 0.95rem;
   }
   .formula-key,
   .formula-counts {
-    grid-column: 1 / -1;
     font-size: 0.62rem;
+  }
+  .formula-dupe {
+    font-size: 0.55rem;
   }
 }
 </style>
