@@ -310,8 +310,12 @@ function displayName(char: UnicodeCharacter): string {
   z-index: 1;
   font-family: 'Essenfont', 'IBM Plex Sans', sans-serif;
   font-size: 1.8rem;
-  line-height: 1;
+  line-height: 1.15;
   color: var(--spec-ink);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .ub-control-box {

@@ -14,6 +14,7 @@ import SiteFooter from '../components/SiteFooter.astro'
     <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#f1ece1" />
+    <link rel="stylesheet" href="/fonts.css" />
     <title>Fontist</title>
     <script is:inline>
       (function(){try{var k='fontist-theme';var s=localStorage.getItem(k);var t=s==='light'||s==='dark'?s:(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}})();
@@ -33,6 +34,7 @@ import SiteFooter from '../components/SiteFooter.astro'
       import FontFamilyPage from '../islands/FontFamilyPage.vue'
       import FontFamilyUnicodePage from '../islands/FontFamilyUnicodePage.vue'
       import UnicodeCharPage from '../islands/UnicodeCharPage.vue'
+      import UnicodeBlockPage from '../islands/UnicodeBlockPage.vue'
       import FontBlockCoveragePage from '../islands/FontBlockCoveragePage.vue'
       import PropertyDetailPage from '../islands/PropertyDetailPage.vue'
 
@@ -46,6 +48,7 @@ import SiteFooter from '../components/SiteFooter.astro'
         { match: /^\/families\/([^/]+)\/?$/,       Comp: FontFamilyPage,        getProps: m => ({ familySlug: m[1] }) },
         { match: /^\/families\/([^/]+)\/unicode\/?$/, Comp: FontFamilyUnicodePage, getProps: m => ({ familySlug: m[1] }) },
         { match: /^\/unicode\/char\/([^/]+)\/?$/,  Comp: UnicodeCharPage,       getProps: m => ({ hex: m[1] }) },
+        { match: /^\/unicode\/block\/([^/]+)\/?$/, Comp: UnicodeBlockPage,      getProps: m => ({ blockSlug: m[1] }) },
         { match: /^\/fonts\/([^/]+)\/unicode\/block\/([^/]+)\/?$/, Comp: FontBlockCoveragePage, getProps: m => ({ fontSlug: m[1], blockSlug: m[2] }) },
         { match: /^\/unicode\/(scripts|category|combining|bidiclass)\/([^/]+)\/?$/, Comp: PropertyDetailPage, getProps: m => ({ property: m[1], title: {scripts:'Script',category:'Category',combining:'Combining Class',bidiclass:'Bidirectional Class'}[m[1]], code: m[2] }) },
       ]
