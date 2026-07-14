@@ -186,16 +186,20 @@ const pageWindow = computed(() => {
             :href="`/families/${f.slug}`"
             class="family-item"
           >
-            <span class="family-name">{{ f.name }}</span>
-            <span class="family-meta">
-              {{ f.style_count }} {{ f.style_count === 1 ? 'style' : 'styles' }}
-              · {{ f.formula_slugs.length }} {{ f.formula_slugs.length === 1 ? 'formula' : 'formulas' }}
-            </span>
-            <span class="family-license" :title="f.license_name">{{ f.license_name }}</span>
-            <span
-              :class="['family-redist', { yes: f.redistributable }]"
-              :title="f.redistributable ? 'Redistributable' : 'Proprietary'"
-            >{{ f.redistributable ? '↯' : '⊘' }}</span>
+            <div class="family-line1">
+              <span class="family-name">{{ f.name }}</span>
+              <span
+                :class="['family-redist', { yes: f.redistributable }]"
+                :title="f.redistributable ? 'Redistributable' : 'Proprietary'"
+              >{{ f.redistributable ? '↯' : '⊘' }}</span>
+            </div>
+            <div class="family-line2">
+              <span class="family-meta">
+                {{ f.style_count }} {{ f.style_count === 1 ? 'style' : 'styles' }}
+                · {{ f.formula_slugs.length }} {{ f.formula_slugs.length === 1 ? 'formula' : 'formulas' }}
+              </span>
+              <span class="family-license" :title="f.license_name">{{ f.license_name }}</span>
+            </div>
           </a>
         </div>
       </div>
@@ -380,25 +384,40 @@ const pageWindow = computed(() => {
 }
 
 .family-item {
-  display: grid;
-  grid-template-columns: 1fr auto auto auto;
-  align-items: baseline;
-  gap: 0.75rem;
-  padding: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.6rem 0;
   text-decoration: none;
   transition: padding 0.15s;
+  border-bottom: 1px solid transparent;
 }
 .family-item:hover {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
+  border-bottom-color: var(--color-rule);
+}
+
+.family-line1 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.family-line2 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding-left: 0.1rem;
 }
 
 .family-name {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 400;
   color: var(--color-ink);
   transition: color 0.2s;
+  flex: 1;
 }
 .family-item:hover .family-name {
   color: var(--color-accent);
@@ -406,7 +425,7 @@ const pageWindow = computed(() => {
 
 .family-meta {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   color: var(--color-mute);
   white-space: nowrap;
 }
@@ -417,7 +436,8 @@ const pageWindow = computed(() => {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--color-mute);
-  max-width: 200px;
+  margin-left: auto;
+  max-width: 240px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -426,6 +446,7 @@ const pageWindow = computed(() => {
 .family-redist {
   font-size: 0.9rem;
   color: var(--color-mute);
+  flex-shrink: 0;
 }
 .family-redist.yes {
   color: var(--color-accent);
@@ -477,12 +498,13 @@ const pageWindow = computed(() => {
 
 @media (max-width: 700px) {
   .family-item {
-    grid-template-columns: 1fr auto;
-    gap: 0.3rem 0.5rem;
+    padding: 0.5rem 0;
+  }
+  .family-name {
+    font-size: 0.95rem;
   }
   .family-meta {
-    grid-column: 1 / -1;
-    font-size: 0.65rem;
+    font-size: 0.62rem;
   }
   .family-license {
     display: none;
