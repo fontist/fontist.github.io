@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { injectFontFace } from '../composables/useFontFace'
 import { loadCoverage } from '../lib/unicode/coverage'
-import { useUnicodeBlock } from '../composables/useUnicodeBlock'
+import { loadBlockCharacters } from '../lib/unicode/data/loader'
 import { useFontVariation } from '../composables/useFontVariation'
 
 const props = defineProps({
@@ -16,7 +16,10 @@ const props = defineProps({
 })
 
 const fontId = ref('')
-const { fetchBlock } = useUnicodeBlock()
+async function fetchBlock(name) {
+  const chars = await loadBlockCharacters(name)
+  return chars.length ? { chars } : null
+}
 const {
   state, variationCSS, featureCSS,
   initAxes, initFeatures, setAxis, toggleFeature,

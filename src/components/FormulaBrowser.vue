@@ -1,192 +1,76 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { loadAllFormulas } from '../lib/formulas/loader'
+import { useAlphabetPaginatedBrowse } from '../composables/useAlphabetPaginatedBrowse'
+import { getLicenseGroup, licenseIconPath, sourceIconPath, licenseIconForFormula, sourceIconForFormula } from '../lib/formulas/badges'
+import type { FormulaData } from '../lib/types/domain'
 
-// Lightweight query-string reader — works on both SSR (window not available)
-// and client. Vue islands under Astro don't have vue-router, so we read
-// directly from window.location when it exists.
-function getQueryParam(key) {
-  if (typeof window === 'undefined') return null
-  return new URLSearchParams(window.location.search).get(key)
+interface FamilyGroup {
+  name: string
+  formulas: FormulaData[]
+  maxStyles: number
+  licenseName: string
+  licenseType: string
+  sourceType: string
 }
 
+const allFormulas = ref<FormulaData[]>([])
+const selectedLicense = ref('all')
+const selectedSource = ref('all')
 
-const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
-
-const formulasData = ref([])
-const searchQuery = ref('')
-const selectedLicenses = ref(['all'])
-const selectedSources = ref(['all'])
-
-const licenseOptions = [
-  { value: 'all', label: 'All Licenses', icon: 'all', count: 0 },
-  { value: 'ofl', label: 'OFL 1.1', icon: 'ofl', count: 0 },
-  { value: 'apache', label: 'Apache 2.0', icon: 'apache', count: 0 },
-  { value: 'mit', label: 'MIT', icon: 'mit', count: 0 },
-  { value: 'cc0', label: 'CC0 / Public Domain', icon: 'cc0', count: 0 },
-  { value: 'other_open', label: 'Other Open Source', icon: 'open', count: 0 },
-  { value: 'freely_dist', label: 'Freely Distributable', icon: 'free', count: 0 },
-  { value: 'platform', label: 'Platform Tied', icon: 'platform', count: 0 },
-  { value: 'bundled', label: 'Bundled Software', icon: 'bundled', count: 0 },
-  { value: 'unknown', label: 'License Not Specified', icon: 'unknown', count: 0 },
+const LICENSE_FILTERS = [
+  { value: 'all', label: 'All', icon: 'all' },
+  { value: 'ofl', label: 'OFL', icon: 'ofl' },
+  { value: 'apache', label: 'Apache', icon: 'apache' },
+  { value: 'mit', label: 'MIT', icon: 'mit' },
+  { value: 'cc0', label: 'CC0', icon: 'cc0' },
+  { value: 'other_open', label: 'Other Open', icon: 'open' },
+  { value: 'freely_dist', label: 'Freely Dist.', icon: 'free' },
+  { value: 'platform', label: 'Platform', icon: 'platform' },
+  { value: 'bundled', label: 'Bundled', icon: 'bundled' },
+  { value: 'unknown', label: 'Unknown', icon: 'unknown' },
 ]
 
-const sourceOptions = [
-  { value: 'all', label: 'All Sources', icon: 'all', count: 0 },
-  { value: 'google', label: 'Google Fonts', icon: 'google', count: 0 },
-  { value: 'sil', label: 'SIL International', icon: 'sil', count: 0 },
-  { value: 'macos', label: 'Apple', icon: 'apple', count: 0 },
-  { value: 'manual', label: 'Expert Curated', icon: 'fontist', count: 0 },
+const SOURCE_FILTERS = [
+  { value: 'all', label: 'All' },
+  { value: 'google', label: 'Google' },
+  { value: 'sil', label: 'SIL' },
+  { value: 'macos', label: 'Apple' },
+  { value: 'manual', label: 'Expert' },
 ]
 
-// Map URL param values to internal license groups
-const licenseParamMap = {
-  'open_source': ['ofl', 'apache', 'mit', 'cc0', 'other_open'],
-  'freely_distributable': ['freely_dist'],
-  'platform_restricted': ['platform'],
-  'bundled_software': ['bundled'],
-  'ofl': ['ofl'],
-  'apache': ['apache'],
-  'mit': ['mit'],
-}
-
-function getLicenseGroup(f) {
-  if (!f) return 'unknown'
-  if (f.licenseCategory === 'open_source') {
-    if (f.licenseType === 'ofl') return 'ofl'
-    if (f.licenseType === 'apache') return 'apache'
-    if (f.licenseType === 'mit') return 'mit'
-    if (f.licenseType === 'cc0') return 'cc0'
-    return 'other_open'
+const licenseCounts = computed(() => {
+  const counts: Record<string, number> = {}
+  for (const f of allFormulas.value) {
+    const g = getLicenseGroup(f)
+    counts[g] = (counts[g] || 0) + 1
   }
-  if (f.licenseCategory === 'freely_distributable') return 'freely_dist'
-  if (f.licenseCategory === 'platform_restricted') return 'platform'
-  if (f.licenseCategory === 'bundled_software') return 'bundled'
-  return 'unknown'
-}
+  counts['all'] = allFormulas.value.length
+  return counts
+})
 
-function getLicenseBadge(f) {
-  const basePath = import.meta.env.BASE_URL || '/'
-  if (!f) return `<img src="${basePath}licenses/unknown.svg" alt="Unknown" class="license-icon" title="Unknown">`
-  if (f.licenseType === 'ofl') return `<img src="${basePath}licenses/ofl.svg" alt="OFL" class="license-icon" title="OFL">`
-  if (f.licenseType === 'apache') return `<img src="${basePath}licenses/apache.svg" alt="Apache" class="license-icon" title="Apache">`
-  if (f.licenseType === 'mit') return `<img src="${basePath}licenses/mit.svg" alt="MIT" class="license-icon" title="MIT">`
-  if (f.licenseType === 'cc0') return `<img src="${basePath}licenses/cc0.svg" alt="CC0" class="license-icon" title="CC0">`
-  if (f.licenseType === 'macos') return `<img src="${basePath}licenses/platform-tied.svg" alt="Platform Tied" class="license-icon" title="Platform Tied">`
-  if (f.licenseType === 'ms_office' || f.licenseType === 'ms_web_fonts') return `<img src="${basePath}licenses/microsoft.svg" alt="Microsoft" class="license-icon" title="Microsoft">`
-  // Fallback by category
-  if (f.licenseCategory === 'open_source') return `<img src="${basePath}licenses/open.svg" alt="Open Source" class="license-icon" title="Open Source">`
-  if (f.licenseCategory === 'freely_distributable') return `<img src="${basePath}licenses/freely-distributed.svg" alt="Freely Distributable" class="license-icon" title="Freely Distributable">`
-  if (f.licenseCategory === 'platform_restricted') return `<img src="${basePath}licenses/platform-tied.svg" alt="Platform Tied" class="license-icon" title="Platform Tied">`
-  if (f.licenseCategory === 'bundled_software') return `<img src="${basePath}licenses/bundled.svg" alt="Bundled" class="license-icon" title="Bundled Software">`
-  return `<img src="${basePath}licenses/unknown.svg" alt="Unknown" class="license-icon" title="Unknown">`
-}
-
-function getSourceBadge(f) {
-  const basePath = import.meta.env.BASE_URL || '/'
-  if (!f) return `<img src="${basePath}sources/fontist.svg" alt="Expert Curated" class="source-icon" title="Expert Curated">`
-  if (f.sourceType === 'google') return `<img src="${basePath}sources/google.svg" alt="Google Fonts" class="source-icon" title="Google Fonts">`
-  if (f.sourceType === 'sil') return `<img src="${basePath}sources/sil.svg" alt="SIL International" class="source-icon" title="SIL International">`
-  if (f.sourceType === 'macos') return `<img src="${basePath}sources/apple.svg" alt="Apple" class="source-icon" title="Apple">`
-  return `<img src="${basePath}sources/fontist.svg" alt="Expert Curated" class="source-icon" title="Expert Curated">`
-}
-
-function getSourceIcon(icon) {
-  const basePath = import.meta.env.BASE_URL || '/'
-  const icons = {
-    all: `<img src="${basePath}sources/all.svg" alt="All" class="filter-icon-img">`,
-    google: `<img src="${basePath}sources/google.svg" alt="Google" class="filter-icon-img">`,
-    sil: `<img src="${basePath}sources/sil.svg" alt="SIL" class="filter-icon-img">`,
-    apple: `<img src="${basePath}sources/apple.svg" alt="Apple" class="filter-icon-img">`,
-    fontist: `<img src="${basePath}sources/fontist.svg" alt="Fontist" class="filter-icon-img">`,
+const sourceCounts = computed(() => {
+  const counts: Record<string, number> = {}
+  for (const f of allFormulas.value) {
+    counts[f.sourceType] = (counts[f.sourceType] || 0) + 1
   }
-  return icons[icon] || icon
-}
-
-function getLicenseIcon(icon) {
-  const basePath = import.meta.env.BASE_URL || '/'
-  const icons = {
-    all: `<img src="${basePath}licenses/open.svg" alt="All" class="filter-icon-img">`,
-    ofl: `<img src="${basePath}licenses/ofl.svg" alt="OFL" class="filter-icon-img">`,
-    apache: `<img src="${basePath}licenses/apache.svg" alt="Apache" class="filter-icon-img">`,
-    mit: `<img src="${basePath}licenses/mit.svg" alt="MIT" class="filter-icon-img">`,
-    cc0: `<img src="${basePath}licenses/cc0.svg" alt="CC0" class="filter-icon-img">`,
-    open: `<img src="${basePath}licenses/open.svg" alt="Open Source" class="filter-icon-img">`,
-    free: `<img src="${basePath}licenses/freely-distributed.svg" alt="Free" class="filter-icon-img">`,
-    platform: `<img src="${basePath}licenses/platform-tied.svg" alt="Platform Tied" class="filter-icon-img">`,
-    bundled: `<img src="${basePath}licenses/bundled.svg" alt="Bundled" class="filter-icon-img">`,
-    unknown: `<img src="${basePath}licenses/unknown.svg" alt="Unknown" class="filter-icon-img">`,
-  }
-  return icons[icon] || icon
-}
-
-// Read query params from the URL (Astro islands have no vue-router).
-function initFromQuery() {
-  const q = getQueryParam('q')
-  if (typeof q === 'string' && q) {
-    searchQuery.value = q
-  }
-
-  const license = getQueryParam('license')
-  if (typeof license === 'string' && licenseParamMap[license]) {
-    selectedLicenses.value = licenseParamMap[license]
-  }
-
-  const source = getQueryParam('source')
-  if (typeof source === 'string') {
-    const srcOpt = sourceOptions.find(o => o.value === source)
-    if (srcOpt) {
-      selectedSources.value = [source]
-    }
-  }
-}
-
-// Top-level await: runs during SSG so the formulas index ships with
-// the full list + license/source facets already populated.
-try {
-  initFromQuery()
-
-  const data = await loadAllFormulas()
-  formulasData.value = data
-
-  // Set 'all' counts to total
-  licenseOptions[0].count = data.length
-  sourceOptions[0].count = data.length
-
-  data.forEach(f => {
-    const licOpt = licenseOptions.find(o => o.value === getLicenseGroup(f))
-    if (licOpt) licOpt.count++
-    const srcOpt = sourceOptions.find(o => o.value === f.sourceType)
-    if (srcOpt) srcOpt.count++
-  })
-} catch (e) {
-  console.error('Failed to load formulas data:', e)
-}
+  counts['all'] = allFormulas.value.length
+  return counts
+})
 
 const filteredFormulas = computed(() => {
-  let result = formulasData.value
-  if (searchQuery.value) {
-    const q = searchQuery.value.toLowerCase()
-    result = result.filter(f =>
-      (f.name || '').toLowerCase().includes(q) ||
-      (f.formulaName || '').toLowerCase().includes(q) ||
-      ((f.familyNames || []).some(n => (n || '').toLowerCase().includes(q)))
-    )
+  let result = allFormulas.value
+  if (selectedLicense.value !== 'all') {
+    result = result.filter(f => getLicenseGroup(f) === selectedLicense.value)
   }
-  if (!selectedLicenses.value.includes('all')) {
-    result = result.filter(f => selectedLicenses.value.includes(getLicenseGroup(f)))
-  }
-  if (!selectedSources.value.includes('all')) {
-    result = result.filter(f => selectedSources.value.includes(f.sourceType))
+  if (selectedSource.value !== 'all') {
+    result = result.filter(f => f.sourceType === selectedSource.value)
   }
   return result
 })
 
-// Group formulas by font family name. Multiple formulas can provide the
-// same font family (e.g. 6 macOS formulas for "Al Bayan"). Grouping
-// reveals the font → faces → versions → formulas hierarchy.
-const familyGroups = computed(() => {
-  const map = new Map()
+const familyGroups = computed<FamilyGroup[]>(() => {
+  const map = new Map<string, FamilyGroup>()
   for (const f of filteredFormulas.value) {
     const key = (f.name || '').toLowerCase()
     if (!map.has(key)) {
@@ -199,174 +83,138 @@ const familyGroups = computed(() => {
         sourceType: f.sourceType,
       })
     }
-    const group = map.get(key)
+    const group = map.get(key)!
     group.formulas.push(f)
     if ((f.styleCount || 0) > group.maxStyles) group.maxStyles = f.styleCount
   }
   return [...map.values()].sort((a, b) => a.name.localeCompare(b.name))
 })
 
-const PAGE_SIZE = 50
-const currentPage = ref(1)
-
-const totalPages = computed(() => Math.max(1, Math.ceil(familyGroups.value.length / PAGE_SIZE)))
-
-const pagedGroups = computed(() => {
-  const start = (currentPage.value - 1) * PAGE_SIZE
-  return familyGroups.value.slice(start, start + PAGE_SIZE)
+const browse = useAlphabetPaginatedBrowse<FamilyGroup>(familyGroups, {
+  pageSize: 50,
+  nameAccessor: g => g.name,
+  searchAccessor: g => [g.name, ...g.formulas.map(f => f.formulaName)],
+  scrollSelector: '.formulas-browser',
 })
 
-const groupedByLetter = computed(() => {
-  const groups = {}
-  for (const fam of pagedGroups.value) {
-    const letter = fam.name.charAt(0).toUpperCase()
-    if (!groups[letter]) groups[letter] = []
-    groups[letter].push(fam)
-  }
-  return groups
-})
+watch([selectedLicense, selectedSource], () => browse.resetPage())
 
-const showingFrom = computed(() =>
-  familyGroups.value.length === 0 ? 0 : (currentPage.value - 1) * PAGE_SIZE + 1,
-)
-const showingTo = computed(() =>
-  Math.min(currentPage.value * PAGE_SIZE, familyGroups.value.length),
-)
-
-watch([searchQuery, selectedLicenses, selectedSources], () => {
-  currentPage.value = 1
-})
-
-const pageWindow = computed(() => {
-  const pages = []
-  const start = Math.max(1, currentPage.value - 2)
-  const end = Math.min(totalPages.value, currentPage.value + 2)
-  for (let i = start; i <= end; i++) pages.push(i)
-  return pages
-})
-
-function goToPage(page) {
-  currentPage.value = page
-  const el = document.querySelector('.formulas-browser')
-  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-}
-
-const activeLetters = computed(() => {
-  return alphabet.filter(letter => {
-    const group = groupedByLetter.value[letter]
-    return group && group.length > 0
-  })
-})
-
-function scrollToLetter(letter) {
-  const el = document.getElementById('letter-' + letter)
-  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-}
-
-function toggleLicense(value) {
-  if (value === 'all') {
-    selectedLicenses.value = ['all']
-  } else {
-    selectedLicenses.value = [value]
-  }
-}
-
-function toggleSource(value) {
-  if (value === 'all') {
-    selectedSources.value = ['all']
-  } else {
-    selectedSources.value = [value]
-  }
+try {
+  allFormulas.value = await loadAllFormulas()
+} catch (e) {
+  console.error('Failed to load formulas data:', e)
 }
 </script>
 
 <template>
-  <div class="formulas-browser">
+  <div class="formulas-browser browse-root">
     <div class="search-bar">
-      <input v-model="searchQuery" type="text" placeholder="Search fonts by name, family, or formula key…" class="search-input" />
-      <span class="result-count">{{ filteredFormulas.length.toLocaleString() }} formulas</span>
+      <input
+        v-model="browse.searchQuery.value"
+        type="text"
+        placeholder="Search by name, family, or formula key…"
+        class="search-input"
+      />
+      <span class="result-count">{{ browse.filteredItems.value.length.toLocaleString() }} families ({{ filteredFormulas.length.toLocaleString() }} formulas)</span>
     </div>
 
-    <div class="browser-layout">
-      <aside class="filters-sidebar">
-        <div class="filter-section">
-          <h4 class="filter-heading">License</h4>
-          <label v-for="opt in licenseOptions" :key="opt.value" class="filter-checkbox" :class="{ on: selectedLicenses.includes(opt.value) }">
-            <input type="checkbox" :checked="selectedLicenses.includes(opt.value)" @change="toggleLicense(opt.value)" />
-            <span class="filter-icon" v-html="getLicenseIcon(opt.icon)"></span>
-            <span class="filter-text">{{ opt.label }}</span>
-            <span class="filter-count">{{ opt.count }}</span>
-          </label>
+    <div class="filters">
+      <div class="filter-row">
+        <span class="filter-label">License</span>
+        <div class="filter-chips">
+          <button
+            v-for="f in LICENSE_FILTERS"
+            :key="f.value"
+            :class="['chip', { on: selectedLicense === f.value }]"
+            @click="selectedLicense = f.value"
+          >
+            {{ f.label }}
+            <span class="chip-count">{{ licenseCounts[f.value] || 0 }}</span>
+          </button>
         </div>
-        <div class="filter-section">
-          <h4 class="filter-heading">Source</h4>
-          <label v-for="opt in sourceOptions" :key="opt.value" class="filter-checkbox" :class="{ on: selectedSources.includes(opt.value) }">
-            <input type="checkbox" :checked="selectedSources.includes(opt.value)" @change="toggleSource(opt.value)" />
-            <span class="filter-icon" v-html="getSourceIcon(opt.icon)"></span>
-            <span class="filter-text">{{ opt.label }}</span>
-            <span class="filter-count">{{ opt.count }}</span>
-          </label>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">Source</span>
+        <div class="filter-chips">
+          <button
+            v-for="f in SOURCE_FILTERS"
+            :key="f.value"
+            :class="['chip', { on: selectedSource === f.value }]"
+            @click="selectedSource = f.value"
+          >
+            {{ f.label }}
+            <span class="chip-count">{{ sourceCounts[f.value] || 0 }}</span>
+          </button>
         </div>
-      </aside>
+      </div>
+    </div>
 
-      <main class="results-main">
-        <nav class="alpha-nav">
-          <button v-for="letter in alphabet" :key="letter" @click="scrollToLetter(letter)" :class="{ 'has-content': groupedByLetter[letter] }" :disabled="!groupedByLetter[letter]">{{ letter }}</button>
-        </nav>
+    <nav class="alpha-nav">
+      <button
+        v-for="letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')"
+        :key="letter"
+        :disabled="!browse.groupedByLetter.value[letter]"
+        :class="{ 'has-content': browse.groupedByLetter.value[letter] }"
+        @click="browse.scrollToLetter(letter)"
+      >{{ letter }}</button>
+    </nav>
 
-        <div class="showing-info">
-          Showing {{ showingFrom.toLocaleString() }}–{{ showingTo.toLocaleString() }} of {{ familyGroups.length.toLocaleString() }} font families ({{ filteredFormulas.length.toLocaleString() }} formulas)
-        </div>
+    <div class="showing-info">
+      Showing {{ browse.showingFrom.value.toLocaleString() }}–{{ browse.showingTo.value.toLocaleString() }} of {{ browse.filteredItems.value.length.toLocaleString() }} font families
+    </div>
 
-        <div class="formula-list">
-          <div v-for="letter in activeLetters" :key="letter" :id="'letter-' + letter" class="letter-group">
-            <h3 class="letter-heading">{{ letter }}</h3>
-            <div class="family-groups">
-              <div
-                v-for="fam in groupedByLetter[letter]"
-                :key="fam.name"
-                class="family-group"
+    <div class="family-list">
+      <div
+        v-for="letter in browse.activeLetters.value"
+        :key="letter"
+        :id="'letter-' + letter"
+        class="letter-group"
+      >
+        <h3 class="letter-heading">{{ letter }}</h3>
+        <div class="family-groups">
+          <div
+            v-for="fam in browse.groupedByLetter.value[letter]"
+            :key="fam.name"
+            class="family-group"
+          >
+            <div class="family-group-head">
+              <span class="family-group-name">{{ fam.name }}</span>
+              <span class="family-group-meta">{{ fam.formulas.length }} {{ fam.formulas.length === 1 ? 'formula' : 'formulas' }} · {{ fam.maxStyles }} styles</span>
+              <span class="family-group-badges">
+                <img v-for="badge in [licenseIconForFormula({ licenseType: fam.licenseType, licenseName: fam.licenseName } as FormulaData)]" :key="'lic'" :src="badge.src" :alt="badge.alt" :title="fam.licenseName" class="badge-icon" />
+                <img v-for="badge in [sourceIconForFormula({ sourceType: fam.sourceType } as FormulaData)]" :key="'src'" :src="badge.src" :alt="badge.alt" :title="fam.sourceType" class="badge-icon" />
+              </span>
+            </div>
+            <div class="family-group-items">
+              <a
+                v-for="f in fam.formulas"
+                :key="f.slug"
+                :href="`/formulas/${f.slug}`"
+                class="formula-sub-item"
               >
-                <div class="family-group-head">
-                  <span class="family-group-name">{{ fam.name }}</span>
-                  <span class="family-group-meta">{{ fam.formulas.length }} {{ fam.formulas.length === 1 ? 'formula' : 'formulas' }} · {{ fam.maxStyles }} styles</span>
-                  <span class="family-group-badges">
-                    <span :title="fam.licenseName" v-html="getLicenseBadge({ licenseType: fam.licenseType, licenseName: fam.licenseName })"></span>
-                    <span :title="fam.sourceType" v-html="getSourceBadge({ sourceType: fam.sourceType })"></span>
-                  </span>
-                </div>
-                <div class="family-group-items">
-                  <a
-                    v-for="f in fam.formulas"
-                    :key="f.slug"
-                    :href="`/formulas/${f.slug}`"
-                    class="formula-sub-item"
-                  >
-                    <span class="formula-sub-key">{{ f.formulaName }}</span>
-                    <span class="formula-sub-meta">{{ f.familyCount }} {{ f.familyCount === 1 ? 'family' : 'families' }} · {{ f.styleCount }} {{ f.styleCount === 1 ? 'style' : 'styles' }}</span>
-                  </a>
-                </div>
-              </div>
+                <span class="formula-sub-key">{{ f.formulaName }}</span>
+                <span class="formula-sub-meta">{{ f.familyCount }} {{ f.familyCount === 1 ? 'family' : 'families' }} · {{ f.styleCount }} {{ f.styleCount === 1 ? 'style' : 'styles' }}</span>
+              </a>
             </div>
           </div>
         </div>
-
-        <nav v-if="totalPages > 1" class="pagination">
-          <button class="page-btn" :disabled="currentPage === 1" @click="goToPage(currentPage - 1)">← Prev</button>
-          <button v-if="pageWindow[0] > 1" class="page-btn" @click="goToPage(1)">1</button>
-          <span v-if="pageWindow[0] > 2" class="page-ellipsis">…</span>
-          <button
-            v-for="page in pageWindow"
-            :key="page"
-            :class="['page-btn', { on: page === currentPage }]"
-            @click="goToPage(page)"
-          >{{ page }}</button>
-          <span v-if="pageWindow[pageWindow.length - 1] < totalPages - 1" class="page-ellipsis">…</span>
-          <button v-if="pageWindow[pageWindow.length - 1] < totalPages" class="page-btn" @click="goToPage(totalPages)">{{ totalPages }}</button>
-          <button class="page-btn" :disabled="currentPage === totalPages" @click="goToPage(currentPage + 1)">Next →</button>
-        </nav>
-      </main>
+      </div>
     </div>
+
+    <nav v-if="browse.totalPages.value > 1" class="pagination">
+      <button class="page-btn" :disabled="browse.currentPage.value === 1" @click="browse.goToPage(browse.currentPage.value - 1)">← Prev</button>
+      <button v-if="browse.pageWindow.value[0] > 1" class="page-btn" @click="browse.goToPage(1)">1</button>
+      <span v-if="browse.pageWindow.value[0] > 2" class="page-ellipsis">…</span>
+      <button
+        v-for="page in browse.pageWindow.value"
+        :key="page"
+        :class="['page-btn', { on: page === browse.currentPage.value }]"
+        @click="browse.goToPage(page)"
+      >{{ page }}</button>
+      <span v-if="browse.pageWindow.value[browse.pageWindow.value.length - 1] < browse.totalPages.value - 1" class="page-ellipsis">…</span>
+      <button v-if="browse.pageWindow.value[browse.pageWindow.value.length - 1] < browse.totalPages.value" class="page-btn" @click="browse.goToPage(browse.totalPages.value)">{{ browse.totalPages.value }}</button>
+      <button class="page-btn" :disabled="browse.currentPage.value === browse.totalPages.value" @click="browse.goToPage(browse.currentPage.value + 1)">Next →</button>
+    </nav>
   </div>
 </template>
 
@@ -377,9 +225,8 @@ function toggleSource(value) {
   gap: 1rem;
   padding-bottom: 1.5rem;
   border-bottom: 1px solid var(--color-rule);
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
-
 .search-input {
   flex: 1;
   background: transparent;
@@ -392,14 +239,8 @@ function toggleSource(value) {
   outline: none;
   transition: border-color 0.2s;
 }
-.search-input:focus {
-  border-bottom-color: var(--color-accent);
-}
-.search-input::placeholder {
-  color: var(--color-mute);
-  font-style: italic;
-}
-
+.search-input:focus { border-bottom-color: var(--color-accent); }
+.search-input::placeholder { color: var(--color-mute); font-style: italic; }
 .result-count {
   font-family: var(--font-mono);
   font-size: 0.72rem;
@@ -409,92 +250,36 @@ function toggleSource(value) {
   white-space: nowrap;
 }
 
-.browser-layout {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 3rem;
-}
-
-.filters-sidebar {
-  position: sticky;
-  top: 80px;
-  align-self: start;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  max-height: calc(100vh - 100px);
-  overflow-y: auto;
-  padding-right: 0.5rem;
-}
-
-.filter-section {
-  display: flex;
-  flex-direction: column;
-}
-
-.filter-heading {
+.filters { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
+.filter-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.filter-label {
   font-family: var(--font-mono);
   font-size: 0.68rem;
   text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--color-accent);
-  margin: 0 0 0.75rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--color-rule);
+  letter-spacing: 0.14em;
+  color: var(--color-mute);
+  min-width: 70px;
 }
-
-.filter-checkbox {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.4rem 0.5rem;
-  cursor: pointer;
-  border-radius: 2px;
-  transition: background 0.15s, color 0.15s;
-}
-.filter-checkbox:hover {
-  background: var(--color-paper-deep);
-}
-.filter-checkbox.on {
-  background: var(--color-paper-deep);
-}
-.filter-checkbox input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-.filter-icon {
+.filter-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.chip {
   display: inline-flex;
-  flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-  opacity: 0.6;
-  transition: opacity 0.15s;
-}
-.filter-checkbox.on .filter-icon,
-.filter-checkbox:hover .filter-icon {
-  opacity: 1;
-}
-.filter-icon :deep(img) {
-  width: 16px;
-  height: 16px;
-}
-.filter-text {
-  font-family: var(--font-body);
-  font-size: 0.82rem;
-  color: var(--color-ink-soft);
-  flex: 1;
-  transition: color 0.15s;
-}
-.filter-checkbox.on .filter-text {
-  color: var(--color-ink);
-  font-weight: 500;
-}
-.filter-count {
+  align-items: center;
+  gap: 0.35rem;
+  background: transparent;
+  border: 1px solid var(--color-rule);
+  border-radius: 2px;
+  padding: 0.25rem 0.7rem;
   font-family: var(--font-mono);
   font-size: 0.68rem;
-  color: var(--color-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-ink-soft);
+  cursor: pointer;
+  transition: all 0.2s;
 }
+.chip:hover { border-color: var(--color-accent); color: var(--color-accent); }
+.chip.on { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-paper); }
+.chip-count { font-size: 0.6rem; opacity: 0.7; }
 
 .alpha-nav {
   display: flex;
@@ -503,7 +288,6 @@ function toggleSource(value) {
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--color-rule);
 }
-
 .alpha-nav button {
   background: transparent;
   border: none;
@@ -516,22 +300,18 @@ function toggleSource(value) {
   border-radius: 2px;
   transition: all 0.15s;
 }
-.alpha-nav button.has-content {
-  color: var(--color-ink-soft);
-}
-.alpha-nav button.has-content:hover {
-  background: var(--color-paper-deep);
-  color: var(--color-accent);
-}
-.alpha-nav button:disabled {
-  opacity: 0.3;
-  cursor: default;
+.alpha-nav button.has-content { color: var(--color-ink-soft); }
+.alpha-nav button.has-content:hover { background: var(--color-paper-deep); color: var(--color-accent); }
+.alpha-nav button:disabled { opacity: 0.3; cursor: default; }
+
+.showing-info {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--color-mute);
+  margin: 1rem 0;
 }
 
-.letter-group {
-  margin-bottom: 1.5rem;
-}
-
+.letter-group { margin-bottom: 1.5rem; }
 .letter-heading {
   font-family: var(--font-display);
   font-size: 1.3rem;
@@ -543,29 +323,15 @@ function toggleSource(value) {
   border-bottom: 1px solid var(--color-rule);
 }
 
-.family-groups {
-  display: flex;
-  flex-direction: column;
-}
-
+.family-groups { display: flex; flex-direction: column; }
 .family-group {
   padding: 0.6rem 0;
   border-bottom: 1px solid transparent;
   transition: padding 0.15s;
 }
-.family-group:hover {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  border-bottom-color: var(--color-rule);
-}
+.family-group:hover { padding-left: 0.5rem; padding-right: 0.5rem; border-bottom-color: var(--color-rule); }
 
-.family-group-head {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 0.15rem;
-}
-
+.family-group-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.15rem; }
 .family-group-name {
   font-family: var(--font-display);
   font-size: 1.05rem;
@@ -574,32 +340,16 @@ function toggleSource(value) {
   transition: color 0.2s;
   flex: 1;
 }
-.family-group:hover .family-group-name {
-  color: var(--color-accent);
-}
-
+.family-group:hover .family-group-name { color: var(--color-accent); }
 .family-group-meta {
   font-family: var(--font-mono);
   font-size: 0.68rem;
   color: var(--color-mute);
   white-space: nowrap;
 }
-
-.family-group-badges {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  opacity: 0.65;
-  transition: opacity 0.2s;
-  flex-shrink: 0;
-}
-.family-group:hover .family-group-badges {
-  opacity: 1;
-}
-.family-group-badges :deep(img) {
-  width: 16px;
-  height: 16px;
-}
+.family-group-badges { display: flex; align-items: center; gap: 0.3rem; opacity: 0.65; transition: opacity 0.2s; flex-shrink: 0; }
+.family-group:hover .family-group-badges { opacity: 1; }
+.badge-icon { width: 16px; height: 16px; }
 
 .family-group-items {
   display: flex;
@@ -610,7 +360,6 @@ function toggleSource(value) {
   margin-left: 0.25rem;
   margin-top: 0.3rem;
 }
-
 .formula-sub-item {
   display: flex;
   align-items: center;
@@ -620,11 +369,7 @@ function toggleSource(value) {
   transition: background 0.15s, padding 0.15s;
   border-radius: 2px;
 }
-.formula-sub-item:hover {
-  background: var(--color-paper-deep);
-  padding-left: 0.75rem;
-}
-
+.formula-sub-item:hover { background: var(--color-paper-deep); padding-left: 0.75rem; }
 .formula-sub-key {
   font-family: var(--font-mono);
   font-size: 0.7rem;
@@ -632,23 +377,8 @@ function toggleSource(value) {
   transition: color 0.15s;
   flex: 1;
 }
-.formula-sub-item:hover .formula-sub-key {
-  color: var(--color-accent);
-}
-
-.formula-sub-meta {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: var(--color-mute);
-  white-space: nowrap;
-}
-
-.showing-info {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  color: var(--color-mute);
-  margin: 1rem 0;
-}
+.formula-sub-item:hover .formula-sub-key { color: var(--color-accent); }
+.formula-sub-meta { font-family: var(--font-mono); font-size: 0.65rem; color: var(--color-mute); white-space: nowrap; }
 
 .pagination {
   display: flex;
@@ -660,7 +390,6 @@ function toggleSource(value) {
   margin-top: 1rem;
   flex-wrap: wrap;
 }
-
 .page-btn {
   background: transparent;
   border: 1px solid var(--color-rule);
@@ -673,55 +402,16 @@ function toggleSource(value) {
   transition: all 0.15s;
   min-width: 32px;
 }
-.page-btn:hover:not(:disabled):not(.on) {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-.page-btn.on {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-  color: var(--color-paper);
-}
-.page-btn:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
+.page-btn:hover:not(:disabled):not(.on) { border-color: var(--color-accent); color: var(--color-accent); }
+.page-btn.on { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-paper); }
+.page-btn:disabled { opacity: 0.4; cursor: default; }
+.page-ellipsis { font-family: var(--font-mono); font-size: 0.72rem; color: var(--color-mute); padding: 0 0.3rem; }
 
-.page-ellipsis {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--color-mute);
-  padding: 0 0.3rem;
-}
-
-@media (max-width: 800px) {
-  .browser-layout {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-  .filters-sidebar {
-    position: static;
-    max-height: none;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-    padding-right: 0;
-  }
-  .filter-section {
-    flex: 1;
-    min-width: 200px;
-  }
-  .family-group-name {
-    font-size: 0.95rem;
-  }
-  .formula-sub-key {
-    font-size: 0.62rem;
-  }
-  .formula-sub-meta {
-    font-size: 0.58rem;
-  }
-  .family-group-items {
-    padding-left: 0.5rem;
-  }
+@media (max-width: 700px) {
+  .filter-label { min-width: auto; }
+  .family-group-name { font-size: 0.95rem; }
+  .formula-sub-key { font-size: 0.62rem; }
+  .formula-sub-meta { font-size: 0.58rem; }
+  .family-group-items { padding-left: 0.5rem; }
 }
 </style>

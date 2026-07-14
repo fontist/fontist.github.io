@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { injectFontFace } from '../composables/useFontFace'
 import { loadCoverage } from '../lib/unicode/coverage'
-import { useUnicodeBlock } from '../composables/useUnicodeBlock'
+import { loadBlockCharacters } from '../lib/unicode/data/loader'
 import { blockScriptFamily, hexCp, safeChar, blockSlug, type ScriptFamily } from '../lib/unicode/constants'
 import type { Coverage, CoverageBlock } from '../lib/types/domain'
 
@@ -40,7 +40,10 @@ const selectedCp = ref(null)
 const fontId = ref('')
 const fontReady = ref(false)
 
-const { fetchBlock } = useUnicodeBlock()
+async function fetchBlock(name: string) {
+  const chars = await loadBlockCharacters(name)
+  return chars.length ? { chars } : null
+}
 
 const blocks = computed(() => coverage.value?.blocks || [])
 const currentBlock = computed(() => blocks.value[selectedBlockIdx.value])
