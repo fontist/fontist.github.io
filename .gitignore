@@ -167,3 +167,8 @@ dist
 CLAUDE.md
 .lycheecache
 .astro/
+
+# Essenfont per-block WOFF2 files (fetched at build time)
+public/fonts/[a-z]*.woff2
+public/fonts/[a-z]*.woff
+public/fonts.css
