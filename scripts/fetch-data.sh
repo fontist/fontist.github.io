@@ -25,6 +25,10 @@
 set -euo pipefail
 
 ARCHIVE_REPO="https://github.com/fontist/fontist-archive-public.git"
+# Which ref of the archive to build against. Defaults to the published branch;
+# override to build against a branch that has data before it reaches main:
+#   ARCHIVE_REF=data/initial-sync npm run build
+ARCHIVE_REF="${ARCHIVE_REF:-main}"
 FORMULAS_RAW="https://raw.githubusercontent.com/fontist/formulas/main/docs/public"
 FORMULAS_REPO="https://github.com/fontist/formulas.git"
 UNICODE_REPO="${UNICODE_REPO:-https://github.com/fontist/fontist-archive-public.git}"
@@ -99,7 +103,7 @@ else
   rm -rf "$VENDOR/archive-public"
   mkdir -p "$VENDOR"
   git clone --depth 1 --filter=blob:none --no-checkout \
-    "$ARCHIVE_REPO" "$VENDOR/archive-public"
+    --branch "$ARCHIVE_REF" "$ARCHIVE_REPO" "$VENDOR/archive-public"
 
   ARCHIVE_SHA="$(git -C "$VENDOR/archive-public" rev-parse HEAD)"
 
