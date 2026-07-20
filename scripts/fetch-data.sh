@@ -105,23 +105,59 @@ else
   git clone --depth 1 --filter=blob:none --no-checkout \
     --branch "$ARCHIVE_REF" "$ARCHIVE_REPO" "$VENDOR/archive-public"
 
+  # The CDN serves archive-public, so the pinned SHA must always come from
+  # there even when the metadata below is read from somewhere else.
   ARCHIVE_SHA="$(git -C "$VENDOR/archive-public" rev-parse HEAD)"
+
+  # ---------------------------------------------------------------------
+  # Build-time metadata source
+  # ---------------------------------------------------------------------
+  # The registries and the file manifest are only ever read during the build;
+  # nothing ships them to a browser. So they can come from the PRIVATE archive
+  # via the CI token, which matters because archive-public does not publish
+  # font-metadata.json yet. Runtime assets (woff/, coverage/) are a separate
+  # question — those must be publicly hosted and are NOT read here.
+  #
+  # ARCHIVE_META_PATH is a checkout of fontist-archive-private, provided by CI
+  # (actions/checkout with FONTIST_CI_PAT_TOKEN). Without it we fall back to
+  # archive-public, which is the correct long-term source once it publishes.
+  META_PATH="${ARCHIVE_META_PATH:-}"
+  # Accept a relative path (CI passes "vendor/archive-private") by resolving
+  # it against the repo root rather than whatever the caller's cwd happens to be.
+  if [[ -n "$META_PATH" && "$META_PATH" != /* ]]; then
+    META_PATH="$ROOT/$META_PATH"
+  fi
+  if [[ -n "$META_PATH" && -d "$META_PATH/.git" ]]; then
+    META_SRC="$META_PATH"
+    META_LABEL="fontist-archive-private (via token)"
+  else
+    META_SRC="$VENDOR/archive-public"
+    META_LABEL="fontist-archive-public@${ARCHIVE_SHA:0:8}"
+  fi
+  log "metadata source: $META_LABEL"
 
   # Filenames only — no blob is fetched for coverage/ or woff/.
   # Written under vendor/ rather than public/: it is build-time input for
   # enrich-font-metadata.mjs, and at ~7 MB there is no reason to publish it.
-  git -C "$VENDOR/archive-public" ls-tree -r HEAD --name-only \
+  #
+  # woff/macos/ is stripped to match bin/sync-from-private: macOS faces are
+  # proprietary and never get published, so listing them here would generate
+  # specimen URLs that can only ever 404.
+  git -C "$META_SRC" ls-tree -r HEAD --name-only \
+    | grep -v '^woff/macos/' \
     > "$VENDOR/archive-manifest.txt"
 
-  log "manifest: $(wc -l < "$VENDOR/archive-manifest.txt" | tr -d ' ') paths @ ${ARCHIVE_SHA:0:8}"
+  log "manifest: $(wc -l < "$VENDOR/archive-manifest.txt" | tr -d ' ') paths"
 
   # Fetch just the two registry blobs on demand.
-  log "checking out fonts.json, font-metadata.json"
+  log "reading fonts.json, font-metadata.json"
   for f in fonts.json font-metadata.json; do
-    if git -C "$VENDOR/archive-public" checkout HEAD -- "$f" 2>/dev/null; then
-      cp "$VENDOR/archive-public/$f" "$PUBLIC/$f"
+    if git -C "$META_SRC" checkout HEAD -- "$f" 2>/dev/null; then
+      cp "$META_SRC/$f" "$PUBLIC/$f"
     else
-      echo "error: $f missing from $ARCHIVE_REPO@$ARCHIVE_SHA" >&2
+      echo "error: $f missing from $META_LABEL" >&2
+      echo "  hint: archive-public does not publish it yet — set ARCHIVE_META_PATH" >&2
+      echo "        to a fontist-archive-private checkout, or run the sync first." >&2
       exit 1
     fi
   done

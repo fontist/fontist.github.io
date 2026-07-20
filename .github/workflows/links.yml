@@ -17,6 +17,21 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      # Same build-time metadata the main build needs — see build.yml.
+      - name: Checkout archive-private (metadata only)
+        id: meta
+        continue-on-error: true
+        uses: actions/checkout@v6
+        with:
+          repository: fontist/fontist-archive-private
+          token: ${{ secrets.FONTIST_CI_PAT_TOKEN }}
+          path: vendor/archive-private
+          filter: blob:none
+          sparse-checkout: |
+            fonts.json
+            font-metadata.json
+          sparse-checkout-cone-mode: false
+
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
@@ -28,6 +43,8 @@ jobs:
         run: npm ci
 
       - name: Build
+        env:
+          ARCHIVE_META_PATH: ${{ steps.meta.outcome == 'success' && 'vendor/archive-private' || '' }}
         run: npm run build
 
       - name: Restore lychee cache
