@@ -38,6 +38,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      # Build-time metadata only: the two registry JSONs and the file manifest.
+      # These are never served to a browser, so they can come from the private
+      # archive — which matters because archive-public does not publish
+      # font-metadata.json yet. blob:none + sparse-checkout pulls ~5 MB of blobs
+      # instead of the repo's 6 GB, while still giving `git ls-tree` the full
+      # tree for the manifest.
+      #
+      # Skipped when the secret is unavailable (fork PRs); fetch-data.sh then
+      # falls back to archive-public and reports the missing artifact clearly.
+      - name: Checkout archive-private (metadata only)
+        id: meta
+        continue-on-error: true
+        uses: actions/checkout@v6
+        with:
+          repository: fontist/fontist-archive-private
+          token: ${{ secrets.FONTIST_CI_PAT_TOKEN }}
+          path: vendor/archive-private
+          filter: blob:none
+          sparse-checkout: |
+            fonts.json
+            font-metadata.json
+          sparse-checkout-cone-mode: false
+
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
@@ -52,6 +75,10 @@ jobs:
         run: npm ci
 
       - name: Build (fetch-data.sh clones the archive + formulas v5, then vite-ssg builds)
+        # Only point at the private checkout if it actually succeeded, so a
+        # fork PR falls back cleanly instead of pointing at an empty directory.
+        env:
+          ARCHIVE_META_PATH: ${{ steps.meta.outcome == 'success' && 'vendor/archive-private' || '' }}
         run: npm run build
 
       - name: Upload artifact
