@@ -53,56 +53,87 @@ done
 log() { printf '\033[1;34mfetch:\033[0m %s\n' "$*"; }
 
 # ---------------------------------------------------------------------------
-# 1. fontist-archive: coverage, woff2 specimens, registry, metadata
+# 1. fontist-archive: manifest + registries (bulk assets stay on the CDN)
 # ---------------------------------------------------------------------------
+# coverage/ (1.1 GB) and woff/ (1.0 GB) are NOT copied into public/. Together
+# with details/ they exceed the 1 GB GitHub Pages published-site limit, so the
+# site loads them at runtime from jsDelivr instead. See ARCHIVE_CDN_TEMPLATE.
+#
+# What the build actually needs from the archive is the *list* of available
+# files (to populate woff_file / coverage_file in font-metadata.json) plus the
+# two small registry JSONs. A --no-checkout, blob:none clone gives us the tree
+# without downloading a single font, and `git ls-tree` turns it into a manifest.
+#
+# The CDN URL is pinned to the archive commit SHA rather than @main: jsDelivr
+# caches branch refs for hours, so @main would serve stale fonts after a sync.
+ARCHIVE_CDN_TEMPLATE="https://cdn.jsdelivr.net/gh/fontist/fontist-archive-public@%s"
+
+# Rewrites .env so PUBLIC_ARCHIVE_CDN_BASE always matches the archive SHA the
+# rest of public/ was built from. .env is gitignored and therefore routinely
+# absent on a fresh checkout; without this the skip path below would leave the
+# CDN base empty and every archive URL would resolve site-relative and 404.
+write_env() {
+  local base="$1"
+  local env_file="$ROOT/.env"
+  if [[ -f "$env_file" ]]; then
+    grep -v '^PUBLIC_ARCHIVE_CDN_BASE=' "$env_file" > "$env_file.tmp" || true
+    mv "$env_file.tmp" "$env_file"
+  fi
+  echo "PUBLIC_ARCHIVE_CDN_BASE=$base" >> "$env_file"
+}
+
 if [[ -f "$PUBLIC/fonts.json" && -f "$PUBLIC/font-metadata.json" \
-   && -d "$PUBLIC/coverage" && -d "$PUBLIC/fonts" && $FORCE -eq 0 ]]; then
-  log "archive data present, skipping (use --force to refetch)"
+   && -f "$VENDOR/archive-manifest.txt" && -f "$PUBLIC/archive-ref.json" \
+   && $FORCE -eq 0 ]]; then
+  log "archive manifest present, skipping (use --force to refetch)"
+  # Re-derive the CDN base from the ref we already fetched.
+  CACHED_BASE="$(sed -n 's/.*"cdn_base"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$PUBLIC/archive-ref.json")"
+  if [[ -z "$CACHED_BASE" ]]; then
+    echo "error: archive-ref.json has no cdn_base — re-run with --force" >&2
+    exit 1
+  fi
+  write_env "$CACHED_BASE"
+  log "archive pinned → $CACHED_BASE"
 else
-  log "cloning fontist-archive (shallow)…"
-  TMP="$(mktemp -d)"
-  trap 'rm -rf "$TMP"' EXIT
-  git clone --depth 1 "$ARCHIVE_REPO" "$TMP/archive"
+  log "fetching fontist-archive manifest (no blobs)…"
+  rm -rf "$VENDOR/archive-public"
+  mkdir -p "$VENDOR"
+  git clone --depth 1 --filter=blob:none --no-checkout \
+    "$ARCHIVE_REPO" "$VENDOR/archive-public"
 
-  # Mirrors .github/workflows/build.yml: each artifact is optional and may
-  # be absent from origin/main while the upstream rebuild is in flight.
-  # '|| true' keeps this script idempotent across partial archive states.
-  log "copying coverage/ (optional)"
-  mkdir -p "$PUBLIC/coverage"
-  if [[ -d "$TMP/archive/coverage" ]]; then
-    cp -r "$TMP/archive/coverage/." "$PUBLIC/coverage/"
-  else
-    printf '  (no coverage/ on upstream archive — site degrades gracefully)\n'
-  fi
+  ARCHIVE_SHA="$(git -C "$VENDOR/archive-public" rev-parse HEAD)"
 
-  log "copying details/ (optional)"
-  mkdir -p "$PUBLIC/details"
-  if [[ -d "$TMP/archive/details" ]]; then
-    cp -r "$TMP/archive/details/." "$PUBLIC/details/"
-  else
-    printf '  (no details/ on upstream archive — formula pages degrade to summary)\n'
-  fi
+  # Filenames only — no blob is fetched for coverage/ or woff/.
+  # Written under vendor/ rather than public/: it is build-time input for
+  # enrich-font-metadata.mjs, and at ~7 MB there is no reason to publish it.
+  git -C "$VENDOR/archive-public" ls-tree -r HEAD --name-only \
+    > "$VENDOR/archive-manifest.txt"
 
-  log "copying woff/ (preserving woff/{slug}/{PSName}.woff structure)"
-  mkdir -p "$PUBLIC/fonts/noto"
-  if [[ -d "$TMP/archive/woff" ]]; then
-    # Nested woff/{slug}/{PSName}.woff preserved as-is so that
-    # font-metadata.json's woff_file URLs (e.g. "woff/google/abel/Abel-Regular.woff")
-    # resolve verbatim under public/. NOTO fallbacks under public/fonts/noto/
-    # are committed separately and not touched here.
-    mkdir -p "$PUBLIC/woff"
-    cp -r "$TMP/archive/woff/." "$PUBLIC/woff/"
-  else
-    printf '  (no woff/ on upstream archive — specimens will 404)\n'
-  fi
+  log "manifest: $(wc -l < "$VENDOR/archive-manifest.txt" | tr -d ' ') paths @ ${ARCHIVE_SHA:0:8}"
 
-  log "copying fonts.json, font-metadata.json"
-  [[ -f "$TMP/archive/fonts.json" ]] \
-    && cp "$TMP/archive/fonts.json" "$PUBLIC/fonts.json" \
-    || printf '  (no fonts.json on upstream archive)\n'
-  [[ -f "$TMP/archive/font-metadata.json" ]] \
-    && cp "$TMP/archive/font-metadata.json" "$PUBLIC/font-metadata.json" \
-    || printf '  (no font-metadata.json on upstream archive)\n'
+  # Fetch just the two registry blobs on demand.
+  log "checking out fonts.json, font-metadata.json"
+  for f in fonts.json font-metadata.json; do
+    if git -C "$VENDOR/archive-public" checkout HEAD -- "$f" 2>/dev/null; then
+      cp "$VENDOR/archive-public/$f" "$PUBLIC/$f"
+    else
+      echo "error: $f missing from $ARCHIVE_REPO@$ARCHIVE_SHA" >&2
+      exit 1
+    fi
+  done
+
+  ARCHIVE_CDN_BASE="$(printf "$ARCHIVE_CDN_TEMPLATE" "$ARCHIVE_SHA")"
+
+  # Consumed by the site at runtime to build absolute asset URLs.
+  printf '{\n  "repo": "fontist/fontist-archive-public",\n  "sha": "%s",\n  "cdn_base": "%s"\n}\n' \
+    "$ARCHIVE_SHA" "$ARCHIVE_CDN_BASE" \
+    > "$PUBLIC/archive-ref.json"
+
+  # Vite/Astro exposes PUBLIC_* to client code via import.meta.env, which is
+  # how src/lib/archive-url.ts finds the CDN.
+  write_env "$ARCHIVE_CDN_BASE"
+
+  log "archive pinned @ ${ARCHIVE_SHA:0:8} → $ARCHIVE_CDN_BASE"
 fi
 
 # ---------------------------------------------------------------------------
@@ -206,12 +237,23 @@ for f in formulas-data.json stats.json fonts.json font-metadata.json; do
     printf '  %-25s %s bytes\n' "$f" "$sz"
   fi
 done
-count_cov=$(find "$PUBLIC/coverage" -maxdepth 1 -type f 2>/dev/null | wc -l | tr -d ' ' || true)
-count_details=$(find "$PUBLIC/details" -name '*.json' 2>/dev/null | wc -l | tr -d ' ' || true)
-count_woff=$(find "$PUBLIC/woff" -name '*.woff' 2>/dev/null | wc -l | tr -d ' ' || true)
-printf '  %-25s %s files\n' "coverage/" "$count_cov"
-printf '  %-25s %s files\n' "details/" "$count_details"
-printf '  %-25s %s woff files\n' "woff/" "$count_woff"
+# coverage/, details/ and woff/ are intentionally absent from public/ — they
+# are served from the CDN. Report what the manifest says the archive holds, so
+# an empty archive is visible here rather than surfacing as site-wide 404s.
+if [[ -f "$VENDOR/archive-manifest.txt" ]]; then
+  count_cov=$(grep -c '^coverage/' "$VENDOR/archive-manifest.txt" || true)
+  count_details=$(grep -c '^details/.*\.json$' "$VENDOR/archive-manifest.txt" || true)
+  count_woff=$(grep -c '^woff/.*\.woff$' "$VENDOR/archive-manifest.txt" || true)
+  printf '\n  archive (served from CDN, not bundled):\n'
+  printf '  %-25s %s files\n' "coverage/" "$count_cov"
+  printf '  %-25s %s files\n' "details/" "$count_details"
+  printf '  %-25s %s woff files\n' "woff/" "$count_woff"
+
+  if [[ "$count_woff" -eq 0 ]]; then
+    echo "error: archive publishes no woff files — every specimen would 404" >&2
+    exit 1
+  fi
+fi
 if [[ $WITH_YAML -eq 1 ]]; then
   count_yaml=$(find "$VENDOR/formulas/Formulas" -name '*.yaml' 2>/dev/null | wc -l | tr -d ' ')
   printf '  %-25s %s YAML formulas\n' "vendor/formulas/" "$count_yaml"

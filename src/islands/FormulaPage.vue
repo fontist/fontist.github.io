@@ -4,6 +4,7 @@ import { findFormula, type FormulaData } from '../lib/formulas/loader'
 import { findFormulaDetails, type FormulaDetails } from '../lib/formulas/details-loader'
 import { findFamilyByFormula, type FontFamily } from '../lib/fonts/families-loader'
 import { injectFontFace } from '../composables/useFontFace'
+import { archiveUrl } from '../lib/archive-url'
 
 const props = defineProps({
   slug: { type: String, required: true }
@@ -40,7 +41,15 @@ watch(slug, loadData)
 
 const woffPath = computed(() => {
   if (!formula.value || !formula.value.licenseCategory?.includes('open')) return ''
-  return `woff/${slug}.woff`
+  // Use the path the archive actually published rather than guessing a layout.
+  // This used to build `woff/{slug}.woff`, which matched the old flat archive
+  // but 404s against the current woff/{source}/{slug}/{PSName}.woff layout.
+  // A family can carry several faces plus non-redistributable stubs with no
+  // path, so take the first redistributable file that has one.
+  const file = family.value?.files?.find((f) => f.redistributable && f.path)
+  if (!file?.path) return ''
+  // Specimens live in fontist-archive-public, not public/ — resolve to the CDN.
+  return archiveUrl(file.path)
 })
 
 const { fontId: specimenFontId, ensureInjected: ensureSpecimenFont } = injectFontFace(

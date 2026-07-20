@@ -8,6 +8,8 @@
 // this module is importable outside vite. Tests inject their own fetcher
 // and never hit the fetchJson/fetchText paths.
 
+import { archiveUrl, isArchivePath, archiveCdnBase } from './archive-url.ts'
+
 const env = (import.meta as ImportMeta & { env?: { SSR?: boolean; BASE_URL?: string } }).env
 const isSSR = env?.SSR === true
 
@@ -19,6 +21,18 @@ function getCwd(): string {
 }
 
 export async function fetchJson<T>(path: string): Promise<T> {
+  // Archive assets (coverage/, woff/, details/) are not on disk or on Pages —
+  // they are served from the CDN. Go straight to the network in both SSR and
+  // browser contexts; a disk read would always miss.
+  //
+  // Only when a CDN base is configured: without one, archiveUrl() returns a
+  // site-relative path, and Node's fetch rejects that with ERR_INVALID_URL
+  // under SSR. Falling through preserves the local-checkout dev path.
+  if (isArchivePath(path) && archiveCdnBase()) {
+    const res = await fetch(archiveUrl(path))
+    if (!res.ok) throw new Error(`Failed to fetch ${path}: ${res.status}`)
+    return (await res.json()) as T
+  }
   if (isSSR) {
     const { readFileSync } = await import('node:fs')
     const { resolve } = await import('node:path')
@@ -33,6 +47,11 @@ export async function fetchJson<T>(path: string): Promise<T> {
 }
 
 export async function fetchText(path: string): Promise<string> {
+  if (isArchivePath(path) && archiveCdnBase()) {
+    const res = await fetch(archiveUrl(path))
+    if (!res.ok) throw new Error(`Failed to fetch ${path}: ${res.status}`)
+    return await res.text()
+  }
   if (isSSR) {
     const { readFileSync } = await import('node:fs')
     const { resolve } = await import('node:path')

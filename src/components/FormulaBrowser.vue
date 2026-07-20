@@ -109,12 +109,19 @@ try {
 <template>
   <div class="formulas-browser browse-root">
     <div class="search-bar">
-      <input
-        v-model="browse.searchQuery.value"
-        type="text"
-        placeholder="Search by name, family, or formula key…"
-        class="search-input"
-      />
+      <label class="search-field">
+        <svg class="search-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+          <circle cx="9" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="1.6" />
+          <path d="M13.5 13.5 L17.5 17.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        </svg>
+        <input
+          v-model="browse.searchQuery.value"
+          type="search"
+          placeholder="Search by name, family, or formula key…"
+          class="search-input"
+          aria-label="Search formulas"
+        />
+      </label>
       <span class="result-count">{{ browse.filteredItems.value.length.toLocaleString() }} families ({{ filteredFormulas.length.toLocaleString() }} formulas)</span>
     </div>
 
@@ -227,20 +234,45 @@ try {
   border-bottom: 1px solid var(--color-rule);
   margin-bottom: 1.5rem;
 }
+/* The field was a bare 1px underline at --color-rule (14% alpha in dark),
+   with no fill or icon — on the dark theme it read as no control at all.
+   Give it an explicit surface, a stronger edge and a search glyph so it is
+   discoverable, while keeping the editorial type treatment. */
+.search-field {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.85rem;
+  background: var(--color-paper-deep);
+  border: 1px solid var(--color-rule-strong);
+  border-radius: 3px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.search-field:focus-within {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-soft);
+}
+.search-icon {
+  width: 1rem;
+  height: 1rem;
+  flex: none;
+  color: var(--color-mute);
+}
 .search-input {
   flex: 1;
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--color-rule);
-  padding: 0.5rem 0;
+  padding: 0;
   font-family: var(--font-body);
   font-size: 1rem;
   color: var(--color-ink);
   outline: none;
-  transition: border-color 0.2s;
 }
-.search-input:focus { border-bottom-color: var(--color-accent); }
 .search-input::placeholder { color: var(--color-mute); font-style: italic; }
+/* Safari renders a default inner affordance on type=search. */
+.search-input::-webkit-search-decoration,
+.search-input::-webkit-search-cancel-button { -webkit-appearance: none; }
 .result-count {
   font-family: var(--font-mono);
   font-size: 0.72rem;
