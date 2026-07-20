@@ -23,11 +23,19 @@ const selectableFiles = computed<FontFamilyFile[]>(() =>
 const currentFile = computed<FontFamilyFile | null>(() => {
   const files = family.value?.files || []
   if (files.length === 0) return null
+  // `slug` is NOT unique within a family: the same font can appear as a
+  // `manual` formula with no archive assets and a `google` one with them,
+  // both under slug "carlito". Selecting by slug alone can therefore resolve
+  // back to the empty record, which falls through to a bare-slug coverage
+  // path that 404s. Among equal-slug matches, prefer one that has data.
+  const withData = (candidates: FontFamilyFile[]) =>
+    candidates.find(f => f.coverage_file || f.path) ?? candidates[0]
+
   if (selectedFileSlug.value) {
-    const found = files.find(f => f.slug === selectedFileSlug.value)
-    if (found) return found
+    const matches = files.filter(f => f.slug === selectedFileSlug.value)
+    if (matches.length > 0) return withData(matches)
   }
-  return files[0]
+  return withData(files)
 })
 
 async function loadFamily() {
