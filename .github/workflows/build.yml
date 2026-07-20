@@ -74,6 +74,33 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Both cached artifacts are keyed on the upstream commit that produced
+      # them, so a cache hit is only ever used when the source is unchanged.
+      # fetch-data.sh and fetch-essenfont.mjs both skip their work when the
+      # output is already present, so a hit turns into a genuine no-op.
+      - name: Resolve upstream commits
+        id: upstream
+        run: |
+          echo "formulas=$(git ls-remote https://github.com/fontist/formulas.git v5 | cut -f1)" >> "$GITHUB_OUTPUT"
+          echo "essenfont=$(git ls-remote https://github.com/essenfont/essenfont.github.io.git HEAD | cut -f1)" >> "$GITHUB_OUTPUT"
+
+      # Saves cloning formulas + `npm install` in docs/ + generate.js (~13s),
+      # and means a formulas outage no longer breaks the site build.
+      - name: Cache formulas data
+        uses: actions/cache@v4
+        with:
+          path: |
+            public/formulas-data.json
+            public/stats.json
+          key: formulas-data-${{ steps.upstream.outputs.formulas }}
+
+      # 209 per-block woff2 files (~97 MB), otherwise re-cloned every build.
+      - name: Cache Essenfont woff2
+        uses: actions/cache@v4
+        with:
+          path: public/fonts
+          key: essenfont-${{ steps.upstream.outputs.essenfont }}
+
       - name: Build (fetch-data.sh clones the archive + formulas v5, then vite-ssg builds)
         # Only point at the private checkout if it actually succeeded, so a
         # fork PR falls back cleanly instead of pointing at an empty directory.
