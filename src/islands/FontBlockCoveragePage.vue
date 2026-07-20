@@ -35,7 +35,10 @@ const activeEntry = computed<FamilyFileEntry | null>(() => {
     if (hit) return hit
   }
   const pool = entries.value.filter(e => e.file.redistributable)
-  return (pool.length > 0 ? pool : entries.value)[0]
+  const candidates = pool.length > 0 ? pool : entries.value
+  // Prefer an entry with a real coverage path — the bare-slug fallback below
+  // only resolves for the legacy flat archive layout and otherwise 404s.
+  return candidates.find(e => e.file.coverage_file) ?? candidates[0]
 })
 
 const activeFamily = computed<FontFamily | null>(() => activeEntry.value?.family ?? null)

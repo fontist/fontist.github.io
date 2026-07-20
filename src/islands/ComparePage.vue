@@ -60,11 +60,16 @@ async function loadRegistry() {
     availableSlugs.value = new Set(meta.fonts.map((f) => f.slug))
     const bySlug = new Map<string, { woff_file?: string; coverage_file?: string }>()
     for (const f of meta.fonts) {
-      // First write wins: families with multiple styles all map back to
-      // the canonical family slug here, and ComparePage indexes at the
-      // family level. The metadata entry's woff_file/coverage_file paths
-      // are good enough for specimen rendering.
-      if (!bySlug.has(f.slug)) {
+      // Families with multiple styles all map back to the canonical family
+      // slug here, and ComparePage indexes at the family level.
+      //
+      // Prefer whichever record actually carries asset paths rather than
+      // taking the first seen: the same slug can appear as a `manual` formula
+      // with no archive assets and a `google` one with them, and if the empty
+      // record wins, coverage falls back to a bare-slug path that 404s.
+      const existing = bySlug.get(f.slug)
+      const existingHasData = !!(existing?.woff_file || existing?.coverage_file)
+      if (!existing || (!existingHasData && (f.woff_file || f.coverage_file))) {
         bySlug.set(f.slug, {
           woff_file: f.woff_file,
           coverage_file: f.coverage_file,

@@ -20,6 +20,8 @@ dist-ssr
 /public/formulas-data.json
 /public/font-families.json
 /public/stats.json
+/public/archive-manifest.txt
+/public/archive-ref.json
 /public/search-index.json
 /public/sitemap.xml
 
