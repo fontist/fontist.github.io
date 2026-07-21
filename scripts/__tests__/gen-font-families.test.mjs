@@ -200,4 +200,40 @@ describe('buildFamilyIndex', () => {
     assert.equal(file.coverage_file, null)
     assert.equal(file.redistributable, false)
   })
+
+  it('attributes faces to the EXACT formula, not just the provider', () => {
+    // Padauk is provided by two same-provider formulas (sil/padauk and
+    // sil/padauk_6.000). A face from padauk_6.000 must appear ONLY under
+    // padauk_6.000 — matching by provider namespace alone would duplicate it
+    // under sil/padauk too.
+    const index = buildFamilyIndex({
+      fonts: { fonts: [mkFontEntry('padauk', 'Padauk', ['sil/padauk', 'sil/padauk_6.000'])] },
+      metadata: {
+        fonts: [
+          { slug: 'padauk', formula_path: 'Formulas/sil/padauk.yml', redistributable: true, version: '3.0' },
+          { slug: 'padauk', formula_path: 'Formulas/sil/padauk_6.000.yml', redistributable: true, version: '6.000' },
+        ],
+      },
+      formulas: [mkFormula('sil/padauk'), mkFormula('sil/padauk_6.000')],
+    })
+
+    const files = index.families[0].files
+    assert.equal(files.length, 2, 'one file per formula, not four')
+    const byFormula = Object.fromEntries(files.map(f => [f.formula_slug, f]))
+    assert.equal(byFormula['sil/padauk'].version, '3.0')
+    assert.equal(byFormula['sil/padauk_6.000'].version, '6.000')
+  })
+
+  it('collapses duplicate aggregate face entries for one formula', () => {
+    // The aggregate can carry the same face twice for a formula; the index
+    // must not emit two identical files (they would collide as Vue keys).
+    const dup = { slug: 'padauk', formula_path: 'Formulas/sil/padauk.yml', redistributable: true, version: '3.0' }
+    const index = buildFamilyIndex({
+      fonts: { fonts: [mkFontEntry('padauk', 'Padauk', ['sil/padauk'])] },
+      metadata: { fonts: [dup, { ...dup }] },
+      formulas: [mkFormula('sil/padauk')],
+    })
+
+    assert.equal(index.families[0].files.length, 1, 'identical duplicate collapsed')
+  })
 })

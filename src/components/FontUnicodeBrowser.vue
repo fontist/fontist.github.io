@@ -34,7 +34,7 @@ const props = defineProps({
 const coverage = ref(null)
 const unicodeBlock = ref(null)
 const loading = ref(true)
-const error = ref(null)
+const error = ref<Error | null>(null)
 const selectedBlockIdx = ref(0)
 const selectedCp = ref(null)
 const fontId = ref('')
@@ -120,23 +120,34 @@ async function selectBlock(idx) {
   }
 }
 
-// Top-level await: runs during SSG so the rendered HTML contains real
-// coverage data, not a perpetual "Loading…" placeholder. Font CSS
-// injection stays in onMounted because it touches `document` (client-only).
-coverage.value = await loadCoverage(props.coverageFile || props.slug)
-if (coverage.value && blocks.value.length > 0) {
-  // Deep-link to initialBlockSlug when provided; else default to first block.
-  let startIdx = 0
-  if (props.initialBlockSlug) {
-    const found = blocks.value.findIndex(b => blockSlug(b.name) === props.initialBlockSlug)
-    if (found >= 0) startIdx = found
-  }
-  selectedBlockIdx.value = startIdx
-  unicodeBlock.value = await fetchBlock(blocks.value[startIdx].name)
-}
-loading.value = false
-
+// Both islands that mount this component (FontFamilyPage,
+// FontBlockCoveragePage) are client:only, so this never runs during SSG —
+// loading in onMounted (not a top-level await) keeps setup synchronous. That
+// avoids the async-setup-without-Suspense trap: a parent that reveals this
+// component via a v-if flipped after its own async setup resolved would
+// otherwise mount an async child past the Suspense boundary and hang. The
+// try/finally guarantees `loading` always clears, so a missing/failed
+// coverage fetch lands on the empty state instead of a perpetual spinner.
 onMounted(async () => {
+  try {
+    coverage.value = await loadCoverage(props.coverageFile || props.slug)
+    if (coverage.value && blocks.value.length > 0) {
+      // Deep-link to initialBlockSlug when provided; else default to first block.
+      let startIdx = 0
+      if (props.initialBlockSlug) {
+        const found = blocks.value.findIndex(b => blockSlug(b.name) === props.initialBlockSlug)
+        if (found >= 0) startIdx = found
+      }
+      selectedBlockIdx.value = startIdx
+      unicodeBlock.value = await fetchBlock(blocks.value[startIdx].name)
+    }
+  } catch (e) {
+    error.value = e as Error
+  } finally {
+    loading.value = false
+  }
+
+  // Font CSS injection touches `document`, so it must stay client-only.
   if (props.redistributable && props.fontPath) {
     const { fontId: fid, ensureInjected } = injectFontFace(
       props.slug, props.fontPath, props.redistributable
