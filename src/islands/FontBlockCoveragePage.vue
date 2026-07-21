@@ -9,6 +9,7 @@
 
 import { computed, ref, watch } from 'vue'
 import { findFilesBySlug, type FamilyFileEntry } from '../lib/fonts/families-loader'
+import { setQueryParamAndReload } from '../lib/nav'
 import { fetchJson } from '../lib/ssr-fetch'
 import type { FontFamily, FontFamilyFile, Coverage } from '../lib/types/domain'
 import { blockSlug, blockDisplayName } from '../lib/unicode/constants'
@@ -30,8 +31,8 @@ const loading = ref(true)
 
 const activeEntry = computed<FamilyFileEntry | null>(() => {
   if (entries.value.length === 0) return null
-  if (requestedFormula) {
-    const hit = entries.value.find(e => e.file.formula_slug === requestedFormula)
+  if (requestedFormula.value) {
+    const hit = entries.value.find(e => e.file.formula_slug === requestedFormula.value)
     if (hit) return hit
   }
   const pool = entries.value.filter(e => e.file.redistributable)
@@ -66,11 +67,15 @@ const completeness = computed(() => {
 })
 
 function switchFormula(formulaSlug: string) {
-  window.location.replace({ query: { ...route.query, formula: formulaSlug } })
+  setQueryParamAndReload('formula', formulaSlug)
 }
 
 async function loadAll() {
   loading.value = true
+  // A failed index/blocks fetch must not reject setup (this island is
+  // client:only, so a rejected top-level await would leave the page blank).
+  // Swallow to the empty state — `matchedBlock`/`activeFile` stay null and the
+  // template renders the "unknown block / no coverage" branches.
   try {
     const [entrs, blocksIndex] = await Promise.all([
       findFilesBySlug(fontSlug),
@@ -90,6 +95,10 @@ async function loadAll() {
         coverage.value = null
       }
     }
+  } catch {
+    entries.value = []
+    allBlocks.value = []
+    coverage.value = null
   } finally {
     loading.value = false
   }

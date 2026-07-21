@@ -4315,6 +4315,13 @@ html.dark .pm-legend-mark--no           { color: #f0d6d6; }
   color: var(--color-mute);
 }
 .ffp-chip.on .ffp-chip-formula { color: rgba(255, 255, 255, 0.75); }
+.ffp-chip-version {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--color-accent);
+  letter-spacing: -0.01em;
+}
+.ffp-chip.on .ffp-chip-version { color: rgba(255, 255, 255, 0.9); }
 
 .ffp-body { margin-top: 1rem; }
 .ffp-empty {

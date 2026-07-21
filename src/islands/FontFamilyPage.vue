@@ -16,7 +16,10 @@ const view = computed(() => ((typeof window !== 'undefined' ? new URLSearchParam
 
 const family = ref<FontFamily | null>(null)
 const loading = ref(true)
-const selectedFileSlug = ref<string | null>(null)
+const selectedFileId = ref<string | null>(null)
+// slug is NOT unique within a family — the same face can be provided by several
+// formulas — so a file's identity is slug + formula_slug.
+const fileId = (f: FontFamilyFile) => `${f.slug}|${f.formula_slug}`
 const selectableFiles = computed<FontFamilyFile[]>(() =>
   (family.value?.files || []).filter(f => f.redistributable),
 )
@@ -24,11 +27,9 @@ const selectableFiles = computed<FontFamilyFile[]>(() =>
 const currentFile = computed<FontFamilyFile | null>(() => {
   const files = family.value?.files || []
   if (files.length === 0) return null
-  // slug is not unique within a family (see pickFileWithData); among
-  // equal-slug matches prefer one that actually has assets.
-  if (selectedFileSlug.value) {
-    const matches = files.filter(f => f.slug === selectedFileSlug.value)
-    if (matches.length > 0) return pickFileWithData(matches) ?? null
+  if (selectedFileId.value) {
+    const hit = files.find(f => fileId(f) === selectedFileId.value)
+    if (hit) return hit
   }
   return pickFileWithData(files) ?? null
 })
@@ -38,7 +39,7 @@ async function loadFamily() {
   try {
     family.value = await loadFontFamily(familySlug)
     const initial = family.value?.files?.find(f => f.redistributable) || family.value?.files?.[0]
-    selectedFileSlug.value = initial?.slug || null
+    selectedFileId.value = initial ? fileId(initial) : null
   } finally {
     loading.value = false
   }
@@ -46,8 +47,8 @@ async function loadFamily() {
 
 await loadFamily()
 
-function selectFile(slug: string) {
-  selectedFileSlug.value = slug
+function selectFile(f: FontFamilyFile) {
+  selectedFileId.value = fileId(f)
 }
 </script>
 
@@ -63,6 +64,7 @@ function selectFile(slug: string) {
           title="At least one redistributable file"
         >Redistributable</span>
         <span v-else class="ffp-badge ffp-badge--no" title="No redistributable files">Proprietary</span>
+        <span v-if="currentFile?.version" class="ffp-chip-version" title="Font version">{{ currentFile.version }}</span>
       </div>
       <p class="ffp-meta">
         {{ family.style_count }} {{ family.style_count === 1 ? 'style' : 'styles' }}
@@ -95,12 +97,13 @@ function selectFile(slug: string) {
       <div class="ffp-chips">
         <button
           v-for="f in selectableFiles"
-          :key="f.slug"
-          :class="['ffp-chip', { on: currentFile?.slug === f.slug }]"
-          @click="selectFile(f.slug)"
+          :key="fileId(f)"
+          :class="['ffp-chip', { on: currentFile && fileId(currentFile) === fileId(f) }]"
+          @click="selectFile(f)"
         >
           <span class="ffp-chip-style">{{ f.style }}</span>
           <span class="ffp-chip-formula">{{ f.formula_slug }}</span>
+          <span v-if="f.version" class="ffp-chip-version">{{ f.version }}</span>
         </button>
       </div>
     </section>
@@ -108,7 +111,7 @@ function selectFile(slug: string) {
     <main class="ffp-body">
       <template v-if="view === 'inspector' && currentFile">
         <FontViewer
-          :key="currentFile.slug"
+          :key="fileId(currentFile)"
           :slug="currentFile.slug"
           :font-path="currentFile.path"
           :coverage-file="currentFile.coverage_file"
@@ -117,7 +120,7 @@ function selectFile(slug: string) {
       </template>
       <template v-else-if="currentFile">
         <FontSpecimen
-          :key="currentFile.slug"
+          :key="fileId(currentFile)"
           :slug="currentFile.slug"
           :family-name="family.name"
           :font-path="currentFile.path"
@@ -126,7 +129,7 @@ function selectFile(slug: string) {
         />
         <h2 class="ffp-section-title">Unicode Coverage</h2>
         <FontUnicodeBrowser
-          :key="'fub-' + currentFile.slug"
+          :key="'fub-' + fileId(currentFile)"
           :slug="currentFile.slug"
           :font-path="currentFile.path"
           :coverage-file="currentFile.coverage_file"

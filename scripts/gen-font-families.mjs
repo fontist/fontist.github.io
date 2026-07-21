@@ -5,11 +5,20 @@
 //
 // Reads (all produced upstream by scripts/fetch-data.sh):
 //   public/fonts.json           — family-level registry (canonical_name → formulas[])
-//   public/font-metadata.json   — per-file metadata (slug, formula_path, woff_file, ...)
+//   public/font-metadata.json   — per-face registry, the version-enriched
+//                                 aggregate (each face carries version /
+//                                 font_revision, added by RegistryBuilder in
+//                                 fontist-archive-private)
 //   public/formulas-data.json   — per-formula records (license info etc.)
 //
 // Writes:
 //   public/font-families.json   — see FontFamilyIndex in src/lib/types/domain.ts
+//
+// The site consumes the aggregate, not the ~16k per-style files that
+// archive-private keeps as its build cache: reading that many files at build
+// time exhausted file descriptors (EMFILE). buildFamilyIndex matches faces to
+// formulas by provider namespace (formula_path) and carries `version` through
+// to the family index.
 //
 // Run via `npm run gen-font-families` or as part of `scripts/fetch-data.sh`.
 
@@ -22,37 +31,55 @@ export function buildFamilyIndex({ fonts, metadata, formulas }) {
   for (const f of formulas || []) {
     if (f.slug) formulaBySlug.set(f.slug, f)
   }
-  const metaData = { fonts: metadata?.fonts || [] }
+
+  const metaFonts = metadata?.fonts || []
+  const titleCase = (s) =>
+    s.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
 
   function filesForFamilyEntry(entry) {
     const out = []
+    // (slug, formula_slug) is a file's identity in the family. The aggregate can
+    // carry duplicate face entries for one formula; collapse them so the index
+    // (and the UI keying off it) never sees two identical files.
+    const seen = new Set()
+    const familySlugPrefix = entry.slug + '_'
     for (const formulaSlug of entry.formulas) {
-      const familySlugPrefix = entry.slug + '_'
       let matched = false
-      for (const m of metaData.fonts) {
-        const styleSuffix = m.slug === entry.slug
-          ? ''
-          : m.slug.startsWith(familySlugPrefix)
-            ? m.slug.slice(familySlugPrefix.length)
-            : null
+      for (const m of metaFonts) {
+        // Family membership: the face slug is the family slug (Regular) or
+        // begins with it (styled). styleSuffix drives the style label.
+        const styleSuffix =
+          m.slug === entry.slug
+            ? ''
+            : m.slug.startsWith(familySlugPrefix)
+              ? m.slug.slice(familySlugPrefix.length)
+              : null
         if (styleSuffix === null) continue
-        const metaNamespace = (m.formula_path || '').split('/')[1]
-        const familyNamespace = formulaSlug.split('/')[0]
-        if (metaNamespace !== familyNamespace) continue
+
+        // Formula membership: derive the face's formula slug from its
+        // formula_path ("Formulas/sil/padauk_6.000.yml" → "sil/padauk_6.000")
+        // and match it EXACTLY. Matching only the provider namespace
+        // misattributes faces between same-provider formulas — e.g. Padauk
+        // lists both sil/padauk and sil/padauk_6.000, and a face from either
+        // would otherwise be emitted under both.
+        const metaFormulaSlug = (m.formula_path || '')
+          .replace(/^Formulas\//, '')
+          .replace(/\.yml$/, '')
+        if (metaFormulaSlug !== formulaSlug) continue
+
+        const fileId = m.slug + '|' + formulaSlug
+        if (seen.has(fileId)) { matched = true; continue }
+        seen.add(fileId)
 
         out.push({
           slug: m.slug,
           formula_slug: formulaSlug,
-          style:
-            styleSuffix === ''
-              ? 'Regular'
-              : styleSuffix
-                  .split('_')
-                  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                  .join(' '),
+          style: styleSuffix === '' ? 'Regular' : titleCase(styleSuffix),
           path: m.woff_file || null,
           coverage_file: m.coverage_file || null,
           redistributable: !!m.redistributable,
+          version: m.version || null,
+          font_revision: m.font_revision ?? null,
         })
         matched = true
       }
@@ -64,6 +91,8 @@ export function buildFamilyIndex({ fonts, metadata, formulas }) {
           path: null,
           coverage_file: null,
           redistributable: false,
+          version: null,
+          font_revision: null,
         })
       }
     }
@@ -111,8 +140,11 @@ if (isMain) {
   }
 
   const fontsRegistry = readJson(resolve(pub, 'fonts.json'), { fonts: [] })
-  const metaData = readJson(resolve(pub, 'font-metadata.json'), { fonts: [] })
   const formulasData = readJson(resolve(pub, 'formulas-data.json'), [])
+  // font-metadata.json is the aggregate (derived from the per-style cache in
+  // archive-private); it now carries `version`/`font_revision` per face.
+  const metaData = readJson(resolve(pub, 'font-metadata.json'), { fonts: [] })
+  console.log(`font-metadata: ${(metaData.fonts || []).length} faces`)
 
   const index = buildFamilyIndex({
     fonts: fontsRegistry,

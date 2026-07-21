@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { findFilesBySlug, type FamilyFileEntry } from '../lib/fonts/families-loader'
+import { setQueryParamAndReload } from '../lib/nav'
 import type { FontFamily, FontFamilyFile } from '../lib/types/domain'
 import FontSpecimen from '../components/FontSpecimen.vue'
 import FontViewer from '../components/FontViewer.vue'
@@ -24,14 +25,14 @@ const hasMultipleFormulas = computed(() => {
 })
 
 const requestedMissing = computed(() => {
-  if (!requestedFormula) return false
-  return !entries.value.some(e => e.file.formula_slug === requestedFormula)
+  if (!requestedFormula.value) return false
+  return !entries.value.some(e => e.file.formula_slug === requestedFormula.value)
 })
 
 const activeEntry = computed<FamilyFileEntry | null>(() => {
   if (entries.value.length === 0) return null
-  if (requestedFormula) {
-    const hit = entries.value.find(e => e.file.formula_slug === requestedFormula)
+  if (requestedFormula.value) {
+    const hit = entries.value.find(e => e.file.formula_slug === requestedFormula.value)
     if (hit) return hit
   }
   const pool = redistributableEntries.value
@@ -55,7 +56,8 @@ watch(fontSlug, load)
 
 
 function switchFormula(formulaSlug: string) {
-  window.location.replace({ path: `/fonts/${fontSlug}`, query: { ...route.query, formula: formulaSlug } })
+  // Preserves the current ?view= automatically (it is already on the URL).
+  setQueryParamAndReload('formula', formulaSlug)
 }
 </script>
 
@@ -84,8 +86,8 @@ function switchFormula(formulaSlug: string) {
         Requested formula <code>{{ requestedFormula }}</code> not available for this style — showing default.
       </p>
       <nav class="fsp-nav">
-        <a :href="{ path: `/fonts/${fontSlug}`, query: { view: 'specimen' } }" class="fsp-nav-link" active-class="on">Specimen</a>
-        <a :href="{ path: `/fonts/${fontSlug}`, query: { view: 'inspector' } }" class="fsp-nav-link" active-class="on">Inspector</a>
+        <a :href="`/fonts/${fontSlug}?view=specimen`" class="fsp-nav-link" :class="{ on: view === 'specimen' }">Specimen</a>
+        <a :href="`/fonts/${fontSlug}?view=inspector`" class="fsp-nav-link" :class="{ on: view === 'inspector' }">Inspector</a>
         <a :href="`/fonts/${fontSlug}/unicode`" class="fsp-nav-link">Unicode coverage →</a>
       </nav>
     </header>
