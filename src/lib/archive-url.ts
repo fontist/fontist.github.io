@@ -26,10 +26,19 @@ export function isArchivePath(path: string): boolean {
   return ARCHIVE_PREFIXES.some((prefix) => clean.startsWith(prefix))
 }
 
-export function archiveUrl(path: string): string {
+// Pure join, split out so it is unit-testable without the module-load CDN_BASE.
+// Normalizes a trailing slash on `base` and a leading slash on `path` so the
+// result always has exactly one separator, whatever the caller passes. Empty
+// base → site-relative.
+export function joinArchiveUrl(base: string, path: string): string {
+  const cleanBase = base.replace(/\/+$/, '')
   const clean = path.replace(/^\/+/, '')
-  if (!CDN_BASE) return `/${clean}`
-  return `${CDN_BASE}/${clean}`
+  if (!cleanBase) return `/${clean}`
+  return `${cleanBase}/${clean}`
+}
+
+export function archiveUrl(path: string): string {
+  return joinArchiveUrl(CDN_BASE, path)
 }
 
 export function archiveCdnBase(): string {

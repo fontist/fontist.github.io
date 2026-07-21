@@ -13,6 +13,13 @@ on:
   workflow_dispatch:
   repository_dispatch:
     types: [rebuild]
+  # Backstop: the archive sync triggers a [rebuild] dispatch after it publishes,
+  # but if that dispatch is ever dropped (network failure, missing token) the
+  # site would otherwise serve stale data indefinitely. A daily rebuild picks up
+  # any archive change the dispatch missed. It re-pins the current archive SHA,
+  # so a no-op day just rebuilds identical output.
+  schedule:
+    - cron: '17 5 * * *'
 
 # Least privilege by default. `pages: write` / `id-token: write` are granted
 # only to the deploy job, so a pull_request build cannot touch Pages even if
