@@ -289,7 +289,8 @@ onMounted(async () => {
             </div>
           </div>
         </div>
-        <div v-else class="fv-panel-msg">Loading...</div>
+        <div v-else-if="loading" class="fv-panel-msg">Loading...</div>
+        <div v-else class="fv-panel-msg">No coverage data.</div>
       </aside>
 
       <!-- CENTER: Specimen + Glyph grid -->
@@ -426,7 +427,8 @@ onMounted(async () => {
           <p class="fv-ins-hint">Click any glyph to inspect.</p>
         </template>
 
-        <div v-else class="fv-panel-msg">Loading...</div>
+        <div v-else-if="loading" class="fv-panel-msg">Loading...</div>
+        <div v-else class="fv-panel-msg">No coverage data.</div>
       </aside>
     </div>
 
@@ -449,7 +451,8 @@ onMounted(async () => {
         <span class="fv-stat-sep" v-if="missingCount > 0">&middot;</span>
         <span class="fv-stat fv-stat-gap" v-if="missingCount > 0">{{ missingCount }} gaps</span>
       </template>
-      <span v-else class="fv-stat">Loading...</span>
+      <span v-else-if="loading" class="fv-stat">Loading...</span>
+      <span v-else class="fv-stat">No coverage data</span>
       <span class="fv-stat-spacer"></span>
       <span class="fv-stat fv-stat-license">{{ licenseName || 'Unknown license' }}</span>
     </div>
