@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { findFormula, type FormulaData } from '../lib/formulas/loader'
 import { findFormulaDetails, type FormulaDetails } from '../lib/formulas/details-loader'
 import { findFamilyByFormula, type FontFamily } from '../lib/fonts/families-loader'
@@ -37,7 +37,6 @@ async function loadData() {
 }
 
 await loadData()
-watch(slug, loadData)
 
 const woffPath = computed(() => {
   if (!formula.value || !formula.value.licenseCategory?.includes('open')) return ''
