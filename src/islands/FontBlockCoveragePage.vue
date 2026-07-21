@@ -4,10 +4,11 @@
 // per-block char grid (via FontUnicodeBrowser) plus the block's metadata
 // (range, completeness %, missing char count).
 //
-// Not pre-rendered in SSG — too many combinations (fonts × blocks).
-// Vue-router lazy-loads this route client-side.
+// Not pre-rendered in SSG — too many combinations (fonts × blocks). Reached by
+// full-page navigation (plain <a> links; no vue-router). Each visit mounts a
+// fresh island for the target font/block, so there is nothing to watch.
 
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { findFilesBySlug, type FamilyFileEntry } from '../lib/fonts/families-loader'
 import { setQueryParamAndReload } from '../lib/nav'
 import { fetchJson } from '../lib/ssr-fetch'
@@ -105,7 +106,6 @@ async function loadAll() {
 }
 
 await loadAll()
-watch(fontSlug, loadAll)
 
 </script>
 

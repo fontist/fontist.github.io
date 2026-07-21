@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { loadFontFamily } from '../lib/fonts/families-loader'
 import { pickFileWithData } from '../lib/fonts/pick-file'
 import type { FontFamily, FontFamilyFile, Coverage } from '../lib/types/domain'
@@ -76,7 +76,6 @@ async function loadCoverageForCurrent() {
 }
 
 await loadFamily()
-watch(familySlug, loadFamily)
 
 
 async function selectFile(f: FontFamilyFile) {
