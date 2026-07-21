@@ -112,27 +112,39 @@ else
   # ---------------------------------------------------------------------
   # Build-time metadata source
   # ---------------------------------------------------------------------
-  # The registries and the file manifest are only ever read during the build;
-  # nothing ships them to a browser. So they can come from the PRIVATE archive
-  # via the CI token, which matters because archive-public does not publish
-  # font-metadata.json yet. Runtime assets (woff/, coverage/) are a separate
-  # question — those must be publicly hosted and are NOT read here.
+  # The registries and the file manifest are only read during the build; nothing
+  # ships them to a browser. But their woff_file / coverage_file paths must match
+  # what the CDN actually serves, and the CDN is pinned to archive-public's SHA.
   #
-  # ARCHIVE_META_PATH is a checkout of fontist-archive-private, provided by CI
-  # (actions/checkout with FONTIST_CI_PAT_TOKEN). Without it we fall back to
-  # archive-public, which is the correct long-term source once it publishes.
+  # So PREFER archive-public: reading metadata from the same commit the CDN is
+  # pinned to guarantees every referenced path exists on the CDN. Reading from
+  # private HEAD instead would drift — private can be ahead of public's last
+  # sync, so metadata would reference woff paths not yet published → 404s.
+  #
+  # Fall back to private (ARCHIVE_META_PATH, a token-authenticated checkout
+  # provided by CI) ONLY during bootstrap, before the first sync has published
+  # font-metadata.json + woff/ to archive-public. That path is warned because
+  # specimens 404 until the sync lands regardless of where metadata comes from.
   META_PATH="${ARCHIVE_META_PATH:-}"
-  # Accept a relative path (CI passes "vendor/archive-private") by resolving
-  # it against the repo root rather than whatever the caller's cwd happens to be.
+  # Accept a relative path (CI passes "vendor/archive-private") by resolving it
+  # against the repo root rather than whatever the caller's cwd happens to be.
   if [[ -n "$META_PATH" && "$META_PATH" != /* ]]; then
     META_PATH="$ROOT/$META_PATH"
   fi
-  if [[ -n "$META_PATH" && -d "$META_PATH/.git" ]]; then
-    META_SRC="$META_PATH"
-    META_LABEL="fontist-archive-private (via token)"
-  else
+
+  # archive-public is "populated" once its HEAD tree carries both the registry
+  # and a woff/ tree (checked without fetching blobs).
+  public_tree="$(git -C "$VENDOR/archive-public" ls-tree HEAD --name-only)"
+  if grep -qx 'font-metadata.json' <<<"$public_tree" && grep -qx 'woff' <<<"$public_tree"; then
     META_SRC="$VENDOR/archive-public"
-    META_LABEL="fontist-archive-public@${ARCHIVE_SHA:0:8}"
+    META_LABEL="fontist-archive-public@${ARCHIVE_SHA:0:8} (SHA-consistent with CDN)"
+  elif [[ -n "$META_PATH" && -d "$META_PATH/.git" ]]; then
+    META_SRC="$META_PATH"
+    META_LABEL="fontist-archive-private (BOOTSTRAP — CDN has no woff/ yet)"
+    echo "::warning::archive-public@${ARCHIVE_SHA:0:8} has no woff/ + font-metadata.json yet; reading build metadata from private. Specimens will 404 until the sync publishes to archive-public." >&2
+  else
+    echo "error: archive-public@${ARCHIVE_SHA:0:8} is not populated and no ARCHIVE_META_PATH fallback is available" >&2
+    exit 1
   fi
   log "metadata source: $META_LABEL"
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { loadFontFamily } from '../lib/fonts/families-loader'
+import { pickFileWithData } from '../lib/fonts/pick-file'
 import type { FontFamily, FontFamilyFile } from '../lib/types/domain'
 import FontSpecimen from '../components/FontSpecimen.vue'
 import FontUnicodeBrowser from '../components/FontUnicodeBrowser.vue'
@@ -23,19 +24,13 @@ const selectableFiles = computed<FontFamilyFile[]>(() =>
 const currentFile = computed<FontFamilyFile | null>(() => {
   const files = family.value?.files || []
   if (files.length === 0) return null
-  // `slug` is NOT unique within a family: the same font can appear as a
-  // `manual` formula with no archive assets and a `google` one with them,
-  // both under slug "carlito". Selecting by slug alone can therefore resolve
-  // back to the empty record, which falls through to a bare-slug coverage
-  // path that 404s. Among equal-slug matches, prefer one that has data.
-  const withData = (candidates: FontFamilyFile[]) =>
-    candidates.find(f => f.coverage_file || f.path) ?? candidates[0]
-
+  // slug is not unique within a family (see pickFileWithData); among
+  // equal-slug matches prefer one that actually has assets.
   if (selectedFileSlug.value) {
     const matches = files.filter(f => f.slug === selectedFileSlug.value)
-    if (matches.length > 0) return withData(matches)
+    if (matches.length > 0) return pickFileWithData(matches) ?? null
   }
-  return withData(files)
+  return pickFileWithData(files) ?? null
 })
 
 async function loadFamily() {
