@@ -166,7 +166,11 @@ watch(fontSlug, loadAll)
       <a :href="`/fonts/${fontSlug}/unicode`">← back to coverage overview</a>
     </div>
 
-    <div v-else class="fbcp-loading">Loading…</div>
+    <div v-else-if="loading" class="fbcp-loading">Loading…</div>
+    <div v-else class="fbcp-empty">
+      <p>No coverage data for this font in <code>{{ blockParam }}</code>.</p>
+      <a :href="`/fonts/${fontSlug}/unicode`">← back to coverage overview</a>
+    </div>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { loadFontFamily } from '../lib/fonts/families-loader'
 import { pickFileWithData } from '../lib/fonts/pick-file'
 import type { FontFamily, FontFamilyFile } from '../lib/types/domain'
@@ -45,8 +45,6 @@ async function loadFamily() {
 }
 
 await loadFamily()
-watch(familySlug, loadFamily)
-
 
 function selectFile(slug: string) {
   selectedFileSlug.value = slug
@@ -72,12 +70,12 @@ function selectFile(slug: string) {
         · {{ family.files.length }} {{ family.files.length === 1 ? 'file' : 'files' }}
       </p>
       <nav class="ffp-nav">
-        <a :href="{ path: `/families/${familySlug}`, query: { view: 'specimen' } }" class="ffp-nav-link" active-class="on">Specimen</a>
-        <a :href="{ path: `/families/${familySlug}`, query: { view: 'inspector' } }" class="ffp-nav-link" active-class="on">Inspector</a>
+        <a :href="`/families/${familySlug}?view=specimen`" class="ffp-nav-link" :class="{ on: view === 'specimen' }">Specimen</a>
+        <a :href="`/families/${familySlug}?view=inspector`" class="ffp-nav-link" :class="{ on: view === 'inspector' }">Inspector</a>
         <a :href="`/families/${familySlug}/unicode`" class="ffp-nav-link">Unicode coverage →</a>
         <a
           v-if="selectableFiles.length > 0"
-          :to="`/unicode/block/basic-latin?fonts=${selectableFiles.map(f => f.slug).join(',')}`"
+          :href="`/unicode/block/basic-latin?fonts=${selectableFiles.map(f => f.slug).join(',')}`"
           class="ffp-nav-link ffp-nav-link--muted"
         >Compare files in Unicode browser →</a>
       </nav>
