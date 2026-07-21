@@ -65,7 +65,7 @@ jobs:
           filter: blob:none
           sparse-checkout: |
             fonts.json
-            font-metadata.json
+            metadata
           sparse-checkout-cone-mode: false
 
       - name: Setup Pages

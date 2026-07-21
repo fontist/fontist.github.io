@@ -59,6 +59,18 @@ function switchFormula(formulaSlug: string) {
   // Preserves the current ?view= automatically (it is already on the URL).
   setQueryParamAndReload('formula', formulaSlug)
 }
+
+// Nav links preserve the selected ?formula= so switching Specimen/Inspector/
+// Unicode does not silently reset which provider/version is being viewed.
+function viewHref(v: string): string {
+  const params = new URLSearchParams({ view: v })
+  if (requestedFormula.value) params.set('formula', requestedFormula.value)
+  return `/fonts/${fontSlug}?${params.toString()}`
+}
+function unicodeHref(): string {
+  const q = requestedFormula.value ? `?formula=${encodeURIComponent(requestedFormula.value)}` : ''
+  return `/fonts/${fontSlug}/unicode${q}`
+}
 </script>
 
 <template>
@@ -86,9 +98,9 @@ function switchFormula(formulaSlug: string) {
         Requested formula <code>{{ requestedFormula }}</code> not available for this style — showing default.
       </p>
       <nav class="fsp-nav">
-        <a :href="`/fonts/${fontSlug}?view=specimen`" class="fsp-nav-link" :class="{ on: view === 'specimen' }">Specimen</a>
-        <a :href="`/fonts/${fontSlug}?view=inspector`" class="fsp-nav-link" :class="{ on: view === 'inspector' }">Inspector</a>
-        <a :href="`/fonts/${fontSlug}/unicode`" class="fsp-nav-link">Unicode coverage →</a>
+        <a :href="viewHref('specimen')" class="fsp-nav-link" :class="{ on: view === 'specimen' }">Specimen</a>
+        <a :href="viewHref('inspector')" class="fsp-nav-link" :class="{ on: view === 'inspector' }">Inspector</a>
+        <a :href="unicodeHref()" class="fsp-nav-link">Unicode coverage →</a>
       </nav>
     </header>
 

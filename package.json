@@ -1,8 +1,8 @@
 {
   "scripts": {
     "dev": "astro dev",
-    "build": "bash scripts/fetch-data.sh && node scripts/fetch-essenfont.mjs && node scripts/enrich-font-metadata.mjs && node scripts/gen-font-families.mjs && node scripts/gen-licenses-index.mjs && node scripts/gen-blog-index.mjs && node scripts/gen-guide-index.mjs && astro build && node scripts/gen-sitemap.mjs",
-    "build:no-fetch": "node scripts/fetch-essenfont.mjs && node scripts/enrich-font-metadata.mjs && node scripts/gen-font-families.mjs && node scripts/gen-licenses-index.mjs && node scripts/gen-blog-index.mjs && node scripts/gen-guide-index.mjs && astro build && node scripts/gen-sitemap.mjs",
+    "build": "bash scripts/fetch-data.sh && node scripts/fetch-essenfont.mjs && node scripts/gen-font-families.mjs && node scripts/gen-licenses-index.mjs && node scripts/gen-blog-index.mjs && node scripts/gen-guide-index.mjs && astro build && node scripts/gen-sitemap.mjs",
+    "build:no-fetch": "node scripts/fetch-essenfont.mjs && node scripts/gen-font-families.mjs && node scripts/gen-licenses-index.mjs && node scripts/gen-blog-index.mjs && node scripts/gen-guide-index.mjs && astro build && node scripts/gen-sitemap.mjs",
     "preview": "astro preview",
     "fetch-data": "bash scripts/fetch-data.sh",
     "gen-routes": "node scripts/gen-blog-index.mjs && node scripts/gen-guide-index.mjs ",

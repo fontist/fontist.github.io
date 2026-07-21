@@ -30,7 +30,6 @@ const fontReady = ref(false)
 const coverage = ref(null)
 const blockData = ref(null)
 const loading = ref(true)
-const error = ref(null)
 const selectedBlock = ref(null)
 const selectedCp = ref(null)
 const searchQuery = ref('')
@@ -196,8 +195,9 @@ onMounted(async () => {
     if (cov?.blocks?.length) {
       await selectBlock(cov.blocks[0])
     }
-  } catch (e) {
-    error.value = e
+  } catch {
+    // Coverage stays null → the template's "No coverage data" empty state.
+    // The finally still clears `loading`, so this never sticks on a spinner.
   } finally {
     loading.value = false
   }
