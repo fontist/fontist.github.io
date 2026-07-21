@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { findFilesBySlug, type FamilyFileEntry } from '../lib/fonts/families-loader'
 import { setQueryParamAndReload } from '../lib/nav'
 import type { FontFamily, FontFamilyFile, Coverage } from '../lib/types/domain'
@@ -64,7 +64,6 @@ async function load() {
 }
 
 await load()
-watch(fontSlug, load)
 
 
 function switchFormula(formulaSlug: string) {
