@@ -24,7 +24,10 @@
 
 set -euo pipefail
 
-ARCHIVE_REPO="https://github.com/fontist/fontist-archive-public.git"
+# Overridable (like ARCHIVE_REF) so a local/staging build can target a local
+# clone or a fork instead of the canonical remote:
+#   ARCHIVE_REPO=/path/to/fontist-archive-public ARCHIVE_REF=main npm run build
+ARCHIVE_REPO="${ARCHIVE_REPO:-https://github.com/fontist/fontist-archive-public.git}"
 # Which ref of the archive to build against. Defaults to the published branch;
 # override to build against a branch that has data before it reaches main:
 #   ARCHIVE_REF=data/initial-sync npm run build
@@ -86,7 +89,7 @@ write_env() {
   echo "PUBLIC_ARCHIVE_CDN_BASE=$base" >> "$env_file"
 }
 
-if [[ -f "$PUBLIC/fonts.json" && -f "$PUBLIC/font-metadata.json" \
+if [[ -f "$PUBLIC/fonts.json" && -d "$VENDOR/metadata" \
    && -f "$VENDOR/archive-manifest.txt" && -f "$PUBLIC/archive-ref.json" \
    && $FORCE -eq 0 ]]; then
   log "archive manifest present, skipping (use --force to refetch)"
@@ -132,16 +135,17 @@ else
     META_PATH="$ROOT/$META_PATH"
   fi
 
-  # archive-public is "populated" once its HEAD tree carries both the registry
-  # and a woff/ tree (checked without fetching blobs).
+  # archive-public is "populated" once its HEAD tree carries the family registry
+  # (fonts.json) and the per-style metadata/ tree — the two things the build
+  # reads (checked without fetching blobs).
   public_tree="$(git -C "$VENDOR/archive-public" ls-tree HEAD --name-only)"
-  if grep -qx 'font-metadata.json' <<<"$public_tree" && grep -qx 'woff' <<<"$public_tree"; then
+  if grep -qx 'fonts.json' <<<"$public_tree" && grep -qx 'metadata' <<<"$public_tree"; then
     META_SRC="$VENDOR/archive-public"
     META_LABEL="fontist-archive-public@${ARCHIVE_SHA:0:8} (SHA-consistent with CDN)"
   elif [[ -n "$META_PATH" && -d "$META_PATH/.git" ]]; then
     META_SRC="$META_PATH"
     META_LABEL="fontist-archive-private (BOOTSTRAP — CDN has no woff/ yet)"
-    echo "::warning::archive-public@${ARCHIVE_SHA:0:8} has no woff/ + font-metadata.json yet; reading build metadata from private. Specimens will 404 until the sync publishes to archive-public." >&2
+    echo "::warning::archive-public@${ARCHIVE_SHA:0:8} has no metadata/ + fonts.json yet; reading build metadata from private. Specimens will 404 until the sync publishes to archive-public." >&2
   else
     echo "error: archive-public@${ARCHIVE_SHA:0:8} is not populated and no ARCHIVE_META_PATH fallback is available" >&2
     exit 1
@@ -150,7 +154,8 @@ else
 
   # Filenames only — no blob is fetched for coverage/ or woff/.
   # Written under vendor/ rather than public/: it is build-time input for
-  # enrich-font-metadata.mjs, and at ~7 MB there is no reason to publish it.
+  # gen-font-families.mjs (which verifies each face's coverage_file/woff_file
+  # against it), and at ~7 MB there is no reason to publish it.
   #
   # woff/macos/ is stripped to match bin/sync-from-private: macOS faces are
   # proprietary and never get published, so listing them here would generate
@@ -161,18 +166,35 @@ else
 
   log "manifest: $(wc -l < "$VENDOR/archive-manifest.txt" | tr -d ' ') paths"
 
-  # Fetch just the two registry blobs on demand.
-  log "reading fonts.json, font-metadata.json"
-  for f in fonts.json font-metadata.json; do
-    if git -C "$META_SRC" checkout HEAD -- "$f" 2>/dev/null; then
-      cp "$META_SRC/$f" "$PUBLIC/$f"
-    else
-      echo "error: $f missing from $META_LABEL" >&2
-      echo "  hint: archive-public does not publish it yet — set ARCHIVE_META_PATH" >&2
-      echo "        to a fontist-archive-private checkout, or run the sync first." >&2
-      exit 1
-    fi
-  done
+  # Per-style face metadata → vendor/metadata/. gen-font-families reads these
+  # (one file per face: metadata/{formula_slug}/{PSName}.json) as the source of
+  # truth for version/style and the coverage_file/woff_file paths it verifies
+  # against the manifest above. blob:none makes this one batched blob fetch.
+  log "checking out metadata/ (per-style face files)"
+  rm -rf "$VENDOR/metadata"
+  if git -C "$META_SRC" checkout HEAD -- metadata 2>/dev/null && [ -d "$META_SRC/metadata" ]; then
+    cp -r "$META_SRC/metadata" "$VENDOR/metadata"
+    log "metadata: $(find "$VENDOR/metadata" -name '*.json' | wc -l | tr -d ' ') per-style files"
+  else
+    echo "error: metadata/ missing from $META_LABEL" >&2
+    echo "  hint: run the archive-private build (finalize job writes metadata/)" >&2
+    echo "        then the archive-public sync, or point ARCHIVE_META_PATH at a" >&2
+    echo "        fontist-archive-private checkout that has metadata/." >&2
+    exit 1
+  fi
+
+  # Fetch the one registry blob gen-font-families still needs (fonts.json —
+  # the canonical-name → formulas index). font-metadata.json (the aggregate) is
+  # no longer consumed: per-style files replaced it.
+  log "reading fonts.json"
+  if git -C "$META_SRC" checkout HEAD -- fonts.json 2>/dev/null; then
+    cp "$META_SRC/fonts.json" "$PUBLIC/fonts.json"
+  else
+    echo "error: fonts.json missing from $META_LABEL" >&2
+    echo "  hint: archive-public does not publish it yet — set ARCHIVE_META_PATH" >&2
+    echo "        to a fontist-archive-private checkout, or run the sync first." >&2
+    exit 1
+  fi
 
   ARCHIVE_CDN_BASE="$(printf "$ARCHIVE_CDN_TEMPLATE" "$ARCHIVE_SHA")"
 

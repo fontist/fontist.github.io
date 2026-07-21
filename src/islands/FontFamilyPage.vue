@@ -17,9 +17,10 @@ const view = computed(() => ((typeof window !== 'undefined' ? new URLSearchParam
 const family = ref<FontFamily | null>(null)
 const loading = ref(true)
 const selectedFileId = ref<string | null>(null)
-// slug is NOT unique within a family — the same face can be provided by several
-// formulas — so a file's identity is slug + formula_slug.
-const fileId = (f: FontFamilyFile) => `${f.slug}|${f.formula_slug}`
+// slug is NOT unique within a family — the same face can come from several
+// formulas, AND distinct faces can slugify identically — so a file's identity
+// is its PostScript name + formula_slug.
+const fileId = (f: FontFamilyFile) => `${f.ps}|${f.formula_slug}`
 const selectableFiles = computed<FontFamilyFile[]>(() =>
   (family.value?.files || []).filter(f => f.redistributable),
 )
@@ -77,7 +78,7 @@ function selectFile(f: FontFamilyFile) {
         <a :href="`/families/${familySlug}/unicode`" class="ffp-nav-link">Unicode coverage →</a>
         <a
           v-if="selectableFiles.length > 0"
-          :href="`/unicode/block/basic-latin?fonts=${selectableFiles.map(f => f.slug).join(',')}`"
+          :href="`/unicode/block/basic-latin?fonts=${[...new Set(selectableFiles.map(f => f.slug))].join(',')}`"
           class="ffp-nav-link ffp-nav-link--muted"
         >Compare files in Unicode browser →</a>
       </nav>

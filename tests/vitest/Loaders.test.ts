@@ -138,10 +138,9 @@ describe('fonts/loader — singleton shape', () => {
   // the singleton loader is no longer testable via its clear seam.
   // The factory's caching behavior is already covered by the
   // createLazyJsonLoader / createKeyedJsonLoader tests above.
-  it('loadFontsRegistry and loadFontMetadata are exported functions', async () => {
-    const { loadFontsRegistry, loadFontMetadata } = await import('../../src/lib/fonts/loader')
+  it('loadFontsRegistry is an exported function', async () => {
+    const { loadFontsRegistry } = await import('../../src/lib/fonts/loader')
     expect(typeof loadFontsRegistry).toBe('function')
-    expect(typeof loadFontMetadata).toBe('function')
   })
 })
 
