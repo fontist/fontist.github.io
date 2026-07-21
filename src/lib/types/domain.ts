@@ -117,9 +117,11 @@ export interface FontFamilyFile {
   slug: string
   formula_slug: string
   style: string
-  path: string
+  path: string | null
   coverage_file: string | null
   redistributable: boolean
+  version: string | null
+  font_revision: number | null
 }
 
 export interface FontFamily {
