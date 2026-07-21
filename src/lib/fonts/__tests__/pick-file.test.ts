@@ -6,11 +6,14 @@ import type { FontFamilyFile } from '../../types/domain'
 function file(over: Partial<FontFamilyFile>): FontFamilyFile {
   return {
     slug: 'carlito',
+    ps: 'Carlito-Regular',
     formula_slug: 'google/carlito',
     style: 'Regular',
     path: null,
     coverage_file: null,
     redistributable: false,
+    version: null,
+    font_revision: null,
     ...over,
   }
 }
