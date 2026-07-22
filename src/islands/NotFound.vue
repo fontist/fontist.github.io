@@ -4,7 +4,7 @@
 // aesthetic instead of a generic error page.
 
 const suggestions: { label: string; to: string; hint: string }[] = [
-  { label: 'Formulas',    to: '/formulas',    hint: 'Browse the registry' },
+  { label: 'Formulas',    to: '/v1/formulas',    hint: 'Browse the registry' },
   { label: 'Families',    to: '/families',    hint: 'Type families in the archive' },
   { label: 'Unicode',     to: '/unicode',     hint: 'Unicode planes & blocks' },
   { label: 'Licenses',    to: '/licenses',    hint: 'Font license reference' },

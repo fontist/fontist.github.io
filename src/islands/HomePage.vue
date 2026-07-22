@@ -112,7 +112,7 @@ const instruments = [
     name: 'Formulas',
     role: 'A searchable registry of openly-licensed font formulae — featuring type from Google, SIL, IBM, Adobe, and independent foundries. Auto-updated.',
     spec: 'formulae · openly-licensed',
-    link: 'https://www.fontist.org/formulas/',
+    link: '/v1/formulas',
     cta: 'Browse',
   },
 ]
