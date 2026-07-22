@@ -196,7 +196,7 @@ try {
               <a
                 v-for="f in fam.formulas"
                 :key="f.slug"
-                :href="`/formulas/${f.slug}`"
+                :href="`/v1/formulas/${f.slug}`"
                 class="formula-sub-item"
               >
                 <span class="formula-sub-key">{{ f.formulaName }}</span>

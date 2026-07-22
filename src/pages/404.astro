@@ -42,7 +42,7 @@ import SiteFooter from '../components/SiteFooter.astro'
       const root = document.getElementById('spa-root')
 
       const ROUTES = [
-        { match: /^\/formulas\/(.+)\/?$/,         Comp: FormulaPage,           getProps: m => ({ slug: m[1] }) },
+        { match: /^\/v1\/formulas\/(.+)\/?$/,     Comp: FormulaPage,           getProps: m => ({ slug: m[1] }) },
         { match: /^\/fonts\/([^/]+)\/?$/,          Comp: FontStylePage,         getProps: m => ({ fontSlug: m[1] }) },
         { match: /^\/fonts\/([^/]+)\/unicode\/?$/, Comp: FontStyleUnicodePage,  getProps: m => ({ fontSlug: m[1] }) },
         { match: /^\/families\/([^/]+)\/?$/,       Comp: FontFamilyPage,        getProps: m => ({ familySlug: m[1] }) },
