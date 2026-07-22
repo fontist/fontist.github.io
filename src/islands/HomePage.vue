@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { loadAllFormulas } from '../lib/formulas/loader'
 import { bucketFormulas } from '../lib/licenses/classifier'
 import { fetchJson } from '../lib/ssr-fetch'
+import { animateCountUp, wobbleText } from '../composables/useFunStuff'
 
 // Type Specimen homepage.
 // Two distinct ideas, kept distinct:
@@ -43,6 +44,14 @@ async function loadStats() {
 }
 
 await loadStats()
+
+nextTick(() => {
+  const statEls = document.querySelectorAll<HTMLElement>('.colophon .n')
+  statEls.forEach((el, i) => {
+    const raw = el.textContent?.replace(/[^0-9]/g, '')
+    if (raw && parseInt(raw) > 0) animateCountUp(el, parseInt(raw), 1500 + i * 200)
+  })
+})
 
 const specimens = [
   {
@@ -239,7 +248,7 @@ onUnmounted(() => { if (typeTimer) clearTimeout(typeTimer) })
 
         <ul class="spec-list">
           <li v-for="s in specimens" :key="s.name" class="spec-row">
-            <div class="spec-sample" :style="{ fontFamily: s.cssFamily }">{{ s.name }}</div>
+            <div class="spec-sample" :style="{ fontFamily: s.cssFamily }" @mouseenter="(e) => wobbleText(e.target as HTMLElement)">{{ s.name }}</div>
             <div class="spec-detail">
               <span class="prompt">$</span> <span class="cmd">{{ s.install }}</span>
               <span class="sep">·</span>

@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import DocsDropdown from './DocsDropdown.vue'
+import { useFunStuff } from '../composables/useFunStuff'
+
+useFunStuff()
 
 const props = withDefaults(defineProps<{
   currentPath?: string
