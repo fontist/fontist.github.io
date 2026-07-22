@@ -32,7 +32,7 @@ function priorityFor(route) {
   if (route === '/') return '1.0'
   if (route.startsWith('/families/') && !route.endsWith('/unicode')) return '0.9'
   if (route.startsWith('/fonts/') && !route.endsWith('/unicode')) return '0.8'
-  if (route.startsWith('/formulas/')) return '0.7'
+  if (route.startsWith('/v1/formulas/')) return '0.7'
   if (route.startsWith('/unicode/')) return '0.6'
   return '0.5'
 }

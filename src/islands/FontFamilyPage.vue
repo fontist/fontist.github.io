@@ -88,7 +88,7 @@ function selectFile(f: FontFamilyFile) {
       <h2 class="ffp-section-title">Provided by</h2>
       <ul class="ffp-formula-list">
         <li v-for="slug in family.formula_slugs" :key="slug">
-          <a :href="`/formulas/${slug}`" class="ffp-formula-link">{{ slug }}</a>
+          <a :href="`/v1/formulas/${slug}`" class="ffp-formula-link">{{ slug }}</a>
         </li>
       </ul>
     </aside>

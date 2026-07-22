@@ -185,14 +185,14 @@ watch(licensePath, loadAll)
         </header>
         <ul class="ld-formulas-list">
           <li v-for="f in matchingFormulas.slice(0, 20)" :key="f.slug" class="ld-formula">
-            <a :href="`/formulas/${f.slug}`" class="ld-formula-link">
+            <a :href="`/v1/formulas/${f.slug}`" class="ld-formula-link">
               <span class="ld-formula-name">{{ f.name }}</span>
               <span class="ld-formula-slug">{{ f.slug }}</span>
             </a>
           </li>
         </ul>
         <p v-if="matchingFormulas.length > 20" class="ld-formulas-more">
-          Showing 20 of {{ matchingFormulas.length }} — <a href="/formulas">browse all formulas →</a>
+          Showing 20 of {{ matchingFormulas.length }} — <a href="/v1/formulas">browse all formulas →</a>
         </p>
       </section>
 

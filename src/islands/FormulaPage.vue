@@ -110,7 +110,7 @@ const resourceEntries = computed(() => {
     <div v-else-if="!formula">
       <h1 class="page-title">Formula not found</h1>
       <p>No formula found for: <code>{{ slug }}</code></p>
-      <a href="/formulas">← Back to Formulas</a>
+      <a href="/v1/formulas">← Back to Formulas</a>
     </div>
 
     <article v-else class="formula-page">

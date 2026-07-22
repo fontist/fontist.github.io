@@ -107,7 +107,7 @@ function unicodeHref(): string {
       <h2 class="fsp-section-title">Provided by</h2>
       <ul class="fsp-formula-list">
         <li v-for="e in entries" :key="e.file.formula_slug">
-          <a :href="`/formulas/${e.file.formula_slug}`" class="fsp-formula-link">{{ e.file.formula_slug }}</a>
+          <a :href="`/v1/formulas/${e.file.formula_slug}`" class="fsp-formula-link">{{ e.file.formula_slug }}</a>
         </li>
       </ul>
     </aside>
