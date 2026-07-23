@@ -51,23 +51,15 @@ if (!hasFonts) {
   console.log('Essenfont: woff2 files already present, skipping clone')
 }
 
-// ── Step 2: Generate missing per-block subsets via pyftsubset ──
+// ── Step 2: Generate fonts.css from unicode-blocks.json ──
 
-const ESSENFONT_RELEASE = 'v0.6.2'
-const ESSENFONT_RELEASE_REPO = 'essenfont/essenfont'
-
-function planeForCp(cp) {
-  if (cp <= 0xFFFF) return 'BMP'
-  if (cp <= 0x1FFFF) return 'SMP'
-  if (cp <= 0x2FFFF) return 'SIP'
-  if (cp <= 0x3FFFF) return 'TIP'
-  if (cp >= 0xE0000 && cp <= 0xEFFFF) return 'SSP'
-  return null
+const blocksPath = resolve(PUBLIC, 'unicode-blocks.json')
+if (!existsSync(blocksPath)) {
+  console.log('Essenfont: unicode-blocks.json not found, cannot generate fonts.css')
+  process.exit(0)
 }
 
-function hexCp(cp) {
-  return cp.toString(16).toUpperCase().padStart(4, '0')
-}
+const blocks = JSON.parse(readFileSync(blocksPath, 'utf8'))
 
 function blockSlug(name) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
@@ -78,64 +70,9 @@ const NON_GRAPHIC = new Set([
   'supplementary-private-use-area-a', 'supplementary-private-use-area-b',
 ])
 
-const blocksPath = resolve(PUBLIC, 'unicode-blocks.json')
-if (!existsSync(blocksPath)) {
-  console.log('Essenfont: unicode-blocks.json not found, cannot generate fonts.css')
-  process.exit(0)
+function hexCp(cp) {
+  return cp.toString(16).toUpperCase().padStart(4, '0')
 }
-
-const blocks = JSON.parse(readFileSync(blocksPath, 'utf8'))
-
-// Check for missing blocks and generate subsets
-const missingBlocks = blocks.filter(b => {
-  const slug = blockSlug(b.name)
-  return !NON_GRAPHIC.has(slug) && !existsSync(resolve(FONTS_DIR, `${slug}.woff2`))
-})
-
-if (missingBlocks.length > 0) {
-  console.log(`Essenfont: ${missingBlocks.length} blocks missing per-block subsets, generating via pyftsubset...`)
-
-  // Download per-plane TTFs from release if not cached
-  const tmpDir = execSync('mktemp -d').toString().trim()
-  const planes = [...new Set(missingBlocks.map(b => planeForCp(b.start)).filter(Boolean))]
-
-  for (const plane of planes) {
-    const ttfPath = `${tmpDir}/Essenfont-${plane}.ttf`
-    if (!existsSync(ttfPath)) {
-      console.log(`Essenfont: downloading Essenfont-${plane}.ttf from ${ESSENFONT_RELEASE}...`)
-      try {
-        execSync(`gh release download ${ESSENFONT_RELEASE} -R ${ESSENFONT_RELEASE_REPO} -p "Essenfont-${plane}.ttf" -D ${tmpDir} --skip-existing`, { stdio: 'pipe', timeout: 120000 })
-      } catch (e) {
-        console.log(`Essenfont: failed to download ${plane} TTF, skipping`)
-      }
-    }
-  }
-
-  let generated = 0, failed = 0
-  for (const block of missingBlocks) {
-    const slug = blockSlug(block.name)
-    const plane = planeForCp(block.start)
-    if (!plane) continue
-
-    const ttfPath = `${tmpDir}/Essenfont-${plane}.ttf`
-    if (!existsSync(ttfPath)) { failed++; continue }
-
-    const woff2Path = resolve(FONTS_DIR, `${slug}.woff2`)
-    const range = `${hexCp(block.start)}-${hexCp(block.end)}`
-
-    try {
-      execSync(`pyftsubset ${ttfPath} --unicodes=U+${range} --flavor=woff2 --output-file=${woff2Path} --no-hinting --desubroutinize`, { stdio: 'pipe', timeout: 60000 })
-      generated++
-    } catch (e) {
-      failed++
-    }
-  }
-
-  console.log(`Essenfont: generated ${generated} subsets, ${failed} failed`)
-  rmSync(tmpDir, { recursive: true, force: true })
-}
-
-// ── Step 3: Generate fonts.css ──
 
 const cssRules = []
 let available = 0
