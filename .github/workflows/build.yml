@@ -80,7 +80,10 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Matches pr-check.yml (and local dev): keep the build and the PR
+          # test run on the same Node so a PR can't pass on a version the
+          # deploy build doesn't use. Node 20 is also deprecated on runners.
+          node-version: 22
           cache: 'npm'
 
       - name: Install dependencies
