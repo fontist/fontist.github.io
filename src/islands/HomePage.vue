@@ -4,6 +4,9 @@ import { loadAllFormulas } from '../lib/formulas/loader'
 import { bucketFormulas } from '../lib/licenses/classifier'
 import { fetchJson } from '../lib/ssr-fetch'
 import { animateCountUp, wobbleText } from '../composables/useFunStuff'
+import { useFunStuff } from '../composables/useFunStuff'
+
+useFunStuff({ trail: true, konami: false, logo: false })
 
 // Type Specimen homepage.
 // Two distinct ideas, kept distinct:
