@@ -125,16 +125,16 @@ function onLogoClick() {
 }
 
 function attachLogoListener() {
-  const logo = document.querySelector('.nav-logo')
-  logo?.addEventListener('click', onLogoClick, { passive: true })
+  const diamond = document.querySelector('.sf-rule-mark')
+  diamond?.addEventListener('click', onLogoClick)
 }
 
 function detachLogoListener() {
-  document.querySelector('.nav-logo')?.removeEventListener('click', onLogoClick)
+  document.querySelector('.sf-rule-mark')?.removeEventListener('click', onLogoClick)
 }
 
 export function useFunStuff(opts: { trail?: boolean; konami?: boolean; logo?: boolean } = {}) {
-  const { trail = true, konami = true, logo = true } = opts
+  const { trail = false, konami = true, logo = true } = opts
 
   onMounted(() => {
     if (trail) document.addEventListener('mousemove', onMouseMove, { passive: true })
