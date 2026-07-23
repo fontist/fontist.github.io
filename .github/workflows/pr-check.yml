@@ -30,7 +30,11 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # 22, not 20: the suite runs `.test.ts` files directly under
+          # `node --test`, which needs Node 22's native TypeScript stripping.
+          # Node 20 fails them with ERR_UNKNOWN_FILE_EXTENSION. Kept in sync
+          # with build.yml so PR tests and the prod build run the same Node.
+          node-version: 22
           cache: 'npm'
 
       - name: Install dependencies
