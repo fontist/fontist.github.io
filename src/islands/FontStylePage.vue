@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { findFilesBySlug, type FamilyFileEntry } from '../lib/fonts/families-loader'
+import { setQueryParamAndReload } from '../lib/nav'
 import type { FontFamily, FontFamilyFile } from '../lib/types/domain'
 import FontSpecimen from '../components/FontSpecimen.vue'
 import FontViewer from '../components/FontViewer.vue'
@@ -24,14 +25,14 @@ const hasMultipleFormulas = computed(() => {
 })
 
 const requestedMissing = computed(() => {
-  if (!requestedFormula) return false
-  return !entries.value.some(e => e.file.formula_slug === requestedFormula)
+  if (!requestedFormula.value) return false
+  return !entries.value.some(e => e.file.formula_slug === requestedFormula.value)
 })
 
 const activeEntry = computed<FamilyFileEntry | null>(() => {
   if (entries.value.length === 0) return null
-  if (requestedFormula) {
-    const hit = entries.value.find(e => e.file.formula_slug === requestedFormula)
+  if (requestedFormula.value) {
+    const hit = entries.value.find(e => e.file.formula_slug === requestedFormula.value)
     if (hit) return hit
   }
   const pool = redistributableEntries.value
@@ -51,11 +52,23 @@ async function load() {
 }
 
 await load()
-watch(fontSlug, load)
 
 
 function switchFormula(formulaSlug: string) {
-  window.location.replace({ path: `/fonts/${fontSlug}`, query: { ...route.query, formula: formulaSlug } })
+  // Preserves the current ?view= automatically (it is already on the URL).
+  setQueryParamAndReload('formula', formulaSlug)
+}
+
+// Nav links preserve the selected ?formula= so switching Specimen/Inspector/
+// Unicode does not silently reset which provider/version is being viewed.
+function viewHref(v: string): string {
+  const params = new URLSearchParams({ view: v })
+  if (requestedFormula.value) params.set('formula', requestedFormula.value)
+  return `/fonts/${fontSlug}?${params.toString()}`
+}
+function unicodeHref(): string {
+  const q = requestedFormula.value ? `?formula=${encodeURIComponent(requestedFormula.value)}` : ''
+  return `/fonts/${fontSlug}/unicode${q}`
 }
 </script>
 
@@ -84,9 +97,9 @@ function switchFormula(formulaSlug: string) {
         Requested formula <code>{{ requestedFormula }}</code> not available for this style — showing default.
       </p>
       <nav class="fsp-nav">
-        <a :href="{ path: `/fonts/${fontSlug}`, query: { view: 'specimen' } }" class="fsp-nav-link" active-class="on">Specimen</a>
-        <a :href="{ path: `/fonts/${fontSlug}`, query: { view: 'inspector' } }" class="fsp-nav-link" active-class="on">Inspector</a>
-        <a :href="`/fonts/${fontSlug}/unicode`" class="fsp-nav-link">Unicode coverage →</a>
+        <a :href="viewHref('specimen')" class="fsp-nav-link" :class="{ on: view === 'specimen' }">Specimen</a>
+        <a :href="viewHref('inspector')" class="fsp-nav-link" :class="{ on: view === 'inspector' }">Inspector</a>
+        <a :href="unicodeHref()" class="fsp-nav-link">Unicode coverage →</a>
       </nav>
     </header>
 
@@ -94,7 +107,7 @@ function switchFormula(formulaSlug: string) {
       <h2 class="fsp-section-title">Provided by</h2>
       <ul class="fsp-formula-list">
         <li v-for="e in entries" :key="e.file.formula_slug">
-          <a :href="`/formulas/${e.file.formula_slug}`" class="fsp-formula-link">{{ e.file.formula_slug }}</a>
+          <a :href="`/v1/formulas/${e.file.formula_slug}`" class="fsp-formula-link">{{ e.file.formula_slug }}</a>
         </li>
       </ul>
     </aside>

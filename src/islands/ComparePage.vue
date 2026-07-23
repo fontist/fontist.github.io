@@ -2,7 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import { injectFontFace } from '../composables/useFontFace'
 import { loadCoverage } from '../lib/unicode/coverage'
-import { loadFontsRegistry, loadFontMetadata } from '../lib/fonts/loader'
+import { loadFontFamilies } from '../lib/fonts/families-loader'
 import type { Coverage } from '../lib/types/domain'
 
 const props = defineProps({
@@ -48,32 +48,33 @@ const fontNames = computed(() => allFonts.value.map(f => `${f.name} (${f.slug})`
 async function loadRegistry() {
   loadingRegistry.value = true
   try {
-    const data = await loadFontsRegistry()
-    allFonts.value = data.fonts.map((f) => ({
+    // font-families.json carries family identity AND per-file assets, so it
+    // replaces the runtime fetches of fonts.json + font-metadata.json.
+    const index = await loadFontFamilies()
+    const families = index.families || []
+    allFonts.value = families.map((f) => ({
       slug: f.slug,
-      name: f.canonical_name,
-      formulas: f.formulas,
+      name: f.name,
+      formulas: f.formula_slugs,
       styleCount: f.style_count,
     }))
+    availableSlugs.value = new Set(families.map((f) => f.slug))
 
-    const meta = await loadFontMetadata()
-    availableSlugs.value = new Set(meta.fonts.map((f) => f.slug))
     const bySlug = new Map<string, { woff_file?: string; coverage_file?: string }>()
-    for (const f of meta.fonts) {
-      // First write wins: families with multiple styles all map back to
-      // the canonical family slug here, and ComparePage indexes at the
-      // family level. The metadata entry's woff_file/coverage_file paths
-      // are good enough for specimen rendering.
-      if (!bySlug.has(f.slug)) {
-        bySlug.set(f.slug, {
-          woff_file: f.woff_file,
-          coverage_file: f.coverage_file,
+    for (const fam of families) {
+      // A family can carry an empty (assetless) file alongside one with assets;
+      // prefer the one that actually has a path/coverage so lookups don't 404.
+      const file = fam.files.find((x) => x.path || x.coverage_file) || fam.files[0]
+      if (file) {
+        bySlug.set(fam.slug, {
+          woff_file: file.path || undefined,
+          coverage_file: file.coverage_file || undefined,
         })
       }
     }
     slugToMetadata.value = bySlug
   } catch (e) {
-    console.error('Failed to load font registry', e)
+    console.error('Failed to load font families', e)
   } finally {
     loadingRegistry.value = false
   }

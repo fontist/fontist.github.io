@@ -115,11 +115,17 @@ export interface FontMetadataFile {
 
 export interface FontFamilyFile {
   slug: string
+  // PostScript name — the face's unique key within its formula. slug is NOT
+  // unique (distinct faces can slugify identically), so identity is (ps,
+  // formula_slug).
+  ps: string
   formula_slug: string
   style: string
-  path: string
+  path: string | null
   coverage_file: string | null
   redistributable: boolean
+  version: string | null
+  font_revision: number | null
 }
 
 export interface FontFamily {

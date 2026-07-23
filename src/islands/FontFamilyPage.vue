@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { loadFontFamily } from '../lib/fonts/families-loader'
+import { pickFileWithData } from '../lib/fonts/pick-file'
 import type { FontFamily, FontFamilyFile } from '../lib/types/domain'
 import FontSpecimen from '../components/FontSpecimen.vue'
 import FontUnicodeBrowser from '../components/FontUnicodeBrowser.vue'
@@ -15,7 +16,11 @@ const view = computed(() => ((typeof window !== 'undefined' ? new URLSearchParam
 
 const family = ref<FontFamily | null>(null)
 const loading = ref(true)
-const selectedFileSlug = ref<string | null>(null)
+const selectedFileId = ref<string | null>(null)
+// slug is NOT unique within a family — the same face can come from several
+// formulas, AND distinct faces can slugify identically — so a file's identity
+// is its PostScript name + formula_slug.
+const fileId = (f: FontFamilyFile) => `${f.ps}|${f.formula_slug}`
 const selectableFiles = computed<FontFamilyFile[]>(() =>
   (family.value?.files || []).filter(f => f.redistributable),
 )
@@ -23,11 +28,11 @@ const selectableFiles = computed<FontFamilyFile[]>(() =>
 const currentFile = computed<FontFamilyFile | null>(() => {
   const files = family.value?.files || []
   if (files.length === 0) return null
-  if (selectedFileSlug.value) {
-    const found = files.find(f => f.slug === selectedFileSlug.value)
-    if (found) return found
+  if (selectedFileId.value) {
+    const hit = files.find(f => fileId(f) === selectedFileId.value)
+    if (hit) return hit
   }
-  return files[0]
+  return pickFileWithData(files) ?? null
 })
 
 async function loadFamily() {
@@ -35,18 +40,16 @@ async function loadFamily() {
   try {
     family.value = await loadFontFamily(familySlug)
     const initial = family.value?.files?.find(f => f.redistributable) || family.value?.files?.[0]
-    selectedFileSlug.value = initial?.slug || null
+    selectedFileId.value = initial ? fileId(initial) : null
   } finally {
     loading.value = false
   }
 }
 
 await loadFamily()
-watch(familySlug, loadFamily)
 
-
-function selectFile(slug: string) {
-  selectedFileSlug.value = slug
+function selectFile(f: FontFamilyFile) {
+  selectedFileId.value = fileId(f)
 }
 </script>
 
@@ -62,6 +65,7 @@ function selectFile(slug: string) {
           title="At least one redistributable file"
         >Redistributable</span>
         <span v-else class="ffp-badge ffp-badge--no" title="No redistributable files">Proprietary</span>
+        <span v-if="currentFile?.version" class="ffp-chip-version" title="Font version">{{ currentFile.version }}</span>
       </div>
       <p class="ffp-meta">
         {{ family.style_count }} {{ family.style_count === 1 ? 'style' : 'styles' }}
@@ -69,12 +73,12 @@ function selectFile(slug: string) {
         · {{ family.files.length }} {{ family.files.length === 1 ? 'file' : 'files' }}
       </p>
       <nav class="ffp-nav">
-        <a :href="{ path: `/families/${familySlug}`, query: { view: 'specimen' } }" class="ffp-nav-link" active-class="on">Specimen</a>
-        <a :href="{ path: `/families/${familySlug}`, query: { view: 'inspector' } }" class="ffp-nav-link" active-class="on">Inspector</a>
+        <a :href="`/families/${familySlug}?view=specimen`" class="ffp-nav-link" :class="{ on: view === 'specimen' }">Specimen</a>
+        <a :href="`/families/${familySlug}?view=inspector`" class="ffp-nav-link" :class="{ on: view === 'inspector' }">Inspector</a>
         <a :href="`/families/${familySlug}/unicode`" class="ffp-nav-link">Unicode coverage →</a>
         <a
           v-if="selectableFiles.length > 0"
-          :to="`/unicode/block/basic-latin?fonts=${selectableFiles.map(f => f.slug).join(',')}`"
+          :href="`/unicode/block/basic-latin?fonts=${[...new Set(selectableFiles.map(f => f.slug))].join(',')}`"
           class="ffp-nav-link ffp-nav-link--muted"
         >Compare files in Unicode browser →</a>
       </nav>
@@ -84,7 +88,7 @@ function selectFile(slug: string) {
       <h2 class="ffp-section-title">Provided by</h2>
       <ul class="ffp-formula-list">
         <li v-for="slug in family.formula_slugs" :key="slug">
-          <a :href="`/formulas/${slug}`" class="ffp-formula-link">{{ slug }}</a>
+          <a :href="`/v1/formulas/${slug}`" class="ffp-formula-link">{{ slug }}</a>
         </li>
       </ul>
     </aside>
@@ -94,12 +98,13 @@ function selectFile(slug: string) {
       <div class="ffp-chips">
         <button
           v-for="f in selectableFiles"
-          :key="f.slug"
-          :class="['ffp-chip', { on: currentFile?.slug === f.slug }]"
-          @click="selectFile(f.slug)"
+          :key="fileId(f)"
+          :class="['ffp-chip', { on: currentFile && fileId(currentFile) === fileId(f) }]"
+          @click="selectFile(f)"
         >
           <span class="ffp-chip-style">{{ f.style }}</span>
           <span class="ffp-chip-formula">{{ f.formula_slug }}</span>
+          <span v-if="f.version" class="ffp-chip-version">{{ f.version }}</span>
         </button>
       </div>
     </section>
@@ -107,7 +112,7 @@ function selectFile(slug: string) {
     <main class="ffp-body">
       <template v-if="view === 'inspector' && currentFile">
         <FontViewer
-          :key="currentFile.slug"
+          :key="fileId(currentFile)"
           :slug="currentFile.slug"
           :font-path="currentFile.path"
           :coverage-file="currentFile.coverage_file"
@@ -116,7 +121,7 @@ function selectFile(slug: string) {
       </template>
       <template v-else-if="currentFile">
         <FontSpecimen
-          :key="currentFile.slug"
+          :key="fileId(currentFile)"
           :slug="currentFile.slug"
           :family-name="family.name"
           :font-path="currentFile.path"
@@ -125,7 +130,7 @@ function selectFile(slug: string) {
         />
         <h2 class="ffp-section-title">Unicode Coverage</h2>
         <FontUnicodeBrowser
-          :key="'fub-' + currentFile.slug"
+          :key="'fub-' + fileId(currentFile)"
           :slug="currentFile.slug"
           :font-path="currentFile.path"
           :coverage-file="currentFile.coverage_file"

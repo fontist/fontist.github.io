@@ -193,10 +193,9 @@ function pctLabel(pct: number): string {
 
 // ---------- Navigation ----------
 function openBlock(tile: Tile) {
-  window.location.href = {
-    path: `/fonts/${props.fontSlug}/unicode/block/${tile.slug}`,
-    query: props.formulaSlug ? { formula: props.formulaSlug } : undefined,
-  }
+  const base = `/fonts/${props.fontSlug}/unicode/block/${tile.slug}`
+  const qs = props.formulaSlug ? `?formula=${encodeURIComponent(props.formulaSlug)}` : ''
+  window.location.href = base + qs
 }
 </script>
 

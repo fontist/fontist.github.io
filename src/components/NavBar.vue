@@ -41,7 +41,7 @@ function onKey(e: KeyboardEvent) {
 
 const navLinks = [
   { href: '/blog', label: 'News' },
-  { href: '/formulas', label: 'Formulas' },
+  { href: '/v1/formulas', label: 'Formulas' },
   { href: '/families', label: 'Families' },
   { href: '/licenses', label: 'Licenses' },
   { href: '/guide', label: 'Guide' },

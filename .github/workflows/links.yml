@@ -1,21 +1,41 @@
 name: Link Checker
 
+# Link checking scans a fully built site (dist/**/*.html), so it runs the same
+# heavy build.yml pipeline — clone the archive, read ~16k metadata files, run
+# vite-ssg. That is far too slow for a per-PR gate (it was taking ~1h per PR),
+# so — like build.yml — it does NOT run on pull_request. It runs post-merge on
+# main, on demand, and weekly to catch external link-rot between merges.
 on:
   push:
     branches:
       - main
-  pull_request:
   workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'
 
 permissions:
   contents: read
-  pull-requests: write
 
 jobs:
   link_checker:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+
+      # Same build-time metadata the main build needs — see build.yml.
+      - name: Checkout archive-private (metadata only)
+        id: meta
+        continue-on-error: true
+        uses: actions/checkout@v6
+        with:
+          repository: fontist/fontist-archive-private
+          token: ${{ secrets.FONTIST_CI_PAT_TOKEN }}
+          path: vendor/archive-private
+          filter: blob:none
+          sparse-checkout: |
+            fonts.json
+            metadata
+          sparse-checkout-cone-mode: false
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -27,7 +47,31 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Same caches as build.yml — keyed on the upstream commit, so a hit only
+      # happens when the source is unchanged. See build.yml for rationale.
+      - name: Resolve upstream commits
+        id: upstream
+        run: |
+          echo "formulas=$(git ls-remote https://github.com/fontist/formulas.git v5 | cut -f1)" >> "$GITHUB_OUTPUT"
+          echo "essenfont=$(git ls-remote https://github.com/essenfont/essenfont.github.io.git HEAD | cut -f1)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache formulas data
+        uses: actions/cache@v4
+        with:
+          path: |
+            public/formulas-data.json
+            public/stats.json
+          key: formulas-data-${{ steps.upstream.outputs.formulas }}
+
+      - name: Cache Essenfont woff2
+        uses: actions/cache@v4
+        with:
+          path: public/fonts
+          key: essenfont-${{ steps.upstream.outputs.essenfont }}
+
       - name: Build
+        env:
+          ARCHIVE_META_PATH: ${{ steps.meta.outcome == 'success' && 'vendor/archive-private' || '' }}
         run: npm run build
 
       - name: Restore lychee cache
@@ -66,23 +110,3 @@ jobs:
           name: link-check-results
           path: link-check-results.md
           retention-days: 30
-
-      - name: Comment PR with results
-        if: failure() && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            let comment = '## 🔗 Link Check Failed\n\n';
-
-            if (fs.existsSync('link-check-results.md')) {
-              const results = fs.readFileSync('link-check-results.md', 'utf8');
-              comment += '### Results\n\n' + results + '\n\n';
-            }
-
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });

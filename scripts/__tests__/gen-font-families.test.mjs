@@ -200,4 +200,97 @@ describe('buildFamilyIndex', () => {
     assert.equal(file.coverage_file, null)
     assert.equal(file.redistributable, false)
   })
+
+  it('attributes faces to the EXACT formula, not just the provider', () => {
+    // Padauk is provided by two same-provider formulas (sil/padauk and
+    // sil/padauk_6.000). A face from padauk_6.000 must appear ONLY under
+    // padauk_6.000 — matching by provider namespace alone would duplicate it
+    // under sil/padauk too.
+    const index = buildFamilyIndex({
+      fonts: { fonts: [mkFontEntry('padauk', 'Padauk', ['sil/padauk', 'sil/padauk_6.000'])] },
+      metadata: {
+        fonts: [
+          { slug: 'padauk', formula_path: 'Formulas/sil/padauk.yml', redistributable: true, version: '3.0' },
+          { slug: 'padauk', formula_path: 'Formulas/sil/padauk_6.000.yml', redistributable: true, version: '6.000' },
+        ],
+      },
+      formulas: [mkFormula('sil/padauk'), mkFormula('sil/padauk_6.000')],
+    })
+
+    const files = index.families[0].files
+    assert.equal(files.length, 2, 'one file per formula, not four')
+    const byFormula = Object.fromEntries(files.map(f => [f.formula_slug, f]))
+    assert.equal(byFormula['sil/padauk'].version, '3.0')
+    assert.equal(byFormula['sil/padauk_6.000'].version, '6.000')
+  })
+
+  it('consumes the per-style shape and verifies assets against the manifest', () => {
+    // Per-style files carry an exact formula_slug + style, and their asset
+    // paths must be dropped when NOT present in the published manifest (e.g.
+    // macOS woff, built privately but never published).
+    const index = buildFamilyIndex({
+      fonts: { fonts: [mkFontEntry('noto', 'Noto', ['macos/noto'])] },
+      metadata: {
+        fonts: [{
+          slug: 'noto',
+          formula_slug: 'macos/noto',
+          style: 'Regular',
+          version: '2.5',
+          redistributable: true,
+          coverage_file: 'coverage/macos/noto/Noto-Regular.json',
+          woff_file: 'woff/macos/noto/Noto-Regular.woff', // NOT in manifest
+        }],
+      },
+      formulas: [mkFormula('macos/noto')],
+      // manifest publishes the coverage but not the (proprietary) macOS woff
+      publishedPaths: new Set(['coverage/macos/noto/Noto-Regular.json']),
+    })
+
+    const file = index.families[0].files[0]
+    assert.equal(file.formula_slug, 'macos/noto')
+    assert.equal(file.style, 'Regular')
+    assert.equal(file.version, '2.5')
+    assert.equal(file.coverage_file, 'coverage/macos/noto/Noto-Regular.json', 'published coverage kept')
+    assert.equal(file.path, null, 'unpublished woff dropped to null')
+  })
+
+  it('keeps distinct same-slug faces (different PostScript names)', () => {
+    // Hasklig-style: several faces slugify to the same face slug but are
+    // distinct fonts (different PS names / assets). They must NOT collapse.
+    const face = (ps, cov) => ({
+      slug: 'hasklig', ps, formula_slug: 'manual/hasklig', style: 'Regular',
+      redistributable: true, coverage_file: cov,
+    })
+    const index = buildFamilyIndex({
+      fonts: { fonts: [mkFontEntry('hasklig', 'Hasklig', ['manual/hasklig'])] },
+      metadata: {
+        fonts: [
+          face('Hasklig-Regular', 'coverage/manual/hasklig/Hasklig-Regular.json'),
+          face('Hasklig-Medium', 'coverage/manual/hasklig/Hasklig-Medium.json'),
+        ],
+      },
+      formulas: [mkFormula('manual/hasklig')],
+      publishedPaths: new Set([
+        'coverage/manual/hasklig/Hasklig-Regular.json',
+        'coverage/manual/hasklig/Hasklig-Medium.json',
+      ]),
+    })
+
+    const files = index.families[0].files
+    assert.equal(files.length, 2, 'distinct PS faces must both survive')
+    assert.deepEqual(files.map(f => f.ps).sort(), ['Hasklig-Medium', 'Hasklig-Regular'])
+  })
+
+  it('collapses duplicate aggregate face entries for one formula', () => {
+    // The aggregate can carry the same face twice for a formula; the index
+    // must not emit two identical files (they would collide as Vue keys).
+    const dup = { slug: 'padauk', formula_path: 'Formulas/sil/padauk.yml', redistributable: true, version: '3.0' }
+    const index = buildFamilyIndex({
+      fonts: { fonts: [mkFontEntry('padauk', 'Padauk', ['sil/padauk'])] },
+      metadata: { fonts: [dup, { ...dup }] },
+      formulas: [mkFormula('sil/padauk')],
+    })
+
+    assert.equal(index.families[0].files.length, 1, 'identical duplicate collapsed')
+  })
 })

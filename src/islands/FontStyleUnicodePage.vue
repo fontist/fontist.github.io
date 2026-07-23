@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { findFilesBySlug, type FamilyFileEntry } from '../lib/fonts/families-loader'
+import { setQueryParamAndReload } from '../lib/nav'
 import type { FontFamily, FontFamilyFile, Coverage } from '../lib/types/domain'
 import BlockCoverageHeatmap from '../components/BlockCoverageHeatmap.vue'
 import { loadCoverage } from '../lib/unicode/coverage'
@@ -26,14 +27,14 @@ const hasMultipleFormulas = computed(() => {
 })
 
 const requestedMissing = computed(() => {
-  if (!requestedFormula) return false
-  return !entries.value.some(e => e.file.formula_slug === requestedFormula)
+  if (!requestedFormula.value) return false
+  return !entries.value.some(e => e.file.formula_slug === requestedFormula.value)
 })
 
 const activeEntry = computed<FamilyFileEntry | null>(() => {
   if (entries.value.length === 0) return null
-  if (requestedFormula) {
-    const hit = entries.value.find(e => e.file.formula_slug === requestedFormula)
+  if (requestedFormula.value) {
+    const hit = entries.value.find(e => e.file.formula_slug === requestedFormula.value)
     if (hit) return hit
   }
   const pool = redistributableEntries.value
@@ -63,11 +64,10 @@ async function load() {
 }
 
 await load()
-watch(fontSlug, load)
 
 
 function switchFormula(formulaSlug: string) {
-  window.location.replace({ path: `/fonts/${fontSlug}/unicode`, query: { ...route.query, formula: formulaSlug } })
+  setQueryParamAndReload('formula', formulaSlug)
 }
 </script>
 

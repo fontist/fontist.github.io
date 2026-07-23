@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { injectFontFace } from '../composables/useFontFace'
 import { loadCoverage } from '../lib/unicode/coverage'
 import { useFontVariation } from '../composables/useFontVariation'
@@ -30,6 +30,40 @@ const fontStyles = computed(() => {
 
 const weightAxis = computed(() => axes.value.find(a => a.tag === 'wght'))
 
+// The specimen fields are contenteditable AND were rendering their value via
+// `{{ heroText }}` / `{{ bodyText }}`. Every keystroke wrote back to the ref,
+// Vue re-rendered the text node, and the browser dropped the caret to
+// position 0 — so typing or deleting jumped the cursor to the start.
+//
+// Treat them as uncontrolled instead: seed the DOM once, and afterwards push
+// the value only into elements that are NOT focused. That keeps the mirrored
+// strip sizes in sync with the field being edited without ever rewriting the
+// node the user is typing in.
+const heroEl = ref(null)
+const bodyEls = ref([])
+
+function syncText(el, value) {
+  if (!el || el === document.activeElement) return
+  if (el.textContent !== value) el.textContent = value
+}
+
+function onHeroInput(e) {
+  heroText.value = e.target.textContent
+}
+
+function onBodyInput(e) {
+  bodyText.value = e.target.textContent
+}
+
+watch(bodyText, (v) => bodyEls.value.forEach((el) => syncText(el, v)))
+watch(heroText, (v) => syncText(heroEl.value, v))
+
+onMounted(async () => {
+  await nextTick()
+  syncText(heroEl.value, heroText.value)
+  bodyEls.value.forEach((el) => syncText(el, bodyText.value))
+})
+
 onMounted(async () => {
   if (props.redistributable && props.fontPath) {
     const { fontId: fid } = injectFontFace(props.slug, props.fontPath, props.redistributable)
@@ -48,23 +82,29 @@ onMounted(async () => {
 <template>
   <section class="specimen" v-if="redistributable">
     <!-- Full-bleed editable specimen -->
+    <!-- Content is set imperatively (see syncText) so editing never rewrites
+         the focused node and resets the caret. -->
     <div
+      ref="heroEl"
       class="specimen-hero"
       :contenteditable="true"
       :style="fontStyles"
-      @input="(e) => heroText = e.target.textContent"
-    >{{ heroText }}</div>
+      spellcheck="false"
+      @input="onHeroInput"
+    ></div>
 
     <!-- Multi-size specimen strip -->
     <div class="specimen-strip">
       <div
-        v-for="size in [48, 24, 16]"
+        v-for="(size, i) in [48, 24, 16]"
         :key="size"
+        :ref="(el) => { if (el) bodyEls[i] = el }"
         class="specimen-line"
         :style="{ ...fontStyles, fontSize: size + 'px', lineHeight: 1.3 }"
         :contenteditable="true"
-        @input="(e) => bodyText = e.target.textContent"
-      >{{ bodyText }}</div>
+        spellcheck="false"
+        @input="onBodyInput"
+      ></div>
     </div>
 
     <!-- Variable font controls -->

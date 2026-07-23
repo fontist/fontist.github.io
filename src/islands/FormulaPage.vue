@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { findFormula, type FormulaData } from '../lib/formulas/loader'
 import { findFormulaDetails, type FormulaDetails } from '../lib/formulas/details-loader'
 import { findFamilyByFormula, type FontFamily } from '../lib/fonts/families-loader'
 import { injectFontFace } from '../composables/useFontFace'
+import { archiveUrl } from '../lib/archive-url'
 
 const props = defineProps({
   slug: { type: String, required: true }
@@ -36,11 +37,24 @@ async function loadData() {
 }
 
 await loadData()
-watch(slug, loadData)
 
 const woffPath = computed(() => {
   if (!formula.value || !formula.value.licenseCategory?.includes('open')) return ''
-  return `woff/${slug}.woff`
+  // Use the path the archive actually published rather than guessing a layout
+  // (the old `woff/{slug}.woff` 404s against the current nested layout).
+  //
+  // Prefer THIS formula's own face: a family can span providers (e.g. Tirra
+  // has both google/tirra and sil/tirra_4.100), so matching on formula_slug
+  // keeps the sil formula page from previewing the google specimen. Fall back
+  // to any redistributable face so a formula whose own woff isn't published
+  // still shows a family specimen rather than nothing.
+  const files = family.value?.files || []
+  const file =
+    files.find((f) => f.formula_slug === slug && f.redistributable && f.path) ||
+    files.find((f) => f.redistributable && f.path)
+  if (!file?.path) return ''
+  // Specimens live in fontist-archive-public, not public/ — resolve to the CDN.
+  return archiveUrl(file.path)
 })
 
 const { fontId: specimenFontId, ensureInjected: ensureSpecimenFont } = injectFontFace(
@@ -96,7 +110,7 @@ const resourceEntries = computed(() => {
     <div v-else-if="!formula">
       <h1 class="page-title">Formula not found</h1>
       <p>No formula found for: <code>{{ slug }}</code></p>
-      <a href="/formulas">← Back to Formulas</a>
+      <a href="/v1/formulas">← Back to Formulas</a>
     </div>
 
     <article v-else class="formula-page">

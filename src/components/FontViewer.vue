@@ -175,28 +175,38 @@ function togglePlane(key) {
 }
 
 // --- Lifecycle ---
-// Top-level await: runs during SSG so coverage data renders into the
-// shipped HTML. Font CSS injection stays in onMounted (touches `document`).
-const cov = await loadCoverage(props.coverageFile || props.slug)
-coverage.value = cov
-
-if (cov?.variable_axes) {
-  initAxes(cov.variable_axes.map(a => ({ tag: a.tag, default: a.default })))
-}
-if (cov?.opentype_features) {
-  initFeatures(cov.opentype_features.map(f => ({ tag: f.tag })))
-}
-if (cov?.blocks?.length) {
-  await selectBlock(cov.blocks[0])
-}
-
-loading.value = false
-
+// FontViewer is only mounted by FontStylePage's inspector view, which is
+// client:only, so this never runs during SSG. Loading in onMounted keeps setup
+// synchronous — avoiding the async-setup-without-Suspense trap where a parent
+// reveals this via a v-if flipped after its own async setup resolved. The
+// try/finally guarantees `loading` clears, so a missing/failed coverage lands
+// on an empty state instead of a stuck "Loading" panel.
 onMounted(async () => {
+  try {
+    const cov = await loadCoverage(props.coverageFile || props.slug)
+    coverage.value = cov
+
+    if (cov?.variable_axes) {
+      initAxes(cov.variable_axes.map(a => ({ tag: a.tag, default: a.default })))
+    }
+    if (cov?.opentype_features) {
+      initFeatures(cov.opentype_features.map(f => ({ tag: f.tag })))
+    }
+    if (cov?.blocks?.length) {
+      await selectBlock(cov.blocks[0])
+    }
+  } catch {
+    // Coverage stays null → the template's "No coverage data" empty state.
+    // The finally still clears `loading`, so this never sticks on a spinner.
+  } finally {
+    loading.value = false
+  }
+
   if (specimenEl.value) {
     specimenEl.value.textContent = specimenText.value
   }
 
+  // Font CSS injection touches `document`, so it must stay client-only.
   if (props.redistributable && props.fontPath) {
     const { fontId: fid, ensureInjected } = injectFontFace(
       props.slug, props.fontPath, props.redistributable
@@ -289,7 +299,8 @@ onMounted(async () => {
             </div>
           </div>
         </div>
-        <div v-else class="fv-panel-msg">Loading...</div>
+        <div v-else-if="loading" class="fv-panel-msg">Loading...</div>
+        <div v-else class="fv-panel-msg">No coverage data.</div>
       </aside>
 
       <!-- CENTER: Specimen + Glyph grid -->
@@ -337,7 +348,12 @@ onMounted(async () => {
             <p v-if="selectedBlock" class="fv-prop">Supports {{ charsWithNames.length }} characters in {{ selectedBlock.name }}.</p>
           </div>
 
-          <div v-else class="fv-panel-msg">Loading glyph data...</div>
+          <!-- "Loading" only while the fetch is genuinely in flight; every
+               settled-but-unrenderable case gets its own empty state. -->
+          <div v-else-if="loading" class="fv-panel-msg">Loading glyph data...</div>
+          <div v-else-if="!coverage" class="fv-panel-msg">No coverage data for this font.</div>
+          <div v-else-if="!blockData" class="fv-panel-msg">No glyph data for this block.</div>
+          <div v-else class="fv-panel-msg">Glyph preview unavailable for this font.</div>
         </div>
       </main>
 
@@ -426,7 +442,8 @@ onMounted(async () => {
           <p class="fv-ins-hint">Click any glyph to inspect.</p>
         </template>
 
-        <div v-else class="fv-panel-msg">Loading...</div>
+        <div v-else-if="loading" class="fv-panel-msg">Loading...</div>
+        <div v-else class="fv-panel-msg">No coverage data.</div>
       </aside>
     </div>
 
@@ -449,7 +466,8 @@ onMounted(async () => {
         <span class="fv-stat-sep" v-if="missingCount > 0">&middot;</span>
         <span class="fv-stat fv-stat-gap" v-if="missingCount > 0">{{ missingCount }} gaps</span>
       </template>
-      <span v-else class="fv-stat">Loading...</span>
+      <span v-else-if="loading" class="fv-stat">Loading...</span>
+      <span v-else class="fv-stat">No coverage data</span>
       <span class="fv-stat-spacer"></span>
       <span class="fv-stat fv-stat-license">{{ licenseName || 'Unknown license' }}</span>
     </div>

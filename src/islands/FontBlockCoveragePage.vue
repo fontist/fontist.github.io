@@ -4,11 +4,13 @@
 // per-block char grid (via FontUnicodeBrowser) plus the block's metadata
 // (range, completeness %, missing char count).
 //
-// Not pre-rendered in SSG — too many combinations (fonts × blocks).
-// Vue-router lazy-loads this route client-side.
+// Not pre-rendered in SSG — too many combinations (fonts × blocks). Reached by
+// full-page navigation (plain <a> links; no vue-router). Each visit mounts a
+// fresh island for the target font/block, so there is nothing to watch.
 
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { findFilesBySlug, type FamilyFileEntry } from '../lib/fonts/families-loader'
+import { setQueryParamAndReload } from '../lib/nav'
 import { fetchJson } from '../lib/ssr-fetch'
 import type { FontFamily, FontFamilyFile, Coverage } from '../lib/types/domain'
 import { blockSlug, blockDisplayName } from '../lib/unicode/constants'
@@ -30,12 +32,15 @@ const loading = ref(true)
 
 const activeEntry = computed<FamilyFileEntry | null>(() => {
   if (entries.value.length === 0) return null
-  if (requestedFormula) {
-    const hit = entries.value.find(e => e.file.formula_slug === requestedFormula)
+  if (requestedFormula.value) {
+    const hit = entries.value.find(e => e.file.formula_slug === requestedFormula.value)
     if (hit) return hit
   }
   const pool = entries.value.filter(e => e.file.redistributable)
-  return (pool.length > 0 ? pool : entries.value)[0]
+  const candidates = pool.length > 0 ? pool : entries.value
+  // Prefer an entry with a real coverage path — the bare-slug fallback below
+  // only resolves for the legacy flat archive layout and otherwise 404s.
+  return candidates.find(e => e.file.coverage_file) ?? candidates[0]
 })
 
 const activeFamily = computed<FontFamily | null>(() => activeEntry.value?.family ?? null)
@@ -63,11 +68,15 @@ const completeness = computed(() => {
 })
 
 function switchFormula(formulaSlug: string) {
-  window.location.replace({ query: { ...route.query, formula: formulaSlug } })
+  setQueryParamAndReload('formula', formulaSlug)
 }
 
 async function loadAll() {
   loading.value = true
+  // A failed index/blocks fetch must not reject setup (this island is
+  // client:only, so a rejected top-level await would leave the page blank).
+  // Swallow to the empty state — `matchedBlock`/`activeFile` stay null and the
+  // template renders the "unknown block / no coverage" branches.
   try {
     const [entrs, blocksIndex] = await Promise.all([
       findFilesBySlug(fontSlug),
@@ -87,13 +96,16 @@ async function loadAll() {
         coverage.value = null
       }
     }
+  } catch {
+    entries.value = []
+    allBlocks.value = []
+    coverage.value = null
   } finally {
     loading.value = false
   }
 }
 
 await loadAll()
-watch(fontSlug, loadAll)
 
 </script>
 
@@ -163,7 +175,11 @@ watch(fontSlug, loadAll)
       <a :href="`/fonts/${fontSlug}/unicode`">← back to coverage overview</a>
     </div>
 
-    <div v-else class="fbcp-loading">Loading…</div>
+    <div v-else-if="loading" class="fbcp-loading">Loading…</div>
+    <div v-else class="fbcp-empty">
+      <p>No coverage data for this font in <code>{{ blockParam }}</code>.</p>
+      <a :href="`/fonts/${fontSlug}/unicode`">← back to coverage overview</a>
+    </div>
   </div>
 </template>
 

@@ -28,10 +28,10 @@ const props = defineProps<{
                   <span class="ucp-variant-self-label">self</span>
                   <span class="ucp-variant-glyph ucp-variant-glyph-self">{{ glyphOf(val) }}</span>
                 </span>
-                <RouterLink v-else-if="isCodepointRef(val)" :to="charRoute(val)" class="ucp-variant-link">
+                <a v-else-if="isCodepointRef(val)" :href="charRoute(val)" class="ucp-variant-link">
                   <code class="ucp-variant-cp">{{ val }}</code>
                   <span class="ucp-variant-glyph">{{ glyphOf(val) }}</span>
-                </RouterLink>
+                </a>
                 <code v-else>{{ val }}</code>
               </span>
               <span v-if="j < f.values.length - 1" class="ucp-variant-sep">·</span>
