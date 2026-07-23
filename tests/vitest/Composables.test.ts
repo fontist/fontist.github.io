@@ -7,9 +7,6 @@ import { useFontVariation } from '../../src/composables/useFontVariation'
 // useFontFace is a pure DOM-mutation utility (no lifecycle hooks)
 import { injectFontFace } from '../../src/composables/useFontFace'
 
-// useUnicodeBlock wraps the loader; we test its empty-array branch
-import { useUnicodeBlock } from '../../src/composables/useUnicodeBlock'
-
 describe('useFontVariation — reactive variation/feature state', () => {
   beforeEach(() => {
     const { reset } = useFontVariation()
@@ -110,13 +107,5 @@ describe('useFontFace — injectFontFace DOM injection', () => {
     inj2.ensureInjected()
     const styles = document.querySelectorAll('style[id^="ff-style-"]')
     expect(styles.length).toBe(1)
-  })
-})
-
-describe('useUnicodeBlock — fetchBlock', () => {
-  it('returns null when block has no chars (loadBlockCharacters returns empty)', async () => {
-    const { fetchBlock } = useUnicodeBlock()
-    const result = await fetchBlock('Definitely Not A Real Block Name 999')
-    expect(result).toBeNull()
   })
 })

@@ -1,5 +1,11 @@
 name: build
 
+# This is the production build+deploy pipeline: it clones the archive, reads
+# ~16k per-style metadata files, and runs the full vite-ssg build. That is far
+# too heavy for a per-PR check (and can stall for hours when the archive is
+# mid-build), so it does NOT run on pull_request — fast PR validation lives in
+# pr-check.yml. This workflow only runs where a real deploy can happen: main,
+# manual dispatch, the archive [rebuild] dispatch, and the daily backstop.
 on:
   push:
     branches:
@@ -9,7 +15,6 @@ on:
       - CONTRIBUTING.md
       - LICENSE
       - .gitignore
-  pull_request:
   workflow_dispatch:
   repository_dispatch:
     types: [rebuild]
@@ -22,8 +27,8 @@ on:
     - cron: '17 5 * * *'
 
 # Least privilege by default. `pages: write` / `id-token: write` are granted
-# only to the deploy job, so a pull_request build cannot touch Pages even if
-# the deploy gate below were misconfigured.
+# only to the deploy job, so the build job cannot touch Pages even if the
+# deploy gate below were misconfigured.
 permissions:
   contents: read
 
