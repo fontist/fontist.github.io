@@ -1,15 +1,20 @@
 name: Link Checker
 
+# Link checking scans a fully built site (dist/**/*.html), so it runs the same
+# heavy build.yml pipeline — clone the archive, read ~16k metadata files, run
+# vite-ssg. That is far too slow for a per-PR gate (it was taking ~1h per PR),
+# so — like build.yml — it does NOT run on pull_request. It runs post-merge on
+# main, on demand, and weekly to catch external link-rot between merges.
 on:
   push:
     branches:
       - main
-  pull_request:
   workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'
 
 permissions:
   contents: read
-  pull-requests: write
 
 jobs:
   link_checker:
@@ -105,23 +110,3 @@ jobs:
           name: link-check-results
           path: link-check-results.md
           retention-days: 30
-
-      - name: Comment PR with results
-        if: failure() && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            let comment = '## 🔗 Link Check Failed\n\n';
-
-            if (fs.existsSync('link-check-results.md')) {
-              const results = fs.readFileSync('link-check-results.md', 'utf8');
-              comment += '### Results\n\n' + results + '\n\n';
-            }
-
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
