@@ -49,6 +49,14 @@ export const GUIDE_TOPICS: GuideTopic[] = [
     related: ['what-is-formula', 'create-formula'],
   },
   {
+    slug: 'static-and-variable-fonts',
+    title: 'Static and Variable Fonts',
+    blurb: 'Google formulas carry both static and variable sources — how fontist chooses which kind to install, and how to select it explicitly.',
+    category: 'workflow',
+    readingMinutes: 5,
+    related: ['formula-structure', 'choosing-formula'],
+  },
+  {
     slug: 'private-repositories',
     title: 'Private Formula Repositories',
     blurb: 'Host formulas in a private Git repository so your organization can distribute fonts without exposing the formulas publicly.',
