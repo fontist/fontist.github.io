@@ -208,7 +208,7 @@ const instruments = [
           <ul class="fb-list">
             {recentPosts.slice(0, 3).map((post) => (
               <li class="fb-item">
-                <a href={`/blog/${post.slug}`} class="fb-link">
+                <a href={`/blog/${post.id}`} class="fb-link">
                   <span class="fb-date">{post.date}</span>
                   <span class="fb-title">{post.title}</span>
                   {post.description && <span class="fb-desc">{post.description}</span>}
