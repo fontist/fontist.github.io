@@ -31,7 +31,7 @@ function formatDate(dateStr) {
     <ul class="journal-list">
       {posts.map((post) => (
         <li class="journal-item">
-          <a href={`/blog/${post.slug}`} class="journal-entry">
+          <a href={`/blog/${post.id}`} class="journal-entry">
             <time class="journal-date" datetime={post.data.date}>
               {formatDate(post.data.date)}
             </time>

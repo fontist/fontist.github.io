@@ -1,25 +1,25 @@
 ---
 import DefaultLayout from '../../layouts/DefaultLayout.astro'
-import { getCollection, type CollectionEntry } from 'astro:content'
+import { getCollection, render, type CollectionEntry } from 'astro:content'
 
 export async function getStaticPaths() {
   const licenses = await getCollection('licenses')
   return licenses.map((l) => ({
-    params: { path: l.slug },
+    params: { path: l.id },
     props: { license: l },
   }))
 }
 
 interface Props { license: CollectionEntry<'licenses'> }
 const { license } = Astro.props
-const { Content } = await license.render()
+const { Content } = await render(license)
 const { title, description } = license.data
 ---
 
 <DefaultLayout
   title={`${title} — License — Fontist`}
   description={description}
-  canonical={`https://www.fontist.org/licenses/${license.slug}`}
+  canonical={`https://www.fontist.org/licenses/${license.id}`}
 >
   <article class="page-container md-doc">
     <Content />

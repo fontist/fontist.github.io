@@ -1,18 +1,18 @@
 ---
 import DefaultLayout from '../../layouts/DefaultLayout.astro'
-import { getCollection, type CollectionEntry } from 'astro:content'
+import { getCollection, render, type CollectionEntry } from 'astro:content'
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog')
   return posts.map((post) => ({
-    params: { slug: post.slug },
+    params: { slug: post.id },
     props: { post },
   }))
 }
 
 interface Props { post: CollectionEntry<'blog'> }
 const { post } = Astro.props
-const { Content } = await post.render()
+const { Content } = await render(post)
 const { title, description, date, authors } = post.data
 
 const formattedDate = date
@@ -34,7 +34,7 @@ const authorsDisplay = !authors || authors.length === 0
 <DefaultLayout
   title={`${title} — Fontist Journal`}
   description={description}
-  canonical={`https://www.fontist.org/blog/${post.slug}`}
+  canonical={`https://www.fontist.org/blog/${post.id}`}
 >
   <article class="post">
     <nav class="post-crumbs" aria-label="Breadcrumb">

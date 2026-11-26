@@ -1,25 +1,25 @@
 ---
 import DefaultLayout from '../../layouts/DefaultLayout.astro'
-import { getCollection, type CollectionEntry } from 'astro:content'
+import { getCollection, render, type CollectionEntry } from 'astro:content'
 
 export async function getStaticPaths() {
   const guides = await getCollection('guide')
   return guides.map((g) => ({
-    params: { path: g.slug },
+    params: { path: g.id },
     props: { guide: g },
   }))
 }
 
 interface Props { guide: CollectionEntry<'guide'> }
 const { guide } = Astro.props
-const { Content } = await guide.render()
+const { Content } = await render(guide)
 const { title, description } = guide.data
 ---
 
 <DefaultLayout
   title={`${title} — Guide — Fontist`}
   description={description}
-  canonical={`https://www.fontist.org/guide/${guide.slug}`}
+  canonical={`https://www.fontist.org/guide/${guide.id}`}
 >
   <article class="guide-article">
     <nav class="guide-crumbs" aria-label="Breadcrumb">
