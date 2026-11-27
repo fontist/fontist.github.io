@@ -1,0 +1,5 @@
+id: fontist
+name: Fontist
+base: https://www.fontist.org
+contentDir: blog
+outDir: dist/news-data

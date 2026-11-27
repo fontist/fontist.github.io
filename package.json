@@ -1,8 +1,9 @@
 {
   "scripts": {
     "dev": "astro dev",
-    "build": "bash scripts/fetch-data.sh && node scripts/fetch-essenfont.mjs && node scripts/gen-font-families.mjs && node scripts/gen-licenses-index.mjs && node scripts/gen-blog-index.mjs && node scripts/gen-guide-index.mjs && astro build && node scripts/gen-sitemap.mjs",
-    "build:no-fetch": "node scripts/fetch-essenfont.mjs && node scripts/gen-font-families.mjs && node scripts/gen-licenses-index.mjs && node scripts/gen-blog-index.mjs && node scripts/gen-guide-index.mjs && astro build && node scripts/gen-sitemap.mjs",
+    "build": "bash scripts/fetch-data.sh && node scripts/fetch-essenfont.mjs && node scripts/gen-font-families.mjs && node scripts/gen-licenses-index.mjs && node scripts/gen-blog-index.mjs && node scripts/gen-guide-index.mjs && astro build && node scripts/gen-sitemap.mjs && node scripts/emit-newsml.mjs",
+    "build:no-fetch": "node scripts/fetch-essenfont.mjs && node scripts/gen-font-families.mjs && node scripts/gen-licenses-index.mjs && node scripts/gen-blog-index.mjs && node scripts/gen-guide-index.mjs && astro build && node scripts/gen-sitemap.mjs && node scripts/emit-newsml.mjs",
+    "emit": "node scripts/emit-newsml.mjs",
     "preview": "astro preview",
     "fetch-data": "bash scripts/fetch-data.sh",
     "gen-routes": "node scripts/gen-blog-index.mjs && node scripts/gen-guide-index.mjs ",
@@ -35,6 +36,7 @@
     "astro": "^7.4.13",
     "happy-dom": "^21.0.4",
     "js-yaml": "^5.2.1",
+    "newsmlg2": "^0.2.0",
     "node-html-parser": "^7.0.1",
     "prettier": "^3.8.1",
     "typescript": "^5.9.3",
